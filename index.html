@@ -12,6 +12,14 @@
       user-select: none;
       -webkit-user-select: none;
     }
+    /* 가로 스크롤바 숨기기 */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
   </style>
 </head>
 <body class="min-h-screen text-[#EDEDED] flex flex-col items-center justify-between p-4 font-sans max-w-md mx-auto">
@@ -57,19 +65,15 @@
       <div class="w-full bg-gray-900/90 border border-gray-800 rounded-2xl p-4 mb-6 text-left space-y-2.5 shadow-xl text-xs text-gray-300">
         <div class="flex items-center gap-2">
           <span class="text-base">🎯</span>
-          <span id="t-welcome-feat1"><strong>초급 (Game 1, 2)</strong>: 음정·조표 스피드런 (10콤보 시 중급 해금)</span>
+          <span><strong>메인 챌린지</strong>: 초급 $\rightarrow$ 중급 $\rightarrow$ 승급시험 $\rightarrow$ 고급</span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="text-base">🎹</span>
-          <span id="t-welcome-feat2"><strong>중급 (Game 3, 4)</strong>: 12키 코드톤 연산 & 전위 판독 (15초)</span>
+          <span class="text-base">🕹️</span>
+          <span><strong>5대 개별 트레이닝</strong>: 음정/조표/코드톤/전위/보이싱 자유 선택</span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="text-base">🎓</span>
-          <span id="t-welcome-feat3"><strong>승급 시험</strong>: 중급 20문항 테스트에서 <strong>85점 이상</strong> 시 고급 자동 해금</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="text-base">🚀</span>
-          <span><strong>고급 (Game 5)</strong>: Drop 2, Drop 3 보이싱 연산 (5문제 무료 체험)</span>
+          <span class="text-base">👑</span>
+          <span><strong>5번 보이싱 버스터</strong>: 유튜브 멤버십 전용 마스터 훈련</span>
         </div>
       </div>
 
@@ -81,10 +85,11 @@
   </section>
 
   <!-- ========================================== -->
-  <!-- 1. 메인 게임 및 테스트 화면 -->
+  <!-- 1. 메인 플레이 화면 -->
   <!-- ========================================== -->
   <div id="gameScreen" class="hidden w-full flex-1 flex flex-col justify-between">
     
+    <!-- 최상단 헤더 -->
     <header class="w-full flex justify-between items-center py-2 border-b border-gray-800">
       <div>
         <h2 class="text-lg font-black tracking-wider text-[#FFB703] leading-none">HARMONY BUSTER</h2>
@@ -109,8 +114,33 @@
       </div>
     </header>
 
-    <!-- 티어 선택 탭 -->
-    <div id="tierNav" class="w-full grid grid-cols-3 gap-2 my-2 bg-gray-900 p-1 rounded-xl text-center">
+    <!-- [신설] 5대 개별 게임 바로가기 메뉴바 -->
+    <div class="w-full mt-2 mb-1">
+      <div class="flex items-center justify-between px-1 mb-1">
+        <span class="text-[10px] font-extrabold text-gray-400">🕹️ 개별 훈련 코스</span>
+        <button onclick="selectPlayMode('TIER')" id="btnBackToMain" class="text-[10px] font-bold text-[#FFB703] underline hidden">← 메인 퀴즈로 복귀</button>
+      </div>
+      <div class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+        <button onclick="selectSoloGame(1)" id="btnG1" class="whitespace-nowrap px-2.5 py-1.5 bg-gray-900 border border-gray-800 rounded-lg text-xs font-bold text-gray-300 hover:border-[#FFB703] transition-all">
+          1. 음정
+        </button>
+        <button onclick="selectSoloGame(2)" id="btnG2" class="whitespace-nowrap px-2.5 py-1.5 bg-gray-900 border border-gray-800 rounded-lg text-xs font-bold text-gray-300 hover:border-[#FFB703] transition-all">
+          2. 조표
+        </button>
+        <button onclick="selectSoloGame(3)" id="btnG3" class="whitespace-nowrap px-2.5 py-1.5 bg-gray-900 border border-gray-800 rounded-lg text-xs font-bold text-gray-300 hover:border-[#FFB703] transition-all">
+          3. 코드톤
+        </button>
+        <button onclick="selectSoloGame(4)" id="btnG4" class="whitespace-nowrap px-2.5 py-1.5 bg-gray-900 border border-gray-800 rounded-lg text-xs font-bold text-gray-300 hover:border-[#FFB703] transition-all">
+          4. 전위
+        </button>
+        <button onclick="selectSoloGame(5)" id="btnG5" class="whitespace-nowrap px-2.5 py-1.5 bg-gray-900 border border-purple-500/50 rounded-lg text-xs font-bold text-purple-300 hover:border-purple-400 transition-all flex items-center gap-1">
+          <span id="g5LockIcon">🔒</span> 5. 보이싱
+        </button>
+      </div>
+    </div>
+
+    <!-- 메인 티어 선택 탭 (메인 모드일 때만 표시) -->
+    <div id="tierNav" class="w-full grid grid-cols-3 gap-2 my-1 bg-gray-900 p-1 rounded-xl text-center">
       <button id="btnTierBeg" onclick="selectTier('BEGINNER')" class="py-2 text-xs font-bold rounded-lg bg-[#FFB703] text-black transition-all">
         초급 (4선다)
       </button>
@@ -142,7 +172,7 @@
     </div>
 
     <!-- 타이머 게이지 바 영역 -->
-    <div id="timerContainer" class="w-full mt-1.5">
+    <div id="timerContainer" class="w-full mt-1">
       <div class="flex justify-between items-center text-[11px] text-gray-400 mb-1 px-1">
         <span id="timerLabel">TIME ATTACK</span>
         <span id="timerText" class="font-bold text-[#FFB703]">10.0s</span>
@@ -165,14 +195,14 @@
           Loading...
         </p>
 
-        <!-- 중급 패드 입력 조합 디스플레이 -->
+        <!-- 중급 패드 디스플레이 -->
         <div id="inputPreviewBox" class="hidden w-full py-2 px-3 bg-gray-950 rounded-lg border border-gray-800 mb-2 flex justify-between items-center text-sm">
           <span id="t-preview-label" class="text-gray-400 text-xs">선택한 코드:</span>
           <span id="previewText" class="font-bold text-[#FFB703] text-base tracking-wide">-</span>
           <button onclick="clearCurrentInput()" id="t-preview-clear" class="text-xs text-gray-500 hover:text-red-400">⌫ 지우기</button>
         </div>
 
-        <!-- 오답/시간초과 시 강화된 정답 안내 카드 -->
+        <!-- 피드백 박스 -->
         <div id="feedbackBox" class="hidden w-full mt-2 p-4 bg-gray-950 rounded-2xl border-2 border-[#EF476F]/60 text-center flex flex-col gap-3 shadow-xl">
           <div id="feedbackStatus" class="text-xs font-extrabold text-[#EF476F] tracking-wide uppercase"></div>
           
@@ -250,7 +280,7 @@
     </div>
   </footer>
 
-  <!-- 후원 모달 (카카오페이 / Ko-fi) -->
+  <!-- 후원 모달 -->
   <div id="donateModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
     <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl max-w-sm w-full text-center shadow-2xl">
       <div class="text-3xl mb-2">☕</div>
@@ -277,28 +307,26 @@
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- 4. VIP 멤버십 안내 모달 (5회 체험 완료 시 노출) -->
-  <!-- ========================================== -->
+  <!-- 4. VIP 멤버십 안내 모달 (5번 게임 클릭 시 노출) -->
   <div id="vipModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl max-w-sm w-full text-center shadow-2xl">
-      <div class="text-3xl mb-2">🎓</div>
-      <h3 id="t-modal-vip-title" class="text-lg font-black text-white mb-1">고급 마스터 맛보기 완료!</h3>
-      <p id="t-modal-vip-desc" class="text-xs text-gray-400 mb-4 leading-relaxed">
-        Drop 2, Drop 3 보이싱 및 무한 커스텀 모드는 <br />
-        <strong class="text-[#FFB703]">유튜브 베이직 멤버십</strong> 전용 기능입니다.
+    <div class="bg-gray-900 border border-purple-500/50 p-6 rounded-2xl max-w-sm w-full text-center shadow-2xl">
+      <div class="text-3xl mb-2">👑</div>
+      <h3 class="text-lg font-black text-white mb-1">유튜브 멤버십 전용 훈련</h3>
+      <p class="text-xs text-gray-400 mb-4 leading-relaxed">
+        <strong class="text-purple-300">5. 보이싱 버스터</strong>는 <br />
+        <strong class="text-[#FFB703]">유튜브 베이직 멤버십</strong> 전용 고급 코스입니다.
       </p>
       <a href="https://youtube.com/playlist?list=PLUhKlj-gxAgqQxhGNKJkvZF2ihiY0wQUC" target="_blank" class="block w-full py-2.5 bg-[#FFB703] text-black font-extrabold text-sm rounded-xl mb-4 hover:bg-yellow-400">
-        <span id="t-modal-vip-join">유튜브 멤버십 가입하고 코드 받기 ↗</span>
+        유튜브 멤버십 가입하고 코드 받기 ↗
       </a>
       <div class="pt-3 border-t border-gray-800">
-        <p id="t-modal-vip-prompt" class="text-[11px] text-gray-400 mb-2">유튜브 커뮤니티 전용 시크릿 코드 입력:</p>
+        <p class="text-[11px] text-gray-400 mb-2">유튜브 커뮤니티 전용 시크릿 코드 입력:</p>
         <div class="flex gap-2">
           <input id="secretInput" type="text" placeholder="HARMONY2026" class="flex-1 bg-gray-950 border border-gray-700 px-3 py-1.5 text-xs rounded-lg text-white uppercase" />
-          <button onclick="verifyVipCode()" id="t-modal-vip-verify" class="bg-gray-700 hover:bg-gray-600 px-3 py-1.5 text-xs font-bold rounded-lg">인증</button>
+          <button onclick="verifyVipCode()" class="bg-gray-700 hover:bg-gray-600 px-3 py-1.5 text-xs font-bold rounded-lg">인증</button>
         </div>
       </div>
-      <button onclick="closeVipModal()" id="t-modal-vip-close" class="mt-4 text-xs text-gray-500 hover:text-gray-300">닫기</button>
+      <button onclick="closeVipModal()" class="mt-4 text-xs text-gray-500 hover:text-gray-300">닫기</button>
     </div>
   </div>
 
@@ -360,9 +388,6 @@
         welcomeSub: "화성학 기초 완전 격파기",
         welcomeBadge: "⚡ 5대 화성학 게임 & 실전 라이선스",
         welcomeHeadline: '"머리로만 아는 화성학은 끝났다.<br />이제 지판과 건반 위에서 0.1초 만에 깬다!"',
-        welcomeFeat1: "<strong>초급 (Game 1, 2)</strong>: 음정·조표 스피드런 (10콤보 시 중급 해금)",
-        welcomeFeat2: "<strong>중급 (Game 3, 4)</strong>: 12키 코드톤 연산 & 전위 판독 (15초)",
-        welcomeFeat3: "<strong>승급 시험</strong>: 중급 20문항 테스트에서 <strong>85점 이상</strong> 시 고급 자동 해금",
         welcomeStartBtn: "지금 바로 격파 시작하기 🔥",
         welcomeSoundHint: "※ 소리를 켜시면 리얼 타임 코드 피드백 사운드가 재생됩니다.",
         gameSub: "화성학 기초 완전 격파기",
@@ -385,12 +410,6 @@
         donateKakao: "카카오페이로 송금 (국내 모바일)",
         donateKofi: "Ko-fi 후원 (카드 / PayPal / 해외)",
         donateClose: "닫기",
-        vipTitle: "고급 마스터 맛보기 완료!",
-        vipDesc: "Drop 2, Drop 3 보이싱 및 무한 커스텀 모드는 <br /><strong class='text-[#FFB703]'>유튜브 베이직 멤버십</strong> 전용 기능입니다.",
-        vipJoin: "유튜브 멤버십 가입하고 코드 받기 ↗",
-        vipPrompt: "유튜브 커뮤니티 전용 시크릿 코드 입력:",
-        vipVerify: "인증",
-        vipClose: "닫기",
         timeoutMsg: "⏰ 시간 초과!",
         wrongMsg: "❌ 오답!",
         rootStepLabel: "1단계: ROOT 선택",
@@ -399,16 +418,13 @@
         intUnlockAlert: "🎉 축하합니다! 10 콤보를 달성하여 [중급 키패드 모드]가 해금되었습니다!",
         intRequireAlert: "🔒 초급에서 10 콤보를 먼저 달성해야 중급이 열립니다!",
         advRequireAlert: "🔒 중급 승급 라이선스 시험(85점 이상)을 통과해야 고급 모드가 열립니다!",
-        vipSuccessAlert: "🎉 VIP 인증 완료! Harmony Buster 고급 모드가 영구 해금되었습니다.",
+        vipSuccessAlert: "🎉 VIP 인증 완료! 5. 보이싱 버스터 모드가 영구 해금되었습니다.",
         vipFailAlert: "올바르지 않은 코드입니다. 유튜브 커뮤니티 전용 코드를 확인해 주세요."
       },
       EN: {
         welcomeSub: "Instinctive Music Theory Trainer",
         welcomeBadge: "⚡ 5 Harmony Games & License Exam",
         welcomeHeadline: '"Stop overthinking music theory.<br />Master harmony with instant reflexes in 0.1s!"',
-        welcomeFeat1: "<strong>Beginner (Game 1, 2)</strong>: Speedrun intervals & keys (10 combo to unlock)",
-        welcomeFeat2: "<strong>Intermediate (Game 3, 4)</strong>: 12-key chord spelling & inversions (15s)",
-        welcomeFeat3: "<strong>Exam</strong>: Score <strong>85%+ (17/20)</strong> on Intermediate Exam to unlock Advanced",
         welcomeStartBtn: "Start Busting Harmony 🔥",
         welcomeSoundHint: "※ Turn on audio for real-time chord synthesis feedback.",
         gameSub: "Instinctive Music Theory Trainer",
@@ -431,12 +447,6 @@
         donateKakao: "KakaoPay Transfer (Korea Mobile)",
         donateKofi: "Support via Ko-fi (Card / PayPal / Global)",
         donateClose: "Close",
-        vipTitle: "Advanced Preview Completed!",
-        vipDesc: "Drop 2, Drop 3 voicings and infinite training are exclusive to <br /><strong class='text-[#FFB703]'>YouTube Basic Members</strong>.",
-        vipJoin: "Join YouTube Membership for Code ↗",
-        vipPrompt: "Enter community secret passcode:",
-        vipVerify: "Verify",
-        vipClose: "Close",
         timeoutMsg: "⏰ Time Out!",
         wrongMsg: "❌ Incorrect!",
         rootStepLabel: "STEP 1: SELECT ROOT",
@@ -445,7 +455,7 @@
         intUnlockAlert: "🎉 Congratulations! You reached 10 Combo and unlocked Intermediate Keypad!",
         intRequireAlert: "🔒 Reach 10 Combo in Beginner Mode to unlock Intermediate!",
         advRequireAlert: "🔒 Pass the Intermediate License Exam (85%+) to unlock Advanced!",
-        vipSuccessAlert: "🎉 VIP Verified! All Advanced modes are permanently unlocked.",
+        vipSuccessAlert: "🎉 VIP Verified! Voicing Buster is permanently unlocked.",
         vipFailAlert: "Invalid code. Please check your YouTube Community tab."
       }
     };
@@ -460,9 +470,6 @@
       document.getElementById('t-welcome-sub').innerText = dict.welcomeSub;
       document.getElementById('t-welcome-badge').innerText = dict.welcomeBadge;
       document.getElementById('t-welcome-headline').innerHTML = dict.welcomeHeadline;
-      document.getElementById('t-welcome-feat1').innerHTML = dict.welcomeFeat1;
-      document.getElementById('t-welcome-feat2').innerHTML = dict.welcomeFeat2;
-      document.getElementById('t-welcome-feat3').innerHTML = dict.welcomeFeat3;
       document.getElementById('t-welcome-start-btn').innerText = dict.welcomeStartBtn;
       document.getElementById('t-welcome-sound-hint').innerText = dict.welcomeSoundHint;
 
@@ -484,13 +491,6 @@
       document.getElementById('t-modal-donate-kofi').innerText = dict.donateKofi;
       document.getElementById('t-modal-donate-close').innerText = dict.donateClose;
 
-      document.getElementById('t-modal-vip-title').innerText = dict.vipTitle;
-      document.getElementById('t-modal-vip-desc').innerHTML = dict.vipDesc;
-      document.getElementById('t-modal-vip-join').innerText = dict.vipJoin;
-      document.getElementById('t-modal-vip-prompt').innerText = dict.vipPrompt;
-      document.getElementById('t-modal-vip-verify').innerText = dict.vipVerify;
-      document.getElementById('t-modal-vip-close').innerText = dict.vipClose;
-
       updateTabsUI();
       if (currentQuestion) {
         renderCurrentQuestionText();
@@ -502,7 +502,7 @@
       setLanguage(currentLang === 'KO' ? 'EN' : 'KO');
     }
 
-    // --- 진행 상태 저장 및 관리 ---
+    // --- 상태 저장 ---
     const YOUTUBE_URL = "https://youtube.com/playlist?list=PLUhKlj-gxAgqQxhGNKJkvZF2ihiY0wQUC";
     let userProgress = { intermediateUnlocked: false, advancedUnlocked: false, examPassed: false, isVip: false };
     try {
@@ -510,13 +510,16 @@
       if (saved) userProgress = JSON.parse(saved);
     } catch(e) {}
 
+    // 플레이 모드 ('TIER' = 초/중/고급 메인, 'SOLO' = 5대 개별 게임)
+    let playMode = 'TIER';
     let currentTier = 'BEGINNER';
+    let currentSoloGame = 1;
+
     let combo = 0;
-    let advancedTrialCount = 0;
     let currentQuestion = null;
     let selectedRoot = '';
 
-    // 시험 모드 상태 변수
+    // 시험 모드
     let isExamMode = false;
     let examTotalCount = 20;
     let examCurrentIndex = 0;
@@ -527,9 +530,8 @@
     let timeLeft = 10;
     let isQuestionActive = false;
 
-    // --- 실시간 화성학 연산 데이터베이스 ---
+    // --- 화성학 엔진 데이터 ---
     const ROOTS_ALL = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
-
     const CHORD_FORMULAS = [
       { quality: '', nameKO: 'Major Triad', nameEN: 'Major Triad', tonesKO: '1, 3, 5', tonesEN: '1, 3, 5' },
       { quality: 'm', nameKO: 'Minor Triad', nameEN: 'Minor Triad', tonesKO: '1, b3, 5', tonesEN: '1, b3, 5' },
@@ -540,26 +542,16 @@
       { quality: 'm7', nameKO: 'Minor 7th', nameEN: 'Minor 7th', tonesKO: '1, b3, 5, b7', tonesEN: '1, b3, 5, b7' },
       { quality: 'm7b5', nameKO: 'Half-Diminished', nameEN: 'Half-Diminished', tonesKO: '1, b3, b5, b7', tonesEN: '1, b3, b5, b7' }
     ];
-
     const TRIAD_INVERSIONS = [
-      { triad: 'C', base: 'E', inv: '1st', tones: 'E는 3음' },
-      { triad: 'C', base: 'G', inv: '2nd', tones: 'G는 5음' },
-      { triad: 'F', base: 'A', inv: '1st', tones: 'A는 3음' },
-      { triad: 'F', base: 'C', inv: '2nd', tones: 'C는 5음' },
-      { triad: 'G', base: 'B', inv: '1st', tones: 'B는 3음' },
-      { triad: 'G', base: 'D', inv: '2nd', tones: 'D는 5음' },
-      { triad: 'Dm', base: 'F', inv: '1st', tones: 'F는 b3음' },
-      { triad: 'Dm', base: 'A', inv: '2nd', tones: 'A는 5음' },
-      { triad: 'Am', base: 'C', inv: '1st', tones: 'C는 b3음' },
-      { triad: 'Am', base: 'E', inv: '2nd', tones: 'E는 5음' },
-      { triad: 'Em', base: 'G', inv: '1st', tones: 'G는 b3음' },
-      { triad: 'Em', base: 'B', inv: '2nd', tones: 'B는 5음' },
-      { triad: 'Bb', base: 'D', inv: '1st', tones: 'D는 3음' },
-      { triad: 'Eb', base: 'G', inv: '1st', tones: 'G는 3음' },
-      { triad: 'D', base: 'F#', inv: '1st', tones: 'F#은 3음' },
-      { triad: 'A', base: 'C#', inv: '1st', tones: 'C#은 3음' }
+      { triad: 'C', base: 'E', inv: '1st' }, { triad: 'C', base: 'G', inv: '2nd' },
+      { triad: 'F', base: 'A', inv: '1st' }, { triad: 'F', base: 'C', inv: '2nd' },
+      { triad: 'G', base: 'B', inv: '1st' }, { triad: 'G', base: 'D', inv: '2nd' },
+      { triad: 'Dm', base: 'F', inv: '1st' }, { triad: 'Dm', base: 'A', inv: '2nd' },
+      { triad: 'Am', base: 'C', inv: '1st' }, { triad: 'Am', base: 'E', inv: '2nd' },
+      { triad: 'Em', base: 'G', inv: '1st' }, { triad: 'Em', base: 'B', inv: '2nd' },
+      { triad: 'Bb', base: 'D', inv: '1st' }, { triad: 'Eb', base: 'G', inv: '1st' },
+      { triad: 'D', base: 'F#', inv: '1st' }, { triad: 'A', base: 'C#', inv: '1st' }
     ];
-
     const NOTE_TO_SEMITONE = {
       'C': 0, 'C#': 1, 'Db': 1, 'D': 2, 'D#': 3, 'Eb': 3, 'E': 4,
       'F': 5, 'F#': 6, 'Gb': 6, 'G': 7, 'G#': 8, 'Ab': 8, 'A': 9,
@@ -567,163 +559,153 @@
     };
     const SEMITONE_TO_NOTE = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
 
-    // --- 실시간 무한 문제 생성 엔진 ---
-    function generateQuestion(tier) {
-      if (tier === 'BEGINNER') {
-        const gameType = Math.random() > 0.5 ? 'GAME1' : 'GAME2';
+    // 개별 문제 생성기
+    function genGame1() {
+      const root = ROOTS_ALL[Math.floor(Math.random() * ROOTS_ALL.length)];
+      const ivs = [
+        { nameKO: 'Minor 3rd', nameEN: 'Minor 3rd', semi: 3 },
+        { nameKO: 'Major 3rd', nameEN: 'Major 3rd', semi: 4 },
+        { nameKO: 'Perfect 4th', nameEN: 'Perfect 4th', semi: 5 },
+        { nameKO: 'Perfect 5th', nameEN: 'Perfect 5th', semi: 7 },
+        { nameKO: 'Major 6th', nameEN: 'Major 6th', semi: 9 },
+        { nameKO: 'Minor 7th', nameEN: 'Minor 7th', semi: 10 }
+      ];
+      const iv = ivs[Math.floor(Math.random() * ivs.length)];
+      const ans = SEMITONE_TO_NOTE[(NOTE_TO_SEMITONE[root] + iv.semi) % 12];
+      const wrongOpts = shuffleArray(SEMITONE_TO_NOTE.filter(n => n !== ans)).slice(0, 3);
+      return {
+        gameTag: 'GAME 1. INTERVAL BUSTER',
+        type: 'MCQ',
+        catKO: '기본 음정 (1~4강)',
+        catEN: 'Intervals (Ep. 1-4)',
+        qKO: `${root} 에서 ${iv.nameKO} 위의 음은?`,
+        qEN: `What is the ${iv.nameEN} above ${root}?`,
+        ans: ans,
+        opts: shuffleArray([ans, ...wrongOpts]),
+        url: YOUTUBE_URL + '&index=1'
+      };
+    }
 
-        if (gameType === 'GAME1') {
-          const root = ROOTS_ALL[Math.floor(Math.random() * ROOTS_ALL.length)];
-          const ivs = [
-            { nameKO: 'Minor 3rd', nameEN: 'Minor 3rd', semi: 3 },
-            { nameKO: 'Major 3rd', nameEN: 'Major 3rd', semi: 4 },
-            { nameKO: 'Perfect 4th', nameEN: 'Perfect 4th', semi: 5 },
-            { nameKO: 'Perfect 5th', nameEN: 'Perfect 5th', semi: 7 },
-            { nameKO: 'Major 6th', nameEN: 'Major 6th', semi: 9 },
-            { nameKO: 'Minor 7th', nameEN: 'Minor 7th', semi: 10 }
-          ];
-          const iv = ivs[Math.floor(Math.random() * ivs.length)];
-          const ans = SEMITONE_TO_NOTE[(NOTE_TO_SEMITONE[root] + iv.semi) % 12];
-          const wrongOpts = shuffleArray(SEMITONE_TO_NOTE.filter(n => n !== ans)).slice(0, 3);
+    function genGame2() {
+      const keys = [
+        { key: 'G Major', sigKO: '샵(#) 1개', sigEN: '1 Sharp (#)' },
+        { key: 'D Major', sigKO: '샵(#) 2개', sigEN: '2 Sharps (#)' },
+        { key: 'A Major', sigKO: '샵(#) 3개', sigEN: '3 Sharps (#)' },
+        { key: 'E Major', sigKO: '샵(#) 4개', sigEN: '4 Sharps (#)' },
+        { key: 'F Major', sigKO: '플랫(b) 1개', sigEN: '1 Flat (b)' },
+        { key: 'Bb Major', sigKO: '플랫(b) 2개', sigEN: '2 Flats (b)' },
+        { key: 'Eb Major', sigKO: '플랫(b) 3개', sigEN: '3 Flats (b)' },
+        { key: 'Ab Major', sigKO: '플랫(b) 4개', sigEN: '4 Flats (b)' }
+      ];
+      const item = keys[Math.floor(Math.random() * keys.length)];
+      const wrongOpts = shuffleArray(keys.filter(k => k.key !== item.key)).slice(0, 3).map(k => k.key);
+      return {
+        gameTag: 'GAME 2. KEY SIGNATURE BLITZ',
+        type: 'MCQ',
+        catKO: '조표 & 키 (5~6강)',
+        catEN: 'Key Signatures (Ep. 5-6)',
+        qKO: `${item.sigKO}가 붙는 Major Key는?`,
+        qEN: `Which Major Key has ${item.sigEN}?`,
+        ans: item.key,
+        opts: shuffleArray([item.key, ...wrongOpts]),
+        url: YOUTUBE_URL + '&index=5'
+      };
+    }
 
-          return {
-            gameTag: 'GAME 1. INTERVAL BUSTER',
-            type: 'MCQ',
-            catKO: '기본 음정 (1~4강)',
-            catEN: 'Intervals (Ep. 1-4)',
-            qKO: `${root} 에서 ${iv.nameKO} 위의 음은?`,
-            qEN: `What is the ${iv.nameEN} above ${root}?`,
-            ans: ans,
-            opts: shuffleArray([ans, ...wrongOpts]),
-            url: YOUTUBE_URL + '&index=1'
-          };
-        } else {
-          const keys = [
-            { key: 'G Major', sigKO: '샵(#) 1개', sigEN: '1 Sharp (#)' },
-            { key: 'D Major', sigKO: '샵(#) 2개', sigEN: '2 Sharps (#)' },
-            { key: 'A Major', sigKO: '샵(#) 3개', sigEN: '3 Sharps (#)' },
-            { key: 'E Major', sigKO: '샵(#) 4개', sigEN: '4 Sharps (#)' },
-            { key: 'F Major', sigKO: '플랫(b) 1개', sigEN: '1 Flat (b)' },
-            { key: 'Bb Major', sigKO: '플랫(b) 2개', sigEN: '2 Flats (b)' },
-            { key: 'Eb Major', sigKO: '플랫(b) 3개', sigEN: '3 Flats (b)' },
-            { key: 'Ab Major', sigKO: '플랫(b) 4개', sigEN: '4 Flats (b)' }
-          ];
-          const item = keys[Math.floor(Math.random() * keys.length)];
-          const wrongOpts = shuffleArray(keys.filter(k => k.key !== item.key)).slice(0, 3).map(k => k.key);
+    function genGame3() {
+      const root = ROOTS_ALL[Math.floor(Math.random() * ROOTS_ALL.length)];
+      const formula = CHORD_FORMULAS[Math.floor(Math.random() * CHORD_FORMULAS.length)];
+      return {
+        gameTag: 'GAME 3. CHORD SPELL MASTER',
+        type: 'KEYPAD_CHORD',
+        catKO: `코드 구성음 (${formula.nameKO})`,
+        catEN: `Chord Spelling (${formula.nameEN})`,
+        qKO: `Root [${root}], 도수 구성 [${formula.tonesKO}] 인 코드는?`,
+        qEN: `Chord with Root [${root}] and Degrees [${formula.tonesEN}]?`,
+        ans: `${root}${formula.quality}`,
+        url: YOUTUBE_URL + '&index=12'
+      };
+    }
 
-          return {
-            gameTag: 'GAME 2. KEY SIGNATURE BLITZ',
-            type: 'MCQ',
-            catKO: '조표 & 키 (5~6강)',
-            catEN: 'Key Signatures (Ep. 5-6)',
-            qKO: `${item.sigKO}가 붙는 Major Key는?`,
-            qEN: `Which Major Key has ${item.sigEN}?`,
-            ans: item.key,
-            opts: shuffleArray([item.key, ...wrongOpts]),
-            url: YOUTUBE_URL + '&index=5'
-          };
-        }
+    function genGame4() {
+      const item = TRIAD_INVERSIONS[Math.floor(Math.random() * TRIAD_INVERSIONS.length)];
+      return {
+        gameTag: 'GAME 4. INVERSION FINDER',
+        type: 'INVERSION',
+        catKO: '3화음 전위 판독 (9~11강)',
+        catEN: 'Triad Inversions (Ep. 9-11)',
+        qKO: `분수코드 [ ${item.triad} / ${item.base} ] 는 몇 번째 전위인가?`,
+        qEN: `Which inversion is slash chord [ ${item.triad} / ${item.base} ]?`,
+        ans: item.inv,
+        opts: ['Root', '1st', '2nd'],
+        url: YOUTUBE_URL + '&index=9'
+      };
+    }
+
+    function genGame5() {
+      const advType = Math.random();
+      if (advType < 0.5) {
+        const topDegrees = [
+          { top: 'Root (1음)', order: '5-1-3-7' },
+          { top: '3rd (3음)', order: '7-3-5-1' },
+          { top: '5th (5음)', order: '1-5-7-3' },
+          { top: '7th (7음)', order: '3-7-1-5' }
+        ];
+        const item = topDegrees[Math.floor(Math.random() * topDegrees.length)];
+        const wrongOpts = shuffleArray(topDegrees.filter(t => t.order !== item.order)).slice(0, 3).map(t => t.order);
+        return {
+          gameTag: 'GAME 5. VOICING BUSTER (DROP 2)',
+          type: 'MCQ',
+          catKO: 'Drop 2 보이싱 구조',
+          catEN: 'Drop 2 Voicing Degrees',
+          qKO: `Drop 2 보이싱에서 최고음이 [ ${item.top} ] 일 때 저음부터의 도수 배열은?`,
+          qEN: `In Drop 2 with Top Note [ ${item.top} ], what is the order from bass?`,
+          ans: item.order,
+          opts: shuffleArray([item.order, ...wrongOpts]),
+          url: YOUTUBE_URL + '&index=12'
+        };
+      } else {
+        const drop3List = [
+          { bass: 'Root in Bass', order: '1-7-3-5' },
+          { bass: '3rd in Bass', order: '3-1-5-7' },
+          { bass: '5th in Bass', order: '5-3-7-1' },
+          { bass: '7th in Bass', order: '7-5-1-3' }
+        ];
+        const item = drop3List[Math.floor(Math.random() * drop3List.length)];
+        const wrongOpts = shuffleArray(drop3List.filter(d => d.order !== item.order)).slice(0, 3).map(d => d.order);
+        return {
+          gameTag: 'GAME 5. VOICING BUSTER (DROP 3)',
+          type: 'MCQ',
+          catKO: 'Drop 3 보이싱 구조',
+          catEN: 'Drop 3 Voicing Degrees',
+          qKO: `Drop 3 보이싱 [ ${item.bass} ] 일 때 저음부터 4개 성부의 도수 배열은?`,
+          qEN: `In Drop 3 with [ ${item.bass} ], what is the degree order from bass?`,
+          ans: item.order,
+          opts: shuffleArray([item.order, ...wrongOpts]),
+          url: YOUTUBE_URL + '&index=12'
+        };
+      }
+    }
+
+    // 모드에 따라 문제 출제
+    function generateQuestion() {
+      if (playMode === 'SOLO') {
+        if (currentSoloGame === 1) return genGame1();
+        if (currentSoloGame === 2) return genGame2();
+        if (currentSoloGame === 3) return genGame3();
+        if (currentSoloGame === 4) return genGame4();
+        if (currentSoloGame === 5) return genGame5();
       }
 
-      if (tier === 'INTERMEDIATE') {
-        const gameType = Math.random() > 0.4 ? 'GAME3' : 'GAME4';
-
-        if (gameType === 'GAME3') {
-          const root = ROOTS_ALL[Math.floor(Math.random() * ROOTS_ALL.length)];
-          const formula = CHORD_FORMULAS[Math.floor(Math.random() * CHORD_FORMULAS.length)];
-          const expectedAnswer = `${root}${formula.quality}`;
-
-          return {
-            gameTag: 'GAME 3. CHORD SPELL MASTER',
-            type: 'KEYPAD_CHORD',
-            catKO: `코드 구성음 (${formula.nameKO})`,
-            catEN: `Chord Spelling (${formula.nameEN})`,
-            qKO: `Root [${root}], 도수 구성 [${formula.tonesKO}] 인 코드는?`,
-            qEN: `Chord with Root [${root}] and Degrees [${formula.tonesEN}]?`,
-            ans: expectedAnswer,
-            url: YOUTUBE_URL + '&index=12'
-          };
-        } else {
-          const item = TRIAD_INVERSIONS[Math.floor(Math.random() * TRIAD_INVERSIONS.length)];
-          return {
-            gameTag: 'GAME 4. INVERSION FINDER',
-            type: 'INVERSION',
-            catKO: '3화음 전위 판독 (9~11강)',
-            catEN: 'Triad Inversions (Ep. 9-11)',
-            qKO: `분수코드 [ ${item.triad} / ${item.base} ] 는 몇 번째 전위인가?`,
-            qEN: `Which inversion is slash chord [ ${item.triad} / ${item.base} ]?`,
-            ans: item.inv,
-            opts: ['Root', '1st', '2nd'],
-            url: YOUTUBE_URL + '&index=9'
-          };
-        }
+      // TIER 모드
+      if (currentTier === 'BEGINNER') {
+        return Math.random() > 0.5 ? genGame1() : genGame2();
       }
-
-      if (tier === 'ADVANCED') {
-        const advType = Math.random();
-        if (advType < 0.35) {
-          const topDegrees = [
-            { top: 'Root (1음)', order: '5-1-3-7' },
-            { top: '3rd (3음)', order: '7-3-5-1' },
-            { top: '5th (5음)', order: '1-5-7-3' },
-            { top: '7th (7음)', order: '3-7-1-5' }
-          ];
-          const item = topDegrees[Math.floor(Math.random() * topDegrees.length)];
-          const wrongOpts = shuffleArray(topDegrees.filter(t => t.order !== item.order)).slice(0, 3).map(t => t.order);
-
-          return {
-            gameTag: 'GAME 5. VOICING BUSTER (DROP 2)',
-            type: 'MCQ',
-            catKO: 'Drop 2 보이싱 구조',
-            catEN: 'Drop 2 Voicing Degrees',
-            qKO: `Drop 2 보이싱에서 최고음이 [ ${item.top} ] 일 때 저음부터의 도수 배열은?`,
-            qEN: `In Drop 2 with Top Note [ ${item.top} ], what is the order from bass?`,
-            ans: item.order,
-            opts: shuffleArray([item.order, ...wrongOpts]),
-            url: YOUTUBE_URL + '&index=12'
-          };
-        } else if (advType < 0.7) {
-          const drop3List = [
-            { bass: 'Root in Bass', order: '1-7-3-5' },
-            { bass: '3rd in Bass', order: '3-1-5-7' },
-            { bass: '5th in Bass', order: '5-3-7-1' },
-            { bass: '7th in Bass', order: '7-5-1-3' }
-          ];
-          const item = drop3List[Math.floor(Math.random() * drop3List.length)];
-          const wrongOpts = shuffleArray(drop3List.filter(d => d.order !== item.order)).slice(0, 3).map(d => d.order);
-
-          return {
-            gameTag: 'GAME 5. VOICING BUSTER (DROP 3)',
-            type: 'MCQ',
-            catKO: 'Drop 3 보이싱 구조',
-            catEN: 'Drop 3 Voicing Degrees',
-            qKO: `Drop 3 보이싱 [ ${item.bass} ] 일 때 저음부터 4개 성부의 도수 배열은?`,
-            qEN: `In Drop 3 with [ ${item.bass} ], what is the degree order from bass?`,
-            ans: item.order,
-            opts: shuffleArray([item.order, ...wrongOpts]),
-            url: YOUTUBE_URL + '&index=12'
-          };
-        } else {
-          const spellings = [
-            { qKO: 'G# Harmonic Minor의 7번째 음 (Leading tone)은?', qEN: '7th tone of G# Harmonic Minor?', ans: 'Fx (F##)', opts: ['Fx (F##)', 'G', 'F#', 'Gx'] },
-            { qKO: 'D# Harmonic Minor의 7번째 음 (Leading tone)은?', qEN: '7th tone of D# Harmonic Minor?', ans: 'Cx (C##)', opts: ['Cx (C##)', 'D', 'C#', 'Dx'] },
-            { qKO: 'A# Harmonic Minor의 7번째 음 (Leading tone)은?', qEN: '7th tone of A# Harmonic Minor?', ans: 'Gx (G##)', opts: ['Gx (G##)', 'A', 'G#', 'Ax'] },
-            { qKO: 'Ab dim7 코드의 감7도 (bb7) 정확한 스펠링은?', qEN: 'Diminished 7th (bb7) of Ab dim7?', ans: 'Gbb', opts: ['Gbb', 'F', 'Gb', 'Abb'] },
-            { qKO: 'Db dim7 코드의 감7도 (bb7) 정확한 스펠링은?', qEN: 'Diminished 7th (bb7) of Db dim7?', ans: 'Cbb', opts: ['Cbb', 'Bb', 'Cb', 'Bbb'] }
-          ];
-          const item = spellings[Math.floor(Math.random() * spellings.length)];
-          return {
-            gameTag: 'GAME 5. ADVANCED SPELLING',
-            type: 'MCQ',
-            catKO: '심화 스펠링 연산',
-            catEN: 'Advanced Spelling',
-            qKO: item.qKO,
-            qEN: item.qEN,
-            ans: item.ans,
-            opts: shuffleArray(item.opts),
-            url: YOUTUBE_URL + '&index=7'
-          };
-        }
+      if (currentTier === 'INTERMEDIATE') {
+        return Math.random() > 0.4 ? genGame3() : genGame4();
+      }
+      if (currentTier === 'ADVANCED') {
+        return genGame5();
       }
     }
 
@@ -741,6 +723,51 @@
       nextQuestion();
     }
 
+    // 개별 게임 선택 함수
+    function selectSoloGame(num) {
+      if (num === 5 && !userProgress.isVip) {
+        document.getElementById('vipModal').classList.remove('hidden');
+        return;
+      }
+
+      playMode = 'SOLO';
+      currentSoloGame = num;
+
+      // UI 상태 반영
+      document.getElementById('tierNav').classList.add('hidden');
+      document.getElementById('examBanner').classList.add('hidden');
+      document.getElementById('unlockGuideBar').classList.add('hidden');
+      document.getElementById('btnBackToMain').classList.remove('hidden');
+
+      // 버튼 하이라이트
+      for (let i = 1; i <= 5; i++) {
+        const btn = document.getElementById(`btnG${i}`);
+        if (i === num) {
+          btn.className = "whitespace-nowrap px-2.5 py-1.5 bg-[#FFB703] border border-[#FFB703] rounded-lg text-xs font-black text-black shadow-md transition-all";
+        } else {
+          btn.className = "whitespace-nowrap px-2.5 py-1.5 bg-gray-900 border border-gray-800 rounded-lg text-xs font-bold text-gray-300 hover:border-[#FFB703] transition-all";
+        }
+      }
+
+      nextQuestion();
+    }
+
+    // 메인 퀴즈 복귀 함수
+    function selectPlayMode(mode) {
+      playMode = mode;
+      document.getElementById('btnBackToMain').classList.add('hidden');
+      document.getElementById('tierNav').classList.remove('hidden');
+
+      // 개별 게임 버튼 하이라이트 초기화
+      for (let i = 1; i <= 5; i++) {
+        const btn = document.getElementById(`btnG${i}`);
+        btn.className = "whitespace-nowrap px-2.5 py-1.5 bg-gray-900 border border-gray-800 rounded-lg text-xs font-bold text-gray-300 hover:border-[#FFB703] transition-all";
+      }
+
+      updateTabsUI();
+      nextQuestion();
+    }
+
     function updateTabsUI() {
       const dict = I18N[currentLang];
       const btnBeg = document.getElementById('btnTierBeg');
@@ -748,12 +775,12 @@
       const btnAdv = document.getElementById('btnTierAdv');
 
       btnBeg.innerText = dict.tierBeg;
-      btnBeg.className = `py-2 text-xs font-bold rounded-lg transition-all ${currentTier === 'BEGINNER' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-400'}`;
+      btnBeg.className = `py-2 text-xs font-bold rounded-lg transition-all ${currentTier === 'BEGINNER' && playMode === 'TIER' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-400'}`;
 
       if (userProgress.intermediateUnlocked) {
         btnInt.innerText = dict.tierInt;
-        btnInt.className = `py-2 text-xs font-bold rounded-lg transition-all ${currentTier === 'INTERMEDIATE' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-300'}`;
-        if (!isExamMode) document.getElementById('examBanner').classList.remove('hidden');
+        btnInt.className = `py-2 text-xs font-bold rounded-lg transition-all ${currentTier === 'INTERMEDIATE' && playMode === 'TIER' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-300'}`;
+        if (!isExamMode && playMode === 'TIER') document.getElementById('examBanner').classList.remove('hidden');
       } else {
         btnInt.innerText = dict.tierIntLocked;
         btnInt.className = 'py-2 text-xs font-bold rounded-lg text-gray-600 cursor-not-allowed';
@@ -761,16 +788,20 @@
       }
 
       if (userProgress.advancedUnlocked || userProgress.examPassed || userProgress.isVip) {
-        const countText = !userProgress.isVip ? ` (${Math.max(0, 5 - advancedTrialCount)}/5)` : '';
-        btnAdv.innerText = `${dict.tierAdv}${countText}`;
-        btnAdv.className = `py-2 text-xs font-bold rounded-lg transition-all ${currentTier === 'ADVANCED' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-300'}`;
+        btnAdv.innerText = dict.tierAdv;
+        btnAdv.className = `py-2 text-xs font-bold rounded-lg transition-all ${currentTier === 'ADVANCED' && playMode === 'TIER' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-300'}`;
       } else {
         btnAdv.innerText = dict.tierAdvLocked;
         btnAdv.className = 'py-2 text-xs font-bold rounded-lg text-gray-600 cursor-not-allowed';
       }
 
+      // 5번 게임 잠금 아이콘 제어
+      if (userProgress.isVip) {
+        document.getElementById('g5LockIcon').innerText = '👑';
+      }
+
       const guideBar = document.getElementById('unlockGuideBar');
-      if (!userProgress.intermediateUnlocked) {
+      if (!userProgress.intermediateUnlocked && playMode === 'TIER') {
         guideBar.classList.remove('hidden');
         document.getElementById('unlockProgress').innerText = combo;
       } else {
@@ -793,19 +824,16 @@
         alert(dict.advRequireAlert);
         return;
       }
-      if (t === 'ADVANCED' && !userProgress.isVip && advancedTrialCount >= 5) {
-        document.getElementById('vipModal').classList.remove('hidden');
-        return;
-      }
 
+      playMode = 'TIER';
       currentTier = t;
       updateTabsUI();
       nextQuestion();
     }
 
-    // --- 승급 라이선스 시험 모드 (20문항 / 85점 컷) ---
+    // --- 라이선스 시험 모드 (20문항 / 85점 컷) ---
     function startExamMode() {
-      if (!confirm('🎓 [고급 승급 라이선스 시험]\n- 총 20문항\n- 합격 기준: 85점 이상 (17문제 이상 정답)\n- 통과 시 고급 모드가 해금됩니다!\n\n시험을 시작하시겠습니까?')) return;
+      if (!confirm('🎓 [고급 승급 라이선스 시험]\n- 총 20문항\n- 합격 기준: 85점 이상 (17문제 이상 정답)\n- 통과 시 고급 모드가 영구 해금됩니다!\n\n시험을 시작하시겠습니까?')) return;
 
       isExamMode = true;
       examCurrentIndex = 0;
@@ -852,8 +880,8 @@
         icon.innerText = '🎉';
         title.innerText = '축하합니다! 라이선스 합격!';
         title.className = 'text-xl font-black text-[#06D6A0] mb-2';
-        desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong>를 정확히 격파했습니다.<br />이제 <strong>[고급 보이싱 모드]</strong>를 체험해 보세요!`;
-        actionBtn.innerText = '고급 (Game 5) 바로 시작하기 🚀';
+        desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong>를 정확히 격파했습니다.<br />이제 Harmony Buster의 모든 <strong>[고급 모드]</strong>가 영구 해금되었습니다!`;
+        actionBtn.innerText = '고급 모드 바로 시작하기 🚀';
         actionBtn.className = 'w-full py-3.5 bg-[#06D6A0] hover:bg-emerald-400 text-black font-black text-sm rounded-xl transition-all shadow-lg';
       } else {
         icon.innerText = '💡';
@@ -883,7 +911,11 @@
     // --- 타이머 ---
     function startTimer() {
       clearInterval(timerInterval);
-      maxTime = (currentTier === 'INTERMEDIATE' || currentTier === 'ADVANCED') ? 15 : 10;
+      
+      // 제한 시간 설정: 중급, 고급, 코드톤(3), 전위(4), 보이싱(5)은 15초 / 그 외 10초
+      const isHeavy = (playMode === 'TIER' && (currentTier === 'INTERMEDIATE' || currentTier === 'ADVANCED')) || 
+                      (playMode === 'SOLO' && currentSoloGame >= 3);
+      maxTime = isHeavy ? 15 : 10;
       timeLeft = maxTime;
       isQuestionActive = true;
 
@@ -947,11 +979,6 @@
     }
 
     function nextQuestion() {
-      if (currentTier === 'ADVANCED' && !userProgress.isVip && advancedTrialCount >= 5) {
-        document.getElementById('vipModal').classList.remove('hidden');
-        return;
-      }
-
       if (isExamMode) {
         examCurrentIndex++;
         if (examCurrentIndex > examTotalCount) {
@@ -967,7 +994,7 @@
       document.getElementById('inputPreviewBox').classList.add('hidden');
       document.getElementById('feedbackBox').classList.add('hidden');
 
-      currentQuestion = generateQuestion(currentTier);
+      currentQuestion = generateQuestion();
       renderCurrentQuestionText();
 
       const card = document.getElementById('cardBox');
@@ -1093,13 +1120,9 @@
         combo++;
         if (isExamMode) examCorrectCount++;
 
-        if (currentTier === 'ADVANCED' && !userProgress.isVip) {
-          advancedTrialCount++;
-        }
-
         card.className = "p-6 rounded-2xl bg-[#06D6A0]/10 border-2 border-[#06D6A0] flex flex-col items-center text-center shadow-2xl scale-102 transition-all";
         
-        if (currentTier === 'BEGINNER' && combo >= 10 && !userProgress.intermediateUnlocked) {
+        if (playMode === 'TIER' && currentTier === 'BEGINNER' && combo >= 10 && !userProgress.intermediateUnlocked) {
           userProgress.intermediateUnlocked = true;
           saveState();
           setTimeout(() => {
@@ -1147,12 +1170,11 @@
       const code = document.getElementById('secretInput').value.trim().toUpperCase();
       if (code === 'HARMONY2026') {
         userProgress.isVip = true;
-        userProgress.advancedUnlocked = true;
         saveState();
         closeVipModal();
         alert(dict.vipSuccessAlert);
         updateTabsUI();
-        nextQuestion();
+        selectSoloGame(5);
       } else {
         alert(dict.vipFailAlert);
       }
@@ -1160,7 +1182,6 @@
 
     function closeVipModal() {
       document.getElementById('vipModal').classList.add('hidden');
-      selectTier('INTERMEDIATE');
     }
 
     function openDonateModal() {
