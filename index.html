@@ -65,13 +65,13 @@
         <div class="flex items-start gap-2.5">
           <span class="text-base leading-none">🎯</span>
           <div class="leading-relaxed">
-            <strong class="text-white">메인 챌린지</strong>: 초급 → 중급 → 승급시험 → 고급 단계별 정복
+            <strong class="text-white">메인 챌린지</strong>: 초급(음정·조표·3화음) → 중급(스케일·4화음) → 시험 → 고급
           </div>
         </div>
         <div class="flex items-start gap-2.5">
           <span class="text-base leading-none">🕹️</span>
           <div class="leading-relaxed">
-            <strong class="text-white">5대 개별 트레이닝</strong>: 음정 · 조표 · 코드톤 · 전위 · 보이싱 (쉬움~어려움 무작위 믹스)
+            <strong class="text-white">5대 개별 트레이닝</strong>: 음정 · 조표&스케일 · 코드톤 · 전위 · 보이싱 자유 선택 훈련
           </div>
         </div>
       </div>
@@ -115,7 +115,7 @@
     <!-- 5대 개별 게임 바로가기 메뉴바 -->
     <div class="w-full mt-2 mb-1">
       <div class="flex items-center justify-between px-1 mb-1">
-        <span class="text-[10px] font-extrabold text-gray-400">🕹️ 개별 훈련 코스 (난이도 믹스)</span>
+        <span class="text-[10px] font-extrabold text-gray-400">🕹️ 개별 훈련 코스</span>
         <button onclick="selectPlayMode('TIER')" id="btnBackToMain" class="text-[10px] font-bold text-[#FFB703] underline hidden">← 메인 퀴즈로 복귀</button>
       </div>
       <div class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5">
@@ -305,7 +305,7 @@
     </div>
   </div>
 
-  <!-- 4. 개선된 VIP 멤버십 안내 모달 (애플 수수료 안내 탑재) -->
+  <!-- 4. VIP 멤버십 안내 모달 (애플 수수료 안내 탑재) -->
   <div id="vipModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
     <div class="bg-gray-900 border border-[#FFB703]/40 p-6 rounded-3xl max-w-sm w-full text-center shadow-2xl relative overflow-hidden">
       
@@ -567,9 +567,48 @@
     let timeLeft = 10;
     let isQuestionActive = false;
 
-    // --- 정밀 음악 이론 데이터베이스 ---
+    // --- 12음 루트 완전 지원 데이터베이스 ---
     const ROOTS_ALL = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
 
+    // 반음(Semitone) 연산 테이블 (C=0 기준)
+    const NOTE_TO_SEMITONE = {
+      'C': 0, 'B#': 0, 'C#': 1, 'Db': 1, 'D': 2, 'D#': 3, 'Eb': 3,
+      'E': 4, 'Fb': 4, 'F': 5, 'E#': 5, 'F#': 6, 'Gb': 6, 'G': 7,
+      'G#': 8, 'Ab': 8, 'A': 9, 'A#': 10, 'Bb': 10, 'B': 11, 'Cb': 11
+    };
+
+    // 음정 규칙 (반음 차이 및 표준 타겟 음)
+    const INTERVAL_RULES = {
+      'Major 2nd': { semi: 2, nameKO: 'Major 2nd', nameEN: 'Major 2nd' },
+      'Minor 3rd': { semi: 3, nameKO: 'Minor 3rd', nameEN: 'Minor 3rd' },
+      'Major 3rd': { semi: 4, nameKO: 'Major 3rd', nameEN: 'Major 3rd' },
+      'Perfect 4th': { semi: 5, nameKO: 'Perfect 4th', nameEN: 'Perfect 4th' },
+      'Diminished 5th': { semi: 6, nameKO: 'Diminished 5th', nameEN: 'Diminished 5th' },
+      'Augmented 4th': { semi: 6, nameKO: 'Augmented 4th', nameEN: 'Augmented 4th' },
+      'Perfect 5th': { semi: 7, nameKO: 'Perfect 5th', nameEN: 'Perfect 5th' },
+      'Minor 6th': { semi: 8, nameKO: 'Minor 6th', nameEN: 'Minor 6th' },
+      'Major 6th': { semi: 9, nameKO: 'Major 6th', nameEN: 'Major 6th' },
+      'Minor 7th': { semi: 10, nameKO: 'Minor 7th', nameEN: 'Minor 7th' },
+      'Major 7th': { semi: 11, nameKO: 'Major 7th', nameEN: 'Major 7th' }
+    };
+
+    // 12개 루트 음별 정확한 음정 타겟 음 사전 (이명동음 오류 방지)
+    const ROOT_INTERVAL_MAP = {
+      'C': { 'Major 2nd': 'D', 'Minor 3rd': 'Eb', 'Major 3rd': 'E', 'Perfect 4th': 'F', 'Diminished 5th': 'Gb', 'Augmented 4th': 'F#', 'Perfect 5th': 'G', 'Minor 6th': 'Ab', 'Major 6th': 'A', 'Minor 7th': 'Bb', 'Major 7th': 'B' },
+      'Db': { 'Major 2nd': 'Eb', 'Minor 3rd': 'Fb', 'Major 3rd': 'F', 'Perfect 4th': 'Gb', 'Diminished 5th': 'Abb', 'Augmented 4th': 'G', 'Perfect 5th': 'Ab', 'Minor 6th': 'Bbb', 'Major 6th': 'Bb', 'Minor 7th': 'Cb', 'Major 7th': 'C' },
+      'D': { 'Major 2nd': 'E', 'Minor 3rd': 'F', 'Major 3rd': 'F#', 'Perfect 4th': 'G', 'Diminished 5th': 'Ab', 'Augmented 4th': 'G#', 'Perfect 5th': 'A', 'Minor 6th': 'Bb', 'Major 6th': 'B', 'Minor 7th': 'C', 'Major 7th': 'C#' },
+      'Eb': { 'Major 2nd': 'F', 'Minor 3rd': 'Gb', 'Major 3rd': 'G', 'Perfect 4th': 'Ab', 'Diminished 5th': 'Bbb', 'Augmented 4th': 'A', 'Perfect 5th': 'Bb', 'Minor 6th': 'Cb', 'Major 6th': 'C', 'Minor 7th': 'Db', 'Major 7th': 'D' },
+      'E': { 'Major 2nd': 'F#', 'Minor 3rd': 'G', 'Major 3rd': 'G#', 'Perfect 4th': 'A', 'Diminished 5th': 'Bb', 'Augmented 4th': 'A#', 'Perfect 5th': 'B', 'Minor 6th': 'C', 'Major 6th': 'C#', 'Minor 7th': 'D', 'Major 7th': 'D#' },
+      'F': { 'Major 2nd': 'G', 'Minor 3rd': 'Ab', 'Major 3rd': 'A', 'Perfect 4th': 'Bb', 'Diminished 5th': 'Cb', 'Augmented 4th': 'B', 'Perfect 5th': 'C', 'Minor 6th': 'Db', 'Major 6th': 'D', 'Minor 7th': 'Eb', 'Major 7th': 'E' },
+      'F#': { 'Major 2nd': 'G#', 'Minor 3rd': 'A', 'Major 3rd': 'A#', 'Perfect 4th': 'B', 'Diminished 5th': 'C', 'Augmented 4th': 'B#', 'Perfect 5th': 'C#', 'Minor 6th': 'D', 'Major 6th': 'D#', 'Minor 7th': 'E', 'Major 7th': 'E#' },
+      'G': { 'Major 2nd': 'A', 'Minor 3rd': 'Bb', 'Major 3rd': 'B', 'Perfect 4th': 'C', 'Diminished 5th': 'Db', 'Augmented 4th': 'C#', 'Perfect 5th': 'D', 'Minor 6th': 'Eb', 'Major 6th': 'E', 'Minor 7th': 'F', 'Major 7th': 'F#' },
+      'Ab': { 'Major 2nd': 'Bb', 'Minor 3rd': 'Cb', 'Major 3rd': 'C', 'Perfect 4th': 'Db', 'Diminished 5th': 'Ebb', 'Augmented 4th': 'D', 'Perfect 5th': 'Eb', 'Minor 6th': 'Fb', 'Major 6th': 'F', 'Minor 7th': 'Gb', 'Major 7th': 'G' },
+      'A': { 'Major 2nd': 'B', 'Minor 3rd': 'C', 'Major 3rd': 'C#', 'Perfect 4th': 'D', 'Diminished 5th': 'Eb', 'Augmented 4th': 'D#', 'Perfect 5th': 'E', 'Minor 6th': 'F', 'Major 6th': 'F#', 'Minor 7th': 'G', 'Major 7th': 'G#' },
+      'Bb': { 'Major 2nd': 'C', 'Minor 3rd': 'Db', 'Major 3rd': 'D', 'Perfect 4th': 'Eb', 'Diminished 5th': 'Fb', 'Augmented 4th': 'E', 'Perfect 5th': 'F', 'Minor 6th': 'Gb', 'Major 6th': 'G', 'Minor 7th': 'Ab', 'Major 7th': 'A' },
+      'B': { 'Major 2nd': 'C#', 'Minor 3rd': 'D', 'Major 3rd': 'D#', 'Perfect 4th': 'E', 'Diminished 5th': 'F', 'Augmented 4th': 'E#', 'Perfect 5th': 'F#', 'Minor 6th': 'G', 'Major 6th': 'G#', 'Minor 7th': 'A', 'Major 7th': 'A#' }
+    };
+
+    // 12개 키 Major 스케일
     const MAJOR_SCALES = {
       'C': ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
       'G': ['G', 'A', 'B', 'C', 'D', 'E', 'F#'],
@@ -594,6 +633,7 @@
       'C Harmonic Minor': ['C', 'D', 'Eb', 'F', 'G', 'Ab', 'B']
     };
 
+    // 12개 모든 루트 음의 코드톤 데이터베이스 (정확한 스펠링 보장)
     const ACCURATE_CHORD_DB = {
       'C': ['C', 'E', 'G'], 'Cm': ['C', 'Eb', 'G'], 'Cdim': ['C', 'Eb', 'Gb'], 'Caug': ['C', 'E', 'G#'],
       'Cmaj7': ['C', 'E', 'G', 'B'], 'C7': ['C', 'E', 'G', 'Bb'], 'Cm7': ['C', 'Eb', 'G', 'Bb'], 'Cm7b5': ['C', 'Eb', 'Gb', 'Bb'],
@@ -632,71 +672,151 @@
       { quality: 'm7b5', nameKO: 'Half-Diminished', tonesKO: '1, b3, b5, b7' }
     ];
 
-    const TRIAD_INVERSIONS = [
+    const BASIC_INVERSIONS = [
       { triad: 'C', base: 'E', inv: '1st' }, { triad: 'C', base: 'G', inv: '2nd' },
       { triad: 'F', base: 'A', inv: '1st' }, { triad: 'F', base: 'C', inv: '2nd' },
       { triad: 'G', base: 'B', inv: '1st' }, { triad: 'G', base: 'D', inv: '2nd' },
       { triad: 'Dm', base: 'F', inv: '1st' }, { triad: 'Dm', base: 'A', inv: '2nd' },
       { triad: 'Am', base: 'C', inv: '1st' }, { triad: 'Am', base: 'E', inv: '2nd' },
-      { triad: 'Em', base: 'G', inv: '1st' }, { triad: 'Em', base: 'B', inv: '2nd' },
-      { triad: 'Bb', base: 'D', inv: '1st' }, { triad: 'Eb', base: 'G', inv: '1st' },
-      { triad: 'D', base: 'F#', inv: '1st' }, { triad: 'A', base: 'C#', inv: '1st' }
+      { triad: 'Em', base: 'G', inv: '1st' }, { triad: 'Em', base: 'B', inv: '2nd' }
     ];
 
-    const ALL_INTERVALS_POOL = [
-      // 쉬움
-      { from: 'C', nameKO: 'Major 3rd', nameEN: 'Major 3rd', ans: 'E', wrongs: ['Eb', 'F', 'D#'] },
-      { from: 'C', nameKO: 'Perfect 5th', nameEN: 'Perfect 5th', ans: 'G', wrongs: ['Gb', 'F', 'Ab'] },
-      { from: 'A', nameKO: 'Minor 3rd', nameEN: 'Minor 3rd', ans: 'C', wrongs: ['C#', 'B', 'D'] },
-      { from: 'D', nameKO: 'Perfect 5th', nameEN: 'Perfect 5th', ans: 'A', wrongs: ['Ab', 'G', 'B'] },
-      { from: 'G', nameKO: 'Major 6th', nameEN: 'Major 6th', ans: 'E', wrongs: ['Eb', 'F', 'D'] },
-      { from: 'F', nameKO: 'Perfect 4th', nameEN: 'Perfect 4th', ans: 'Bb', wrongs: ['B', 'A', 'C'] },
-      // 보통
-      { from: 'F', nameKO: 'Minor 7th', nameEN: 'Minor 7th', ans: 'Eb', wrongs: ['E', 'D', 'Db'] },
-      { from: 'Bb', nameKO: 'Major 3rd', nameEN: 'Major 3rd', ans: 'D', wrongs: ['Db', 'Eb', 'C'] },
-      { from: 'Eb', nameKO: 'Major 7th', nameEN: 'Major 7th', ans: 'D', wrongs: ['Db', 'C', 'E'] },
-      { from: 'D', nameKO: 'Minor 6th', nameEN: 'Minor 6th', ans: 'Bb', wrongs: ['B', 'A', 'C'] },
-      { from: 'Ab', nameKO: 'Major 3rd', nameEN: 'Major 3rd', ans: 'C', wrongs: ['Cb', 'Db', 'Bb'] },
-      // 어려움
-      { from: 'C', nameKO: 'Diminished 5th', nameEN: 'Diminished 5th', ans: 'Gb', wrongs: ['G', 'F', 'Ab'] },
-      { from: 'F#', nameKO: 'Diminished 5th', nameEN: 'Diminished 5th', ans: 'C', wrongs: ['C#', 'B', 'D'] },
-      { from: 'B', nameKO: 'Diminished 5th', nameEN: 'Diminished 5th', ans: 'F', wrongs: ['F#', 'E', 'G'] },
-      { from: 'E', nameKO: 'Augmented 4th', nameEN: 'Augmented 4th', ans: 'A#', wrongs: ['A', 'Bb', 'B'] },
-      { from: 'F', nameKO: 'Augmented 5th', nameEN: 'Augmented 5th', ans: 'C#', wrongs: ['C', 'Db', 'D'] }
+    const ALL_INVERSIONS = [
+      ...BASIC_INVERSIONS,
+      { triad: 'Bb', base: 'D', inv: '1st' }, { triad: 'Bb', base: 'F', inv: '2nd' },
+      { triad: 'Eb', base: 'G', inv: '1st' }, { triad: 'Eb', base: 'Bb', inv: '2nd' },
+      { triad: 'D', base: 'F#', inv: '1st' }, { triad: 'D', base: 'A', inv: '2nd' },
+      { triad: 'A', base: 'C#', inv: '1st' }, { triad: 'A', base: 'E', inv: '2nd' }
     ];
 
-    // --- 난이도 믹스 5대 게임 생성기 ---
+    const KEY_SIG_POOL = [
+      { key: 'G Major', sig: '샵(#) 1개' }, { key: 'D Major', sig: '샵(#) 2개' },
+      { key: 'A Major', sig: '샵(#) 3개' }, { key: 'E Major', sig: '샵(#) 4개' },
+      { key: 'B Major', sig: '샵(#) 5개' }, { key: 'F Major', sig: '플랫(b) 1개' },
+      { key: 'Bb Major', sig: '플랫(b) 2개' }, { key: 'Eb Major', sig: '플랫(b) 3개' },
+      { key: 'Ab Major', sig: '플랫(b) 4개' }, { key: 'Db Major', sig: '플랫(b) 5개' }
+    ];
 
-    // Game 1: 음정 (쉬움 ~ 어려움 무작위 믹스)
+    // --- 동적 음정 문제 연산기 (12음 루트 균등 출제) ---
+    function generateDynamicInterval(isAdvanced = false) {
+      // 12개 모든 루트 중 무작위 1개 균등 선택
+      const root = ROOTS_ALL[Math.floor(Math.random() * ROOTS_ALL.length)];
+      
+      const basicIntervalNames = ['Major 2nd', 'Minor 3rd', 'Major 3rd', 'Perfect 4th', 'Perfect 5th', 'Major 6th', 'Minor 7th'];
+      const advIntervalNames = ['Diminished 5th', 'Augmented 4th', 'Minor 6th', 'Major 7th'];
+      
+      const targetPool = isAdvanced ? advIntervalNames : basicIntervalNames;
+      const ivName = targetPool[Math.floor(Math.random() * targetPool.length)];
+      
+      const correctAns = ROOT_INTERVAL_MAP[root][ivName];
+
+      // 오답 3개 무작위 생성 (12개 음 중 정답 제외)
+      const wrongOpts = shuffleArray(ROOTS_ALL.filter(n => n !== correctAns)).slice(0, 3);
+
+      return {
+        from: root,
+        nameKO: ivName,
+        nameEN: ivName,
+        ans: correctAns,
+        opts: shuffleArray([correctAns, ...wrongOpts])
+      };
+    }
+
+    // --- 초급 전용 문제 생성기 (12음 루트 골고루 출제) ---
+    function genBeginnerQuestion() {
+      const r = Math.random();
+
+      if (r < 0.3) {
+        // 1. 12음 루트 기반 다이아토닉 기본 음정
+        const item = generateDynamicInterval(false);
+        return {
+          gameTag: 'BEGINNER · INTERVAL',
+          type: 'MCQ',
+          catKO: '다이아토닉 음정 (1~4강)',
+          catEN: 'Diatonic Intervals',
+          qKO: `[ ${item.from} ] 에서 [ ${item.nameKO} ] 위의 음은?`,
+          qEN: `What is the [ ${item.nameEN} ] above [ ${item.from} ]?`,
+          ans: item.ans,
+          opts: item.opts,
+          url: YOUTUBE_URL + '&index=1'
+        };
+      } else if (r < 0.55) {
+        // 2. 기본 조표
+        const item = KEY_SIG_POOL[Math.floor(Math.random() * KEY_SIG_POOL.length)];
+        const wrongKeys = KEY_SIG_POOL.filter(k => k.key !== item.key).map(k => k.key);
+        return {
+          gameTag: 'BEGINNER · KEY SIG',
+          type: 'MCQ',
+          catKO: '조표 & 키 (5~6강)',
+          catEN: 'Key Signatures',
+          qKO: `[ ${item.sig} ] 가 붙는 Major Key는?`,
+          qEN: `Which Major Key has [ ${item.sig} ]?`,
+          ans: item.key,
+          opts: shuffleArray([item.key, ...shuffleArray(wrongKeys).slice(0, 3)]),
+          url: YOUTUBE_URL + '&index=5'
+        };
+      } else if (r < 0.8) {
+        // 3. 12음 전체 루트 기반 3화음 (Major, Minor)
+        const root = ROOTS_ALL[Math.floor(Math.random() * ROOTS_ALL.length)];
+        const quality = Math.random() > 0.5 ? '' : 'm';
+        const chordName = `${root}${quality}`;
+        const notesStr = ACCURATE_CHORD_DB[chordName].join(', ');
+
+        // 오답 3화음 3개
+        const allTriadKeys = Object.keys(ACCURATE_CHORD_DB).filter(c => !c.includes('7') && c !== chordName);
+        const wrongOpts = shuffleArray(allTriadKeys).slice(0, 3).map(c => ACCURATE_CHORD_DB[c].join(', '));
+
+        return {
+          gameTag: 'BEGINNER · TRIAD',
+          type: 'MCQ',
+          catKO: '기본 3화음 구성음 (9~10강)',
+          catEN: 'Basic Triad Notes',
+          qKO: `[ ${chordName} ] 코드의 3화음 구성음은?`,
+          qEN: `What are the notes of triad [ ${chordName} ]?`,
+          ans: notesStr,
+          opts: shuffleArray([notesStr, ...wrongOpts]),
+          url: YOUTUBE_URL + '&index=9'
+        };
+      } else {
+        // 4. 기본 3화음 전위 판독
+        const item = BASIC_INVERSIONS[Math.floor(Math.random() * BASIC_INVERSIONS.length)];
+        return {
+          gameTag: 'BEGINNER · INVERSION',
+          type: 'INVERSION',
+          catKO: '기본 3화음 전위 (11강)',
+          catEN: 'Basic Inversion',
+          qKO: `분수코드 [ ${item.triad} / ${item.base} ] 는 몇 번째 전위인가?`,
+          qEN: `Which inversion is slash chord [ ${item.triad} / ${item.base} ]?`,
+          ans: item.inv,
+          opts: ['Root', '1st', '2nd'],
+          url: YOUTUBE_URL + '&index=11'
+        };
+      }
+    }
+
+    // --- 5대 개별 게임 전용 생성기 (12음 루트 완전 믹스) ---
     function genGame1() {
-      const item = ALL_INTERVALS_POOL[Math.floor(Math.random() * ALL_INTERVALS_POOL.length)];
+      // 12음 루트 전체에서 기본/심화 음정 무작위 연산
+      const isAdv = Math.random() > 0.5;
+      const item = generateDynamicInterval(isAdv);
       return {
         gameTag: 'GAME 1. INTERVAL BUSTER',
         type: 'MCQ',
-        catKO: '음정 판독 (쉬움~어려움)',
-        catEN: 'Intervals (Mixed)',
+        catKO: '음정 판독 (12음 루트)',
+        catEN: 'Intervals (12 Roots)',
         qKO: `[ ${item.from} ] 에서 [ ${item.nameKO} ] 위의 음은?`,
         qEN: `What is the [ ${item.nameEN} ] above [ ${item.from} ]?`,
         ans: item.ans,
-        opts: shuffleArray([item.ans, ...item.wrongs]),
+        opts: item.opts,
         url: YOUTUBE_URL + '&index=1'
       };
     }
 
-    // Game 2: 조표 & 스케일 (기초 조표 ~ 마이너 스케일까지 무작위 믹스)
     function genGame2() {
       const r = Math.random();
-      if (r < 0.4) {
-        // 기초 조표
-        const keyPool = [
-          { key: 'G Major', sig: '샵(#) 1개' }, { key: 'D Major', sig: '샵(#) 2개' },
-          { key: 'A Major', sig: '샵(#) 3개' }, { key: 'E Major', sig: '샵(#) 4개' },
-          { key: 'B Major', sig: '샵(#) 5개' }, { key: 'F Major', sig: '플랫(b) 1개' },
-          { key: 'Bb Major', sig: '플랫(b) 2개' }, { key: 'Eb Major', sig: '플랫(b) 3개' },
-          { key: 'Ab Major', sig: '플랫(b) 4개' }, { key: 'Db Major', sig: '플랫(b) 5개' }
-        ];
-        const item = keyPool[Math.floor(Math.random() * keyPool.length)];
-        const wrongKeys = keyPool.filter(k => k.key !== item.key).map(k => k.key);
+      if (r < 0.35) {
+        const item = KEY_SIG_POOL[Math.floor(Math.random() * KEY_SIG_POOL.length)];
+        const wrongKeys = KEY_SIG_POOL.filter(k => k.key !== item.key).map(k => k.key);
         return {
           gameTag: 'GAME 2. KEY & SCALE BLITZ',
           type: 'MCQ',
@@ -708,8 +828,8 @@
           opts: shuffleArray([item.key, ...shuffleArray(wrongKeys).slice(0, 3)]),
           url: YOUTUBE_URL + '&index=5'
         };
-      } else if (r < 0.75) {
-        // 메이저 스케일 구성음
+      } else if (r < 0.7) {
+        // 12개 모든 Major 스케일 골고루 출제
         const keyList = Object.keys(MAJOR_SCALES);
         const chosenKey = keyList[Math.floor(Math.random() * keyList.length)];
         const correctStr = MAJOR_SCALES[chosenKey].join(', ');
@@ -718,7 +838,7 @@
         return {
           gameTag: 'GAME 2. KEY & SCALE BLITZ',
           type: 'MCQ',
-          catKO: '메이저 스케일 음 배열',
+          catKO: '메이저 스케일 음 배열 (중급)',
           catEN: 'Major Scale Notes',
           qKO: `[ ${chosenKey} Major ] 키의 스케일 구성음으로 올바른 것은?`,
           qEN: `What are the scale notes of [ ${chosenKey} Major ]?`,
@@ -727,12 +847,11 @@
           url: YOUTUBE_URL + '&index=7'
         };
       } else {
-        // 마이너 스케일 구성음
         const minorKeys = Object.keys(MINOR_SCALES);
         const chosenMinor = minorKeys[Math.floor(Math.random() * minorKeys.length)];
         const correctStr = MINOR_SCALES[chosenMinor].join(', ');
         const wrongKeys = minorKeys.filter(k => k !== chosenMinor);
-        const wrongOpts = shuffleArray(wrongKeys).slice(0, 3).map(k => MINOR_SCALES[k].join(', '));
+        const wrongOpts = shuffleArray(minorKeys).slice(0, 3).map(k => MINOR_SCALES[k].join(', '));
         return {
           gameTag: 'GAME 2. KEY & SCALE BLITZ',
           type: 'MCQ',
@@ -747,17 +866,15 @@
       }
     }
 
-    // Game 3: 코드톤 (기초 3화음 ~ 복잡한 7화음 양방향 믹스)
     function genGame3() {
+      // 12개 모든 루트의 3·4화음(96개 코드)에서 무작위 선택
       const chordNames = Object.keys(ACCURATE_CHORD_DB);
       const chosenChord = chordNames[Math.floor(Math.random() * chordNames.length)];
       const notes = ACCURATE_CHORD_DB[chosenChord];
       const notesStr = notes.join(', ');
 
       const randType = Math.random();
-
       if (randType < 0.4) {
-        // 구성음 -> 키패드로 코드 입력 (3화음/4화음 혼합)
         return {
           gameTag: 'GAME 3. CHORD SPELL MASTER',
           type: 'KEYPAD_CHORD',
@@ -769,7 +886,6 @@
           url: YOUTUBE_URL + '&index=12'
         };
       } else if (randType < 0.7) {
-        // 코드명 -> 4지선다로 구성음 맞히기 (역방향)
         const wrongChords = chordNames.filter(c => c !== chosenChord && ACCURATE_CHORD_DB[c].length === notes.length);
         const wrongOpts = shuffleArray(wrongChords).slice(0, 3).map(c => ACCURATE_CHORD_DB[c].join(', '));
         return {
@@ -784,14 +900,13 @@
           url: YOUTUBE_URL + '&index=12'
         };
       } else {
-        // 루트 & 도수 공식 -> 키패드 입력
         const root = ROOTS_ALL[Math.floor(Math.random() * ROOTS_ALL.length)];
         const formula = CHORD_FORMULAS[Math.floor(Math.random() * CHORD_FORMULAS.length)];
         return {
           gameTag: 'GAME 3. CHORD SPELL MASTER',
           type: 'KEYPAD_CHORD',
           catKO: `도수 공식 (${formula.nameKO})`,
-          catEN: `Formula Spelling`,
+          catEN: 'Formula Spelling',
           qKO: `Root [ ${root} ], 도수 구성 [ ${formula.tonesKO} ] 인 코드는?`,
           qEN: `Root [ ${root} ] with formula [ ${formula.tonesKO} ]?`,
           ans: `${root}${formula.quality}`,
@@ -800,9 +915,8 @@
       }
     }
 
-    // Game 4: 전위 (12키 전위 판독)
     function genGame4() {
-      const item = TRIAD_INVERSIONS[Math.floor(Math.random() * TRIAD_INVERSIONS.length)];
+      const item = ALL_INVERSIONS[Math.floor(Math.random() * ALL_INVERSIONS.length)];
       return {
         gameTag: 'GAME 4. INVERSION FINDER',
         type: 'INVERSION',
@@ -816,7 +930,6 @@
       };
     }
 
-    // Game 5: 보이싱 (Drop 2, Drop 3, 고급 이명동음 스펠링 믹스)
     function genGame5() {
       const r = Math.random();
       if (r < 0.4) {
@@ -881,7 +994,7 @@
       }
     }
 
-    // 모드에 따른 문제 출제
+    // 모드 및 레벨별 문제 통합 출제
     function generateQuestion() {
       if (playMode === 'SOLO') {
         if (currentSoloGame === 1) return genGame1();
@@ -891,16 +1004,15 @@
         if (currentSoloGame === 5) return genGame5();
       }
 
-      // TIER 모드
       if (currentTier === 'BEGINNER') {
-        return Math.random() > 0.5 ? genGame1() : genGame2();
+        return genBeginnerQuestion();
       }
       if (currentTier === 'INTERMEDIATE') {
         const rand = Math.random();
-        if (rand < 0.45) return genGame3();  // 코드톤 (양방향)
-        if (rand < 0.70) return genGame4();  // 전위 판독
-        if (rand < 0.85) return genGame2();  // 키 & 스케일 구성음
-        return genGame1();                   // 음정 판독
+        if (rand < 0.40) return genGame3();  // 코드톤 (12음 루트 3·4화음 양방향)
+        if (rand < 0.65) return genGame2();  // 조표 & 12개 키 메이저/마이너 스케일
+        if (rand < 0.85) return genGame4();  // 3화음 전위 판독
+        return genGame1();                   // 12음 루트 음정 판독
       }
       if (currentTier === 'ADVANCED') {
         return genGame5();
@@ -1024,7 +1136,7 @@
     }
 
     function startExamMode() {
-      if (!confirm('🎓 [고급 승급 라이선스 시험]\n- 총 20문항\n- 구성: 코드톤 판별, 키 스케일 구성음, 심화 음정, 전위\n- 합격 기준: 85점 이상 (17문제 이상 정답)\n- 통과 시 고급 모드가 영구 해금됩니다!\n\n시험을 시작하시겠습니까?')) return;
+      if (!confirm('🎓 [고급 승급 라이선스 시험]\n- 총 20문항\n- 구성: 스케일 구성음, 4화음 코드톤, 심화 음정, 전위\n- 합격 기준: 85점 이상 (17문제 이상 정답)\n- 통과 시 고급 모드가 영구 해금됩니다!\n\n시험을 시작하시겠습니까?')) return;
 
       isExamMode = true;
       examCurrentIndex = 0;
@@ -1078,7 +1190,7 @@
         icon.innerText = '💡';
         title.innerText = '아쉽습니다! 재도전 필요';
         title.className = 'text-xl font-black text-[#EF476F] mb-2';
-        desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong> 정답 (기준: 17문제 이상).<br />다양한 코드톤과 스케일을 연습하고 다시 도전해 보세요!`;
+        desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong> 정답 (기준: 17문제 이상).<br />스케일과 4화음 코드톤을 보강하고 다시 도전해 보세요!`;
         actionBtn.innerText = '시험 다시 치르기 🔄';
         actionBtn.className = 'w-full py-3.5 bg-[#FFB703] hover:bg-yellow-400 text-black font-black text-sm rounded-xl transition-all shadow-lg';
       }
