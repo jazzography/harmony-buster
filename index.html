@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Harmony Buster - 화성학 기초 완전 격파기</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #121316;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-[#EDEDED] flex flex-col items-center justify-between p-4 font-sans">
+
+  <!-- 헤더 -->
+  <header class="w-full max-w-md flex justify-between items-center py-2 border-b border-gray-800">
+    <div>
+      <h1 class="text-xl font-black tracking-wider text-[#FFB703]">HARMONY BUSTER</h1>
+      <p class="text-xs text-gray-400">화성학 기초 완전 격파기</p>
+    </div>
+    <div id="comboBadge" class="hidden text-xs font-bold bg-[#EF476F]/20 text-[#EF476F] px-2.5 py-1 rounded-full animate-pulse">
+      🔥 <span id="comboCount">0</span> COMBO
+    </div>
+  </header>
+
+  <!-- 티어 선택 탭 -->
+  <div class="w-full max-w-md grid grid-cols-3 gap-2 my-2 bg-gray-900 p-1 rounded-xl text-center">
+    <button id="btnTierBeg" onclick="setTier('BEGINNER')" class="py-2 text-xs font-bold rounded-lg bg-[#FFB703] text-black">초급 (4선다)</button>
+    <button id="btnTierInt" onclick="setTier('INTERMEDIATE')" class="py-2 text-xs font-bold rounded-lg text-gray-400">중급 (키패드)</button>
+    <button id="btnTierAdv" onclick="setTier('ADVANCED')" class="py-2 text-xs font-bold rounded-lg text-gray-400">고급 (맛보기)</button>
+  </div>
+
+  <!-- 문제 카드 -->
+  <main class="w-full max-w-md flex-1 flex flex-col justify-center my-4">
+    <div id="cardBox" class="p-6 rounded-2xl bg-gray-900 border-2 border-gray-800 flex flex-col items-center text-center shadow-2xl transition-all">
+      <span id="qCategory" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-gray-800 text-gray-300 mb-3">
+        기본 음정
+      </span>
+      <p id="qText" class="text-xl font-extrabold text-white leading-relaxed mb-4">
+        질문 로딩 중...
+      </p>
+
+      <!-- 오답 시 노출되는 유튜브 복습 링크 -->
+      <div id="feedbackBox" class="hidden w-full mt-2 p-3 bg-gray-950 rounded-xl border border-gray-800 text-left">
+        <p id="feedbackAns" class="text-xs text-[#EF476F] font-semibold mb-1"></p>
+        <a id="feedbackUrl" href="#" target="_blank" class="inline-flex items-center text-xs text-[#FFB703] hover:underline">
+          ▶ 관련 무료 화성학 강의 바로보기 ↗
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- 하단 입력 패드 영역 -->
+  <section id="inputPadArea" class="w-full max-w-md mb-2">
+    <!-- 동적으로 주입됨 -->
+  </section>
+
+  <!-- 푸터 링크 -->
+  <footer class="w-full max-w-md pt-2 text-center text-[11px] text-gray-500 border-t border-gray-800/60 flex justify-between items-center px-1">
+    <a href="https://youtube.com/playlist?list=PLUhKlj-gxAgqQxhGNKJkvZF2ihiY0wQUC" target="_blank" class="hover:text-gray-300 underline">
+      무료 화성학 1~14강 재생목록
+    </a>
+    <a href="https://buymeacoffee.com" target="_blank" class="text-[#FFB703] hover:underline font-semibold">
+      ☕ 준킴에게 커피 후원하기
+    </a>
+  </footer>
+
+  <!-- VIP 멤버십 안내 모달 -->
+  <div id="vipModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl max-w-sm w-full text-center shadow-2xl">
+      <div class="text-3xl mb-2">🎓</div>
+      <h3 class="text-lg font-black text-white mb-1">고급 마스터 맛보기 완료!</h3>
+      <p class="text-xs text-gray-400 mb-4 leading-relaxed">
+        Drop 2, Drop 3 보이싱 및 무한 커스텀 모드는 <br />
+        <strong class="text-[#FFB703]">유튜브 베이직 멤버십</strong> 전용 기능입니다.
+      </p>
+      <a href="https://youtube.com/playlist?list=PLUhKlj-gxAgqQxhGNKJkvZF2ihiY0wQUC" target="_blank" class="block w-full py-2.5 bg-[#FFB703] text-black font-extrabold text-sm rounded-xl mb-4 hover:bg-yellow-400">
+        유튜브 멤버십 가입하고 코드 받기 ↗
+      </a>
+      <div class="pt-3 border-t border-gray-800">
+        <p class="text-[11px] text-gray-400 mb-2">유튜브 커뮤니티 전용 시크릿 코드 입력:</p>
+        <div class="flex gap-2">
+          <input id="secretInput" type="text" placeholder="예: HARMONY2026" class="flex-1 bg-gray-950 border border-gray-700 px-3 py-1.5 text-xs rounded-lg text-white uppercase" />
+          <button onclick="verifyVipCode()" class="bg-gray-700 hover:bg-gray-600 px-3 py-1.5 text-xs font-bold rounded-lg">인증</button>
+        </div>
+      </div>
+      <button onclick="closeVipModal()" class="mt-4 text-xs text-gray-500 hover:text-gray-300">닫기</button>
+    </div>
+  </div>
+
+  <script>
+    // --- Web Audio 사운드 합성기 ---
+    let audioCtx = null;
+    function initAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playCorrectSound() {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      [523.25, 659.25, 783.99, 987.77, 1174.66].forEach((f, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(f, now + i * 0.03);
+        gain.gain.setValueAtTime(0.08, now + i * 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.8 + i * 0.03);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + i * 0.03);
+        osc.stop(now + 0.9);
+      });
+    }
+
+    function playWrongSound() {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      [440, 466.16].forEach(f => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(f, now);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.4);
+      });
+    }
+
+    // --- 문제 풀 및 상태 관리 ---
+    const YOUTUBE_URL = "https://youtube.com/playlist?list=PLUhKlj-gxAgqQxhGNKJkvZF2ihiY0wQUC";
+    let currentTier = 'BEGINNER';
+    let combo = 0;
+    let advancedTrialCount = 0;
+    let isVip = false;
+    let currentQuestion = null;
+
+    const QUESTIONS = {
+      BEGINNER: [
+        { cat: '음정 (1~4강)', q: 'C 에서 Major 3rd 위의 음은?', ans: 'E', opts: ['E', 'Eb', 'F', 'D#'], url: YOUTUBE_URL + '&index=1' },
+        { cat: '음정 (1~4강)', q: 'A 에서 Minor 3rd 위의 음은?', ans: 'C', opts: ['C', 'C#', 'B', 'D'], url: YOUTUBE_URL + '&index=1' },
+        { cat: '조표/키 (5~6강)', q: '샵(#)이 2개 붙는 Major Key는?', ans: 'D Major', opts: ['D Major', 'G Major', 'A Major', 'E Major'], url: YOUTUBE_URL + '&index=5' },
+        { cat: '4화음 (12~14강)', q: 'Am7 코드의 3음과 7음은?', ans: 'C / G', opts: ['C / G', 'C# / G', 'C / G#', 'C# / G#'], url: YOUTUBE_URL + '&index=12' }
+      ],
+      INTERMEDIATE: [
+        { cat: '3화음 전위 (9~11강)', q: 'F#m / A 는 몇 번째 전위인가?', ans: '1st', opts: ['Root', '1st', '2nd'], url: YOUTUBE_URL + '&index=9' },
+        { cat: '3화음 전위 (9~11강)', q: 'C / G 는 몇 번째 전위인가?', ans: '2nd', opts: ['Root', '1st', '2nd'], url: YOUTUBE_URL + '&index=9' },
+        { cat: '특수 3화음 (9~11강)', q: 'Caug 트라이어드의 증5도(#5) 음은?', ans: 'G#', opts: ['G#', 'Ab', 'A', 'G'], url: YOUTUBE_URL + '&index=9' },
+        { cat: '4화음 기초 (12~14강)', q: 'Bbm7(b5) 코드의 5음(b5)은?', ans: 'Fb', opts: ['Fb', 'E', 'F', 'D#'], url: YOUTUBE_URL + '&index=12' }
+      ],
+      ADVANCED: [
+        { cat: 'Drop 2 보이싱 (심화)', q: 'Drop 2 보이싱에서 최고음이 3음일 때 도수 배열은?', ans: '7-3-5-1', opts: ['7-3-5-1', '1-5-7-3', '3-7-1-5', '5-1-3-7'], url: YOUTUBE_URL + '&index=12' },
+        { cat: 'Drop 3 보이싱 (심화)', q: 'Drop 3 보이싱 (Root in Bass)의 저음부터 도수 순서는?', ans: '1-7-3-5', opts: ['1-7-3-5', '1-5-7-3', '3-1-5-7', '7-5-1-3'], url: YOUTUBE_URL + '&index=12' },
+        { cat: '스케일 Leading Tone', q: 'G# Harmonic Minor의 7번째 음(Leading tone)은?', ans: 'Fx (F##)', opts: ['Fx (F##)', 'G', 'F#', 'Gx'], url: YOUTUBE_URL + '&index=7' }
+      ]
+    };
+
+    function loadQuestion() {
+      const pool = QUESTIONS[currentTier];
+      currentQuestion = pool[Math.floor(Math.random() * pool.length)];
+      
+      document.getElementById('qCategory').innerText = currentQuestion.cat;
+      document.getElementById('qText').innerText = currentQuestion.q;
+      document.getElementById('feedbackBox').classList.add('hidden');
+      
+      const card = document.getElementById('cardBox');
+      card.className = "p-6 rounded-2xl bg-gray-900 border-2 border-gray-800 flex flex-col items-center text-center shadow-2xl transition-all";
+
+      renderPad();
+    }
+
+    function renderPad() {
+      const padArea = document.getElementById('inputPadArea');
+      padArea.innerHTML = '';
+
+      const grid = document.createElement('div');
+      grid.className = 'grid grid-cols-2 gap-3';
+
+      currentQuestion.opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.innerText = opt;
+        btn.className = 'py-4 text-sm font-bold bg-gray-800 hover:bg-gray-700 active:scale-95 rounded-xl border border-gray-700 shadow-md transition-transform';
+        btn.onclick = () => submitAnswer(opt);
+        grid.appendChild(btn);
+      });
+
+      padArea.appendChild(grid);
+    }
+
+    function submitAnswer(chosen) {
+      initAudio();
+
+      if (currentTier === 'ADVANCED' && !isVip && advancedTrialCount >= 5) {
+        document.getElementById('vipModal').classList.remove('hidden');
+        return;
+      }
+
+      const card = document.getElementById('cardBox');
+      const isCorrect = chosen.trim().toLowerCase() === currentQuestion.ans.trim().toLowerCase();
+
+      if (isCorrect) {
+        playCorrectSound();
+        combo++;
+        card.className = "p-6 rounded-2xl bg-[#06D6A0]/10 border-2 border-[#06D6A0] flex flex-col items-center text-center shadow-2xl scale-102 transition-all";
+        if (currentTier === 'ADVANCED' && !isVip) advancedTrialCount++;
+      } else {
+        playWrongSound();
+        combo = 0;
+        card.className = "p-6 rounded-2xl bg-[#EF476F]/10 border-2 border-[#EF476F] flex flex-col items-center text-center shadow-2xl transition-all";
+        
+        document.getElementById('feedbackAns').innerText = `정답: ${currentQuestion.ans}`;
+        document.getElementById('feedbackUrl').href = currentQuestion.url;
+        document.getElementById('feedbackBox').classList.remove('hidden');
+      }
+
+      updateCombo();
+
+      setTimeout(() => {
+        loadQuestion();
+      }, isCorrect ? 700 : 1800);
+    }
+
+    function updateCombo() {
+      const badge = document.getElementById('comboBadge');
+      if (combo > 1) {
+        badge.classList.remove('hidden');
+        document.getElementById('comboCount').innerText = combo;
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    function setTier(tier) {
+      if (tier === 'ADVANCED' && !isVip && advancedTrialCount >= 5) {
+        document.getElementById('vipModal').classList.remove('hidden');
+        return;
+      }
+      currentTier = tier;
+      ['btnTierBeg', 'btnTierInt', 'btnTierAdv'].forEach(id => {
+        document.getElementById(id).className = 'py-2 text-xs font-bold rounded-lg text-gray-400';
+      });
+
+      if (tier === 'BEGINNER') document.getElementById('btnTierBeg').className = 'py-2 text-xs font-bold rounded-lg bg-[#FFB703] text-black';
+      if (tier === 'INTERMEDIATE') document.getElementById('btnTierInt').className = 'py-2 text-xs font-bold rounded-lg bg-[#FFB703] text-black';
+      if (tier === 'ADVANCED') document.getElementById('btnTierAdv').className = 'py-2 text-xs font-bold rounded-lg bg-[#FFB703] text-black';
+
+      loadQuestion();
+    }
+
+    function verifyVipCode() {
+      const code = document.getElementById('secretInput').value.trim().toUpperCase();
+      if (code === 'HARMONY2026') {
+        isVip = true;
+        closeVipModal();
+        alert('🎉 VIP 인증 완료! Harmony Buster 고급 모드가 무제한 해금되었습니다.');
+        setTier('ADVANCED');
+      } else {
+        alert('올바르지 않은 코드입니다. 유튜브 커뮤니티 전용 코드를 확인해 주세요.');
+      }
+    }
+
+    function closeVipModal() {
+      document.getElementById('vipModal').classList.add('hidden');
+    }
+
+    // 첫 시작
+    window.onload = () => {
+      loadQuestion();
+    };
+  </script>
+</body>
+</html>
