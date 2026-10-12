@@ -61,7 +61,7 @@
         이제 지판과 건반 위에서 0.1초 만에 깬다!"
       </p>
 
-      <!-- 핵심 안내 박스 (깔끔하게 2줄로 정돈) -->
+      <!-- 핵심 안내 박스 -->
       <div class="w-full bg-gray-900/90 border border-gray-800 rounded-2xl p-4 mb-6 text-left space-y-3 shadow-xl text-xs text-gray-300">
         <div class="flex items-start gap-2.5">
           <span class="text-base leading-none">🎯</span>
@@ -89,6 +89,7 @@
   <!-- ========================================== -->
   <div id="gameScreen" class="hidden w-full flex-1 flex flex-col justify-between">
     
+    <!-- 최상단 헤더 -->
     <header class="w-full flex justify-between items-center py-2 border-b border-gray-800">
       <div>
         <h2 class="text-lg font-black tracking-wider text-[#FFB703] leading-none">HARMONY BUSTER</h2>
@@ -306,7 +307,9 @@
     </div>
   </div>
 
-  <!-- 4. 개선된 VIP 멤버십 안내 모달 (5번 게임용) -->
+  <!-- ========================================== -->
+  <!-- 4. 개선된 VIP 멤버십 안내 모달 (애플 수수료 안내 탑재) -->
+  <!-- ========================================== -->
   <div id="vipModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
     <div class="bg-gray-900 border border-[#FFB703]/40 p-6 rounded-3xl max-w-sm w-full text-center shadow-2xl relative overflow-hidden">
       
@@ -321,7 +324,7 @@
         이제 <span class="text-[#FFB703]">0.1초 본능</span>이 됩니다
       </h3>
 
-      <div class="bg-gray-950/80 border border-gray-800 rounded-2xl p-3.5 mb-4 text-left space-y-1.5 text-xs text-gray-300">
+      <div class="bg-gray-950/80 border border-gray-800 rounded-2xl p-3.5 mb-3 text-left space-y-1.5 text-xs text-gray-300">
         <p class="leading-relaxed">
           🎯 <strong>Drop 2 & Drop 3 실전 배치</strong>: 재즈와 세션 연주자들이 지판을 한눈에 보는 핵심 시야를 훈련합니다.
         </p>
@@ -330,6 +333,12 @@
         </p>
       </div>
 
+      <!-- [신규 반영] iOS 인앱 수수료 절약 팁 안내 박스 -->
+      <div class="w-full py-2 px-3 bg-amber-500/10 border border-amber-500/30 rounded-xl mb-3 text-left text-[11px] text-amber-200/90 leading-tight">
+        💡 iOS(아이폰/아이패드)는 인앱 수수료가 추가되니 <strong class="text-[#FFB703] underline underline-offset-2">PC 브라우저</strong> 결제를 추천합니다.
+      </div>
+
+      <!-- 멤버십 가입 유도 버튼 -->
       <a 
         href="https://youtube.com/@junkimmusic/join" 
         target="_blank" 
@@ -339,6 +348,7 @@
         👉 멤버십 가입하고 시크릿 코드 받기 ↗
       </a>
 
+      <!-- 기존 회원 코드 입력 영역 -->
       <div class="pt-3 border-t border-gray-800/80 text-left">
         <p class="text-[11px] text-gray-400 font-semibold mb-2">
           이미 멤버십 회원이신가요? <br />
