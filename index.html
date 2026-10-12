@@ -176,21 +176,17 @@
 
         <!-- 오답/시간초과 시 강화된 대형 정답 안내 카드 -->
         <div id="feedbackBox" class="hidden w-full mt-2 p-4 bg-gray-950 rounded-2xl border-2 border-[#EF476F]/60 text-center flex flex-col gap-3 shadow-xl">
-          <!-- 오답/타임아웃 상태 타이틀 -->
           <div id="feedbackStatus" class="text-xs font-extrabold text-[#EF476F] tracking-wide uppercase"></div>
           
-          <!-- 정답 강조 박스 -->
           <div class="bg-gray-900/90 border border-gray-700/80 rounded-xl p-3 py-3.5 shadow-inner">
             <span id="t-feedback-correct-label" class="text-[11px] font-bold text-gray-400 block mb-1">정답</span>
             <span id="feedbackAnsValue" class="text-2xl font-black text-[#FFB703] tracking-wider block drop-shadow-sm"></span>
           </div>
 
-          <!-- 유튜브 복습 링크 -->
           <a id="feedbackUrl" href="#" target="_blank" class="text-xs text-[#FFB703] hover:underline bg-[#FFB703]/10 p-2.5 rounded-xl border border-[#FFB703]/30 block text-center font-bold transition-all">
             ▶ <span id="t-feedback-link">관련 무료 화성학 강의 바로보기 ↗</span>
           </a>
 
-          <!-- 다음 문제 버튼 -->
           <button onclick="nextQuestion()" class="w-full py-3.5 bg-[#EF476F] hover:bg-red-500 text-white font-black text-sm rounded-xl shadow-lg shadow-red-500/20 transition-transform active:scale-95">
             <span id="t-feedback-next-btn">확인 (다음 문제 풀기) ></span>
           </button>
@@ -248,7 +244,7 @@
       </p>
 
       <div class="flex flex-col gap-2.5 mb-4">
-        <!-- 1. 카카오페이 버튼 (실제 송금 링크 완벽 연동) -->
+        <!-- 1. 카카오페이 버튼 -->
         <a 
           href="https://qr.kakaopay.com/FMnnbr8OU" 
           target="_blank" 
@@ -259,7 +255,7 @@
           <span id="t-modal-donate-kakao">카카오페이로 송금 (국내 모바일)</span>
         </a>
 
-        <!-- 2. Ko-fi 버튼 (실제 연동 완료) -->
+        <!-- 2. Ko-fi 버튼 -->
         <a 
           href="https://ko-fi.com/junkimmusic" 
           target="_blank" 
@@ -634,9 +630,10 @@
       nextQuestion();
     }
 
+    // 모든 티어 제한시간 10초로 통일 (중급 8초 -> 10초 상향)
     function startTimer() {
       clearInterval(timerInterval);
-      maxTime = currentTier === 'INTERMEDIATE' ? 8 : 10;
+      maxTime = 10;
       timeLeft = maxTime;
       isQuestionActive = true;
 
@@ -684,7 +681,6 @@
       const card = document.getElementById('cardBox');
       card.className = "p-6 rounded-2xl bg-[#EF476F]/10 border-2 border-[#EF476F] flex flex-col items-center text-center shadow-2xl transition-all";
 
-      // 시인성 대폭 강화된 피드백 노출
       document.getElementById('feedbackStatus').innerText = dict.timeoutMsg;
       document.getElementById('feedbackAnsValue').innerText = currentQuestion.ans;
       document.getElementById('feedbackUrl').href = currentQuestion.url;
@@ -863,7 +859,6 @@
         combo = 0;
         card.className = "p-6 rounded-2xl bg-[#EF476F]/10 border-2 border-[#EF476F] flex flex-col items-center text-center shadow-2xl transition-all";
         
-        // 시인성 대폭 강화된 피드백 노출
         document.getElementById('feedbackStatus').innerText = dict.wrongMsg;
         document.getElementById('feedbackAnsValue').innerText = currentQuestion.ans;
         document.getElementById('feedbackUrl').href = currentQuestion.url;
