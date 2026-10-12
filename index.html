@@ -61,18 +61,19 @@
         이제 지판과 건반 위에서 0.1초 만에 깬다!"
       </p>
 
-      <div class="w-full bg-gray-900/90 border border-gray-800 rounded-2xl p-4 mb-6 text-left space-y-2.5 shadow-xl text-xs text-gray-300">
-        <div class="flex items-center gap-2">
-          <span class="text-base">🎯</span>
-          <span><strong>메인 챌린지</strong>: 초급 $\rightarrow$ 중급 $\rightarrow$ 승급시험 $\rightarrow$ 고급</span>
+      <!-- 핵심 안내 박스 (깔끔하게 2줄로 정돈) -->
+      <div class="w-full bg-gray-900/90 border border-gray-800 rounded-2xl p-4 mb-6 text-left space-y-3 shadow-xl text-xs text-gray-300">
+        <div class="flex items-start gap-2.5">
+          <span class="text-base leading-none">🎯</span>
+          <div class="leading-relaxed">
+            <strong class="text-white">메인 챌린지</strong>: 초급 → 중급 → 승급시험 → 고급 단계별 정복
+          </div>
         </div>
-        <div class="flex items-center gap-2">
-          <span class="text-base">🕹️</span>
-          <span><strong>5대 개별 트레이닝</strong>: 음정/조표/코드톤/전위/보이싱 자유 선택</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="text-base">👑</span>
-          <span><strong>5번 보이싱 버스터</strong>: 유튜브 멤버십 전용 마스터 훈련</span>
+        <div class="flex items-start gap-2.5">
+          <span class="text-base leading-none">🕹️</span>
+          <div class="leading-relaxed">
+            <strong class="text-white">5대 개별 트레이닝</strong>: 음정 · 조표 · 코드톤 · 전위 · 보이싱 자유 선택 훈련
+          </div>
         </div>
       </div>
 
@@ -88,7 +89,6 @@
   <!-- ========================================== -->
   <div id="gameScreen" class="hidden w-full flex-1 flex flex-col justify-between">
     
-    <!-- 최상단 헤더 -->
     <header class="w-full flex justify-between items-center py-2 border-b border-gray-800">
       <div>
         <h2 class="text-lg font-black tracking-wider text-[#FFB703] leading-none">HARMONY BUSTER</h2>
@@ -306,9 +306,7 @@
     </div>
   </div>
 
-  <!-- ========================================== -->
   <!-- 4. 개선된 VIP 멤버십 안내 모달 (5번 게임용) -->
-  <!-- ========================================== -->
   <div id="vipModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
     <div class="bg-gray-900 border border-[#FFB703]/40 p-6 rounded-3xl max-w-sm w-full text-center shadow-2xl relative overflow-hidden">
       
