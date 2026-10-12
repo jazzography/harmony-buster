@@ -630,10 +630,10 @@
       nextQuestion();
     }
 
-    // 모든 티어 제한시간 10초로 통일 (중급 8초 -> 10초 상향)
+    // 초급 10초, 중급/고급은 여유 있는 연산과 4회 터치를 위해 15초 적용
     function startTimer() {
       clearInterval(timerInterval);
-      maxTime = 10;
+      maxTime = (currentTier === 'INTERMEDIATE' || currentTier === 'ADVANCED') ? 15 : 10;
       timeLeft = maxTime;
       isQuestionActive = true;
 
