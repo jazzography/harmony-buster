@@ -3,903 +3,341 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Harmony Buster - 화성학 기초 완전 격파기</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
+  <title>재즈 화성학 & 코드 마스터 퀴즈</title>
+  
   <style>
-    body {
-      background-color: #121316;
-      touch-action: manipulation;
-      user-select: none;
-      -webkit-user-select: none;
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: #0f1115; color: #f0f2f5; padding-bottom: 60px; font-size: 15px; }
+
+    .container { max-width: 520px; margin: 0 auto; padding: 18px; }
+
+    /* 상단 헤더 & 진행 바 */
+    .header { text-align: center; margin-bottom: 20px; }
+    .header h1 { font-size: 21px; font-weight: 900; color: #38bdf8; margin-bottom: 6px; }
+    .header p { font-size: 13px; color: #94a3b8; }
+    
+    .score-board {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #14171f; border: 1px solid #282d37; border-radius: 10px;
+      padding: 12px 16px; margin-bottom: 16px; font-weight: 700; font-size: 14px;
     }
+    .score-board .streak { color: #f59e0b; }
+    .score-board .acc { color: #22c55e; }
+
+    /* 퀴즈 메인 카드 */
+    .quiz-card {
+      background: #181b22; border: 1px solid #282d37; border-radius: 14px;
+      padding: 22px 18px; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .q-category {
+      display: inline-block; background: #2e1065; color: #e9d5ff; border: 1px solid #9333ea;
+      font-size: 11px; font-weight: 800; padding: 4px 9px; border-radius: 6px; margin-bottom: 12px;
+    }
+    .q-title {
+      font-size: 18px; font-weight: 800; line-height: 1.5; color: #f8fafc; margin-bottom: 20px;
+    }
+
+    /* 보기 버튼 목록 */
+    .choices-grid { display: grid; gap: 10px; }
+    .choice-btn {
+      width: 100%; background: #21262d; border: 1px solid #30363d; color: #f1f5f9;
+      padding: 15px 16px; border-radius: 10px; font-size: 15px; font-weight: 700;
+      text-align: left; cursor: pointer; transition: all 0.15s ease;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .choice-btn:hover:not(:disabled) { background: #2d333b; border-color: #64748b; }
+    .choice-btn:disabled { cursor: default; }
+
+    /* 정답/오답 클릭 시 버튼 스타일 */
+    .choice-btn.correct-choice {
+      background: #14532d !important; border-color: #22c55e !important; color: #dcfce7 !important;
+    }
+    .choice-btn.wrong-choice {
+      background: #450a0a !important; border-color: #ef4444 !important; color: #fee2e2 !important;
+    }
+
+    /* ========================================================
+       ★ [시인성 극대화] 틀렸을 때 노출되는 정답 피드백 카드 박스 ★
+       ======================================================== */
+    .feedback-box {
+      display: none; margin-top: 18px; border-radius: 12px; padding: 18px 16px;
+      animation: fadeIn 0.25s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 틀렸을 때 (빨간 경고 배경 + 형광 노란색 초대형 정답 폰트) */
+    .feedback-box.wrong {
+      background: #200d0d; border: 2px solid #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.25);
+    }
+    .feedback-box.wrong .fb-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 13px; font-weight: 900; color: #fca5a5;
+      background: #3b1111; padding: 4px 10px; border-radius: 6px; margin-bottom: 10px;
+    }
+    .feedback-box.wrong .fb-answer-label {
+      font-size: 13px; font-weight: 700; color: #cbd5e1; margin-bottom: 4px;
+    }
+    .feedback-box.wrong .fb-answer-text {
+      font-size: 26px; /* ★ 한눈에 들어오는 특대형 폰트 ★ */
+      font-weight: 900; color: #fde047; /* 눈에 가장 잘 띄는 고대비 노란색 */
+      line-height: 1.3; margin-bottom: 12px; letter-spacing: -0.5px;
+      text-shadow: 0 2px 8px rgba(253, 224, 71, 0.2);
+    }
+    .feedback-box.wrong .fb-desc {
+      font-size: 14px; line-height: 1.6; color: #f1f5f9; background: #160909;
+      padding: 12px 14px; border-radius: 8px; border-left: 3px solid #ef4444;
+    }
+
+    /* 맞췄을 때 (초록 성공 배경) */
+    .feedback-box.correct {
+      background: #092013; border: 2px solid #22c55e;
+    }
+    .feedback-box.correct .fb-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 13px; font-weight: 900; color: #86efac;
+      background: #113820; padding: 4px 10px; border-radius: 6px; margin-bottom: 8px;
+    }
+    .feedback-box.correct .fb-answer-text {
+      font-size: 22px; font-weight: 900; color: #4ade80; margin-bottom: 8px;
+    }
+    .feedback-box.correct .fb-desc {
+      font-size: 13.5px; line-height: 1.55; color: #e2e8f0;
+    }
+
+    /* 다음 문제 버튼 */
+    .next-btn {
+      width: 100%; background: #3b82f6; color: #fff; border: none;
+      font-weight: 800; font-size: 16px; padding: 15px; border-radius: 10px;
+      margin-top: 16px; cursor: pointer; display: none;
+    }
+    .next-btn:hover { background: #2563eb; }
   </style>
 </head>
-<body class="min-h-screen text-[#EDEDED] flex flex-col items-center justify-between p-4 font-sans max-w-md mx-auto">
+<body>
 
-  <!-- ========================================== -->
-  <!-- 0. 오프닝 웰컴 화면 (초기 노출) -->
-  <!-- ========================================== -->
-  <section id="welcomeScreen" class="w-full flex-1 flex flex-col justify-between items-center text-center px-2 py-4 my-auto">
-    
-    <!-- 웰컴 헤더 -->
-    <header class="w-full flex justify-between items-center py-2 border-b border-gray-800/80 mb-4">
-      <div class="text-left">
-        <h2 class="text-base font-black tracking-wider text-[#FFB703]">HARMONY BUSTER</h2>
-        <p id="t-welcome-sub" class="text-[10px] text-gray-400">화성학 기초 완전 격파기</p>
-      </div>
+  <div class="container">
+    <div class="header">
+      <h1>🎸 Jazz Harmony Quiz</h1>
+      <p>실전 화성학 & 코드톤 즉답 트레이닝</p>
+    </div>
 
-      <div class="flex items-center gap-2">
-        <!-- 언어 전환 버튼 -->
-        <button onclick="toggleLanguage()" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 active:scale-95 border border-gray-700 rounded-lg text-[10px] font-bold text-gray-300">
-          <span id="langLabelWelcome">EN</span>
-        </button>
+    <div class="score-board">
+      <div>문제 <span id="qIndex">1</span> / <span id="qTotal">10</span></div>
+      <div class="streak">연속 정답: <span id="streakCount">0</span>🔥</div>
+      <div class="acc">점수: <span id="scoreVal">0</span>점</div>
+    </div>
 
-        <!-- by Jun Kim 유튜브 채널 배너 -->
-        <div class="flex items-center gap-1">
-          <span class="text-[11px] text-gray-500 font-medium">by</span>
-          <a 
-            href="https://youtube.com/@junkimmusic" 
-            target="_blank" 
-            rel="noreferrer"
-            class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-600/15 hover:bg-red-600/25 active:scale-95 border border-red-500/40 rounded-full transition-all shadow-sm"
-          >
-            <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
-            <span class="text-[11px] font-black text-red-400 tracking-tight">Jun Kim ▶</span>
-          </a>
-        </div>
-      </div>
-    </header>
-
-    <div class="my-auto w-full flex flex-col items-center">
-      <div id="t-welcome-badge" class="inline-block px-3 py-1 bg-[#FFB703]/10 border border-[#FFB703]/30 rounded-full text-xs font-bold text-[#FFB703] mb-4">
-        ⚡ 0.1초 본능적 화성 연산 트레이너
-      </div>
+    <div class="quiz-card">
+      <span class="q-category" id="qCat">화성학</span>
+      <div class="q-title" id="qText">문제를 불러오는 중입니다...</div>
       
-      <h1 class="text-3xl font-black tracking-wider text-white mb-2 leading-tight">
-        HARMONY <span class="text-[#FFB703]">BUSTER</span>
-      </h1>
-      <p id="t-welcome-headline" class="text-sm font-bold text-gray-300 mb-6 leading-relaxed">
-        "머리로만 아는 화성학은 끝났다.<br />
-        이제 지판과 건반 위에서 바로 깬다!"
-      </p>
+      <div class="choices-grid" id="choicesBox"></div>
 
-      <!-- 핵심 가치 요약 박스 -->
-      <div class="w-full bg-gray-900/90 border border-gray-800 rounded-2xl p-4 mb-6 text-left space-y-2.5 shadow-xl text-xs text-gray-300">
-        <div class="flex items-center gap-2">
-          <span class="text-base">🎯</span>
-          <span id="t-welcome-feat1"><strong>초급 4지선다</strong>: 음정·조표·스케일 기초 스피드런</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="text-base">🎹</span>
-          <span id="t-welcome-feat2"><strong>중급 키패드</strong>: 12키 3화음 전위 & 4화음 원터치 연산</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="text-base">🏆</span>
-          <span id="t-welcome-feat3"><strong>10 콤보 달성 시</strong>: 중급 키패드 즉시 자동 해금</span>
-        </div>
+      <!-- 정답 / 오답 알림 피드백 박스 -->
+      <div class="feedback-box" id="feedbackBox">
+        <div class="fb-badge" id="fbBadge">✕ 오답입니다</div>
+        <div class="fb-answer-label" id="fbAnswerLabel">정답:</div>
+        <div class="fb-answer-text" id="fbAnswerText">정답 내용</div>
+        <div class="fb-desc" id="fbDesc">해설 내용</div>
       </div>
 
-      <!-- 시작 버튼 -->
-      <button 
-        onclick="startGame()" 
-        class="w-full py-4 bg-[#FFB703] hover:bg-yellow-400 active:scale-95 text-black font-black text-base rounded-2xl shadow-lg shadow-[#FFB703]/20 transition-all mb-3"
-      >
-        <span id="t-welcome-start-btn">지금 바로 격파 시작하기 🔥</span>
-      </button>
-      <p id="t-welcome-sound-hint" class="text-[11px] text-gray-500">※ 소리를 켜시면 리얼 타임 코드 피드백 사운드가 재생됩니다.</p>
-    </div>
-  </section>
-
-  <!-- ========================================== -->
-  <!-- 1. 메인 퀴즈 게임 화면 (시작 후 노출) -->
-  <!-- ========================================== -->
-  <div id="gameScreen" class="hidden w-full flex-1 flex flex-col justify-between">
-    
-    <!-- 상단 헤더 -->
-    <header class="w-full flex justify-between items-center py-2 border-b border-gray-800">
-      <div>
-        <h2 class="text-lg font-black tracking-wider text-[#FFB703] leading-none">HARMONY BUSTER</h2>
-        <p id="t-game-sub" class="text-[10px] text-gray-400 mt-0.5">화성학 기초 완전 격파기</p>
-      </div>
-      
-      <div class="flex items-center gap-2">
-        <!-- 언어 전환 버튼 -->
-        <button onclick="toggleLanguage()" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 active:scale-95 border border-gray-700 rounded-lg text-[10px] font-bold text-gray-300">
-          <span id="langLabelGame">EN</span>
-        </button>
-
-        <!-- by Jun Kim 유튜브 채널 배너 -->
-        <div class="flex items-center gap-1">
-          <span class="text-[11px] text-gray-500 font-medium">by</span>
-          <a 
-            href="https://youtube.com/@junkimmusic" 
-            target="_blank" 
-            rel="noreferrer"
-            class="inline-flex items-center gap-1 px-2 py-0.5 bg-red-600/15 hover:bg-red-600/25 active:scale-95 border border-red-500/40 rounded-full transition-all"
-          >
-            <span class="text-[10px] font-black text-red-400 tracking-tight">Jun Kim ▶</span>
-          </a>
-        </div>
-
-        <div id="comboBadge" class="hidden text-xs font-bold bg-[#EF476F]/20 text-[#EF476F] px-2 py-0.5 rounded-full animate-pulse">
-          🔥 <span id="comboCount">0</span>
-        </div>
-      </div>
-    </header>
-
-    <!-- 티어 선택 탭 -->
-    <div class="w-full grid grid-cols-3 gap-2 my-2 bg-gray-900 p-1 rounded-xl text-center">
-      <button id="btnTierBeg" onclick="selectTier('BEGINNER')" class="py-2 text-xs font-bold rounded-lg bg-[#FFB703] text-black transition-all">
-        초급 (4선다)
-      </button>
-      <button id="btnTierInt" onclick="selectTier('INTERMEDIATE')" class="py-2 text-xs font-bold rounded-lg text-gray-600 cursor-not-allowed transition-all">
-        🔒 중급
-      </button>
-      <button id="btnTierAdv" onclick="selectTier('ADVANCED')" class="py-2 text-xs font-bold rounded-lg text-gray-600 cursor-not-allowed transition-all">
-        🔒 고급
-      </button>
-    </div>
-
-    <!-- 초급 진행도 안내 바 -->
-    <div id="unlockGuideBar" class="w-full text-center py-1 bg-gray-900/60 rounded-lg text-[11px] text-gray-400">
-      💡 <span id="t-unlock-guide">중급 해금 조건: 10 콤보 달성</span> (<span id="unlockProgress">0</span>/10)
-    </div>
-
-    <!-- 타이머 게이지 바 영역 -->
-    <div class="w-full mt-1.5">
-      <div class="flex justify-between items-center text-[11px] text-gray-400 mb-1 px-1">
-        <span>TIME ATTACK</span>
-        <span id="timerText" class="font-bold text-[#FFB703]">10.0s</span>
-      </div>
-      <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
-        <div id="timerBar" class="h-full bg-[#06D6A0] transition-all duration-100 ease-linear" style="width: 100%;"></div>
-      </div>
-    </div>
-
-    <!-- 문제 카드 -->
-    <main class="w-full flex-1 flex flex-col justify-center my-3">
-      <div id="cardBox" class="p-6 rounded-2xl bg-gray-900 border-2 border-gray-800 flex flex-col items-center text-center shadow-2xl transition-all">
-        <span id="qCategory" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-gray-800 text-gray-300 mb-3">
-          Category
-        </span>
-        <p id="qText" class="text-xl font-extrabold text-white leading-relaxed mb-4">
-          Loading...
-        </p>
-
-        <!-- 중급 패드 입력 조합 디스플레이 -->
-        <div id="inputPreviewBox" class="hidden w-full py-2 px-3 bg-gray-950 rounded-lg border border-gray-800 mb-2 flex justify-between items-center text-sm">
-          <span id="t-preview-label" class="text-gray-400 text-xs">선택한 코드:</span>
-          <span id="previewText" class="font-bold text-[#FFB703] text-base tracking-wide">-</span>
-          <button onclick="clearCurrentInput()" id="t-preview-clear" class="text-xs text-gray-500 hover:text-red-400">⌫ 지우기</button>
-        </div>
-
-        <!-- 오답/시간초과 피드백 + 확인(다음 문제) 버튼 -->
-        <div id="feedbackBox" class="hidden w-full mt-2 p-4 bg-gray-950 rounded-xl border border-gray-800 text-left flex flex-col gap-2">
-          <p id="feedbackAns" class="text-sm text-[#EF476F] font-bold"></p>
-          <a id="feedbackUrl" href="#" target="_blank" class="text-xs text-[#FFB703] hover:underline bg-[#FFB703]/10 p-2.5 rounded-lg border border-[#FFB703]/30 block text-center font-semibold">
-            ▶ <span id="t-feedback-link">관련 무료 화성학 강의 바로보기 ↗</span>
-          </a>
-          <button onclick="nextQuestion()" class="w-full mt-2 py-3 bg-[#EF476F] hover:bg-red-500 text-white font-extrabold text-sm rounded-xl shadow-lg transition-transform active:scale-95">
-            <span id="t-feedback-next-btn">확인 (다음 문제 풀기) ></span>
-          </button>
-        </div>
-      </div>
-    </main>
-
-    <!-- 하단 입력 패드 영역 -->
-    <section id="inputPadArea" class="w-full mb-3">
-      <!-- 동적으로 생성 -->
-    </section>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- 2. 하단 배너 (재생목록 & 커피 후원 모달 트리거) -->
-  <!-- ========================================== -->
-  <footer class="w-full pt-3 pb-1 border-t border-gray-800/80 mt-auto">
-    <div class="grid grid-cols-2 gap-2">
-      <!-- 유튜브 1~14강 링크 배너 -->
-      <a 
-        href="https://youtube.com/playlist?list=PLUhKlj-gxAgqQxhGNKJkvZF2ihiY0wQUC" 
-        target="_blank" 
-        class="flex items-center justify-center gap-1.5 py-3 px-2 bg-gray-900 hover:bg-gray-800 active:scale-95 border border-red-500/40 rounded-xl shadow-md transition-all text-center"
-      >
-        <span class="text-base">📺</span>
-        <div class="text-left">
-          <p class="text-[9px] text-gray-400 font-bold leading-none">Jun Kim YouTube</p>
-          <p id="t-footer-yt" class="text-xs text-red-400 font-black tracking-tight leading-tight mt-0.5">화성학 1~14강</p>
-        </div>
-      </a>
-
-      <!-- 커피 후원 버튼 (선택 팝업 호출) -->
-      <button 
-        onclick="openDonateModal()" 
-        class="flex items-center justify-center gap-1.5 py-3 px-2 bg-gray-900 hover:bg-gray-800 active:scale-95 border border-[#FFB703]/40 rounded-xl shadow-md transition-all text-center"
-      >
-        <span class="text-base">☕</span>
-        <div class="text-left">
-          <p id="t-footer-coffee-sub" class="text-[9px] text-gray-400 font-bold leading-none">앱이 유익했다면</p>
-          <p id="t-footer-coffee-main" class="text-xs text-[#FFB703] font-black tracking-tight leading-tight mt-0.5">커피 한 잔 후원</p>
-        </div>
-      </button>
-    </div>
-  </footer>
-
-  <!-- ========================================== -->
-  <!-- 3. 후원 수단 선택 모달 (카카오페이 / Ko-fi) -->
-  <!-- ========================================== -->
-  <div id="donateModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl max-w-sm w-full text-center shadow-2xl">
-      <div class="text-3xl mb-2">☕</div>
-      <h3 id="t-modal-donate-title" class="text-lg font-black text-white mb-1">준킴에게 커피 한 잔 선물하기</h3>
-      <p id="t-modal-donate-desc" class="text-xs text-gray-400 mb-5 leading-relaxed">
-        보내주신 따뜻한 후원은 더 좋은 화성학 교육 콘텐츠와 앱 개발에 큰 힘이 됩니다!
-      </p>
-
-      <div class="flex flex-col gap-2.5 mb-4">
-        <!-- 1. 카카오페이 버튼 (실제 송금 링크 완벽 연동) -->
-        <a 
-          href="https://qr.kakaopay.com/FMnnbr8OU" 
-          target="_blank" 
-          rel="noreferrer"
-          class="flex items-center justify-center gap-2 py-3 px-4 bg-[#FEE500] hover:bg-yellow-400 active:scale-95 text-[#191919] font-black text-xs rounded-xl shadow-md transition-all"
-        >
-          <span>💬</span>
-          <span id="t-modal-donate-kakao">카카오페이로 송금 (국내 모바일)</span>
-        </a>
-
-        <!-- 2. Ko-fi 버튼 (실제 연동 완료) -->
-        <a 
-          href="https://ko-fi.com/junkimmusic" 
-          target="_blank" 
-          rel="noreferrer"
-          class="flex items-center justify-center gap-2 py-3 px-4 bg-[#FF5E5B] hover:bg-red-500 active:scale-95 text-white font-black text-xs rounded-xl shadow-md transition-all"
-        >
-          <span>🌍</span>
-          <span id="t-modal-donate-kofi">Ko-fi 후원 (카드 / PayPal / 해외)</span>
-        </a>
-      </div>
-
-      <button onclick="closeDonateModal()" id="t-modal-donate-close" class="text-xs text-gray-500 hover:text-gray-300 py-1">
-        닫기
-      </button>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- 4. VIP 멤버십 안내 모달 -->
-  <!-- ========================================== -->
-  <div id="vipModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl max-w-sm w-full text-center shadow-2xl">
-      <div class="text-3xl mb-2">🎓</div>
-      <h3 id="t-modal-vip-title" class="text-lg font-black text-white mb-1">고급 마스터 맛보기 완료!</h3>
-      <p id="t-modal-vip-desc" class="text-xs text-gray-400 mb-4 leading-relaxed">
-        Drop 2, Drop 3 보이싱 및 무한 커스텀 모드는 <br />
-        <strong class="text-[#FFB703]">유튜브 베이직 멤버십</strong> 전용 기능입니다.
-      </p>
-      <a href="https://youtube.com/playlist?list=PLUhKlj-gxAgqQxhGNKJkvZF2ihiY0wQUC" target="_blank" class="block w-full py-2.5 bg-[#FFB703] text-black font-extrabold text-sm rounded-xl mb-4 hover:bg-yellow-400">
-        <span id="t-modal-vip-join">유튜브 멤버십 가입하고 코드 받기 ↗</span>
-      </a>
-      <div class="pt-3 border-t border-gray-800">
-        <p id="t-modal-vip-prompt" class="text-[11px] text-gray-400 mb-2">유튜브 커뮤니티 전용 시크릿 코드 입력:</p>
-        <div class="flex gap-2">
-          <input id="secretInput" type="text" placeholder="HARMONY2026" class="flex-1 bg-gray-950 border border-gray-700 px-3 py-1.5 text-xs rounded-lg text-white uppercase" />
-          <button onclick="verifyVipCode()" id="t-modal-vip-verify" class="bg-gray-700 hover:bg-gray-600 px-3 py-1.5 text-xs font-bold rounded-lg">인증</button>
-        </div>
-      </div>
-      <button onclick="closeVipModal()" id="t-modal-vip-close" class="mt-4 text-xs text-gray-500 hover:text-gray-300">닫기</button>
+      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">다음 문제 풀기 ➔</button>
     </div>
   </div>
 
   <script>
-    // --- Web Audio 사운드 합성기 ---
-    let audioCtx = null;
-    function initAudio() {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-    }
-
-    function playCorrectSound() {
-      if (!audioCtx) return;
-      const now = audioCtx.currentTime;
-      [523.25, 659.25, 783.99, 987.77, 1174.66].forEach((f, i) => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(f, now + i * 0.03);
-        gain.gain.setValueAtTime(0.08, now + i * 0.03);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.8 + i * 0.03);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start(now + i * 0.03);
-        osc.stop(now + 0.9);
-      });
-    }
-
-    function playWrongSound() {
-      if (!audioCtx) return;
-      const now = audioCtx.currentTime;
-      [440, 466.16].forEach(f => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(f, now);
-        gain.gain.setValueAtTime(0.12, now);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start(now);
-        osc.stop(now + 0.4);
-      });
-    }
-
-    // 배열 셔플 (Fisher-Yates)
-    function shuffleArray(arr) {
-      const copy = [...arr];
-      for (let i = copy.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
-      }
-      return copy;
-    }
-
-    // --- 다국어(i18n) 사전 ---
-    let currentLang = localStorage.getItem('hb_lang') || 'KO';
-
-    const I18N = {
-      KO: {
-        welcomeSub: "화성학 기초 완전 격파기",
-        welcomeBadge: "⚡ 0.1초 본능적 화성 연산 트레이너",
-        welcomeHeadline: '"머리로만 아는 화성학은 끝났다.<br />이제 지판과 건반 위에서 바로 깬다!"',
-        welcomeFeat1: "<strong>초급 4지선다</strong>: 음정·조표·스케일 기초 스피드런",
-        welcomeFeat2: "<strong>중급 키패드</strong>: 12키 3화음 전위 & 4화음 원터치 연산",
-        welcomeFeat3: "<strong>10 콤보 달성 시</strong>: 중급 키패드 즉시 자동 해금",
-        welcomeStartBtn: "지금 바로 격파 시작하기 🔥",
-        welcomeSoundHint: "※ 소리를 켜시면 리얼 타임 코드 피드백 사운드가 재생됩니다.",
-        gameSub: "화성학 기초 완전 격파기",
-        tierBeg: "초급 (4선다)",
-        tierInt: "중급 (키패드)",
-        tierAdv: "고급",
-        tierIntLocked: "🔒 중급",
-        tierAdvLocked: "🔒 고급",
-        unlockGuide: "중급 해금 조건: 10 콤보 달성",
-        previewLabel: "선택한 코드:",
-        previewClear: "⌫ 지우기",
-        feedbackLink: "관련 무료 화성학 강의 바로보기 ↗",
-        feedbackNextBtn: "확인 (다음 문제 풀기) >",
-        footerYt: "화성학 1~14강",
-        footerCoffeeSub: "앱이 유익했다면",
-        footerCoffeeMain: "커피 한 잔 후원",
-        donateTitle: "준킴에게 커피 한 잔 선물하기",
-        donateDesc: "보내주신 따뜻한 후원은 더 좋은 화성학 교육 콘텐츠와 앱 개발에 큰 힘이 됩니다!",
-        donateKakao: "카카오페이로 송금 (국내 모바일)",
-        donateKofi: "Ko-fi 후원 (카드 / PayPal / 해외)",
-        donateClose: "닫기",
-        vipTitle: "고급 마스터 맛보기 완료!",
-        vipDesc: "Drop 2, Drop 3 보이싱 및 무한 커스텀 모드는 <br /><strong class='text-[#FFB703]'>유튜브 베이직 멤버십</strong> 전용 기능입니다.",
-        vipJoin: "유튜브 멤버십 가입하고 코드 받기 ↗",
-        vipPrompt: "유튜브 커뮤니티 전용 시크릿 코드 입력:",
-        vipVerify: "인증",
-        vipClose: "닫기",
-        timeoutMsg: "⏰ 시간 초과!",
-        wrongMsg: "❌ 오답!",
-        rootStepLabel: "1단계: ROOT 선택",
-        qualityStepLabel: "2단계: QUALITY 탭 (즉시 제출)",
-        needRootAlert: "먼저 Root 음을 선택해주세요!",
-        intUnlockAlert: "🎉 축하합니다! 10 콤보를 달성하여 [중급 키패드 모드]가 해금되었습니다!",
-        intRequireAlert: "🔒 초급에서 10 콤보를 먼저 달성해야 중급 키패드가 해금됩니다!",
-        advRequireAlert: "🔒 중급을 통과해야 고급 모드가 열립니다!",
-        vipSuccessAlert: "🎉 VIP 인증 완료! Harmony Buster 고급 모드가 영구 해금되었습니다.",
-        vipFailAlert: "올바르지 않은 코드입니다. 유튜브 커뮤니티 전용 코드를 확인해 주세요."
+    // 퀴즈 데이터베이스 (다양한 재즈 화성학 & 코드 문제 예시)
+    var quizData = [
+      {
+        cat: "2-5-1 진행",
+        q: "Key of C Major에서 Ⅱ-Ⅴ-Ⅰ 진행의 구성 코드로 올바른 것은?",
+        choices: [
+          "Dm7 - G7 - Cmaj7",
+          "Em7 - A7 - Dmaj7",
+          "Fm7 - Bb7 - Ebmaj7",
+          "Dm7 - Gmaj7 - C7"
+        ],
+        answer: 0,
+        desc: "C Major 다이아토닉에서 2도는 Dm7, 5도는 도미넌트인 G7, 1도는 Cmaj7입니다."
       },
-      EN: {
-        welcomeSub: "Instinctive Music Theory Trainer",
-        welcomeBadge: "⚡ 0.1s Reflexive Harmony Trainer",
-        welcomeHeadline: '"Stop overthinking music theory.<br />Master harmony with instant reflexes!"',
-        welcomeFeat1: "<strong>Beginner</strong>: Speedrun intervals, key signatures & scales",
-        welcomeFeat2: "<strong>Intermediate</strong>: 12-key triads, inversions & 7th chord keypad",
-        welcomeFeat3: "<strong>10 Combo Goal</strong>: Automatically unlocks Intermediate Mode",
-        welcomeStartBtn: "Start Busting Harmony 🔥",
-        welcomeSoundHint: "※ Turn on audio for real-time chord synthesis feedback.",
-        gameSub: "Instinctive Music Theory Trainer",
-        tierBeg: "Beginner",
-        tierInt: "Intermediate",
-        tierAdv: "Advanced",
-        tierIntLocked: "🔒 Intermediate",
-        tierAdvLocked: "🔒 Advanced",
-        unlockGuide: "Unlock Intermediate: Reach 10 Combo",
-        previewLabel: "Selected Chord:",
-        previewClear: "⌫ Clear",
-        feedbackLink: "Watch Related Lesson Video ↗",
-        feedbackNextBtn: "Next Question >",
-        footerYt: "Theory Ep. 1-14",
-        footerCoffeeSub: "Enjoying the app?",
-        footerCoffeeMain: "Buy Me a Coffee",
-        donateTitle: "Support Jun Kim with a Coffee",
-        donateDesc: "Your support keeps interactive tools free and empowers new educational content!",
-        donateKakao: "KakaoPay Transfer (Korea Mobile)",
-        donateKofi: "Support via Ko-fi (Card / PayPal / Global)",
-        donateClose: "Close",
-        vipTitle: "Advanced Preview Completed!",
-        vipDesc: "Drop 2, Drop 3 voicings and infinite training are exclusive to <br /><strong class='text-[#FFB703]'>YouTube Basic Members</strong>.",
-        vipJoin: "Join YouTube Membership for Code ↗",
-        vipPrompt: "Enter community secret passcode:",
-        vipVerify: "Verify",
-        vipClose: "Close",
-        timeoutMsg: "⏰ Time Out!",
-        wrongMsg: "❌ Incorrect!",
-        rootStepLabel: "STEP 1: SELECT ROOT",
-        qualityStepLabel: "STEP 2: TAP QUALITY (SUBMIT)",
-        needRootAlert: "Please select a Root note first!",
-        intUnlockAlert: "🎉 Congratulations! You reached 10 Combo and unlocked Intermediate Keypad!",
-        intRequireAlert: "🔒 Reach 10 Combo in Beginner Mode to unlock Intermediate!",
-        advRequireAlert: "🔒 Clear Intermediate Mode to unlock Advanced!",
-        vipSuccessAlert: "🎉 VIP Verified! All Advanced modes are permanently unlocked.",
-        vipFailAlert: "Invalid code. Please check your YouTube Community tab."
+      {
+        cat: "코드 텐션",
+        q: "C7 (Dominant 7th) 코드에서 피해야 할 어보이드 노트(Avoid Note)는?",
+        choices: [
+          "9th (D음)",
+          "11th (Natural 11, F음)",
+          "#11th (F#음)",
+          "13th (A음)"
+        ],
+        answer: 1,
+        desc: "도미넌트 7th에서 완전 4도(Natural 11th)는 코드의 핵심 가이드톤인 3음(E)과 단9도(b9) 불협을 이루어 사용하지 않습니다. 대신 #11을 주로 씁니다."
+      },
+      {
+        cat: "모달 인터체인지",
+        q: "C Major 곡에서 동주음 단조(C Minor)로부터 빌려온 'bⅥmaj7' 코드는?",
+        choices: [
+          "Bbmaj7",
+          "Abmaj7",
+          "Dbmaj7",
+          "Ebmaj7"
+        ],
+        answer: 1,
+        desc: "C의 단6도 음은 Ab이므로, C 내추럴 마이너의 6번째 코드는 Abmaj7이 됩니다. 서브도미넌트 마이너(SDM)의 대표적인 대리 코드입니다."
+      },
+      {
+        cat: "트리톤 서브 (대리 도미넌트)",
+        q: "G7 코드를 대리할 수 있는 증4도(Tritone) 대리 코드는?",
+        choices: [
+          "C#7 (Db7)",
+          "D7",
+          "F#7",
+          "Ab7"
+        ],
+        answer: 0,
+        desc: "G7의 3음(B)과 7음(F)의 트라이톤 음정을 그대로 공유하는 코드는 반음 차이 대리 코드인 Db7(C#7)입니다."
+      },
+      {
+        cat: "가이드톤 (Guide Tones)",
+        q: "기타 쉘(Shell) 보이싱에서 화성의 뼈대를 이루는 필수 '가이드톤' 2개는?",
+        choices: [
+          "근음(1)과 5음",
+          "3음과 7음",
+          "5음과 텐션 9음",
+          "근음(1)과 3음"
+        ],
+        answer: 1,
+        desc: "3음은 코드의 성격(메이저/마이너)을 결정하고, 7음은 화성의 긴장과 기능(maj7/7/m7)을 결정하므로 3음과 7음이 핵심 가이드톤입니다."
+      },
+      {
+        cat: "얼터드 스케일",
+        q: "G7 Altered 스케일은 어떤 멜로딕 마이너 스케일의 7번째 모드인가?",
+        choices: [
+          "Ab 멜로딕 마이너",
+          "A 멜로딕 마이너",
+          "F 멜로딕 마이너",
+          "C 멜로딕 마이너"
+        ],
+        answer: 0,
+        desc: "어떤 도미넌트의 얼터드 스케일은 항상 그 코드의 '반음 위' 멜로딕 마이너(G7 → Ab Melodic Minor)와 동일한 구성을 갖습니다."
       }
-    };
+    ];
 
-    function setLanguage(lang) {
-      currentLang = lang;
-      localStorage.setItem('hb_lang', lang);
-      const dict = I18N[lang];
+    var curIdx = 0;
+    var streak = 0;
+    var score = 0;
+    var answered = false;
 
-      document.getElementById('langLabelWelcome').innerText = lang === 'KO' ? 'EN' : 'KO';
-      document.getElementById('langLabelGame').innerText = lang === 'KO' ? 'EN' : 'KO';
+    function initQuiz() {
+      document.getElementById('qTotal').innerText = quizData.length;
+      loadQuestion(curIdx);
+    }
 
-      document.getElementById('t-welcome-sub').innerText = dict.welcomeSub;
-      document.getElementById('t-welcome-badge').innerText = dict.welcomeBadge;
-      document.getElementById('t-welcome-headline').innerHTML = dict.welcomeHeadline;
-      document.getElementById('t-welcome-feat1').innerHTML = dict.welcomeFeat1;
-      document.getElementById('t-welcome-feat2').innerHTML = dict.welcomeFeat2;
-      document.getElementById('t-welcome-feat3').innerHTML = dict.welcomeFeat3;
-      document.getElementById('t-welcome-start-btn').innerText = dict.welcomeStartBtn;
-      document.getElementById('t-welcome-sound-hint').innerText = dict.welcomeSoundHint;
+    function loadQuestion(idx) {
+      answered = false;
+      var q = quizData[idx];
+      
+      document.getElementById('qIndex').innerText = idx + 1;
+      document.getElementById('qCat').innerText = q.cat;
+      document.getElementById('qText').innerText = q.q;
 
-      document.getElementById('t-game-sub').innerText = dict.gameSub;
-      document.getElementById('t-unlock-guide').innerText = dict.unlockGuide;
-      document.getElementById('t-preview-label').innerText = dict.previewLabel;
-      document.getElementById('t-preview-clear').innerText = dict.previewClear;
-      document.getElementById('t-feedback-link').innerText = dict.feedbackLink;
-      document.getElementById('t-feedback-next-btn').innerText = dict.feedbackNextBtn;
+      // 피드백 박스 & 다음 버튼 숨기기
+      var fbBox = document.getElementById('feedbackBox');
+      fbBox.style.display = 'none';
+      fbBox.className = 'feedback-box';
+      document.getElementById('nextBtn').style.display = 'none';
 
-      document.getElementById('t-footer-yt').innerText = dict.footerYt;
-      document.getElementById('t-footer-coffee-sub').innerText = dict.footerCoffeeSub;
-      document.getElementById('t-footer-coffee-main').innerText = dict.footerCoffeeMain;
+      // 보기 버튼 생성
+      var choicesBox = document.getElementById('choicesBox');
+      choicesBox.innerHTML = '';
 
-      document.getElementById('t-modal-donate-title').innerText = dict.donateTitle;
-      document.getElementById('t-modal-donate-desc').innerText = dict.donateDesc;
-      document.getElementById('t-modal-donate-kakao').innerText = dict.donateKakao;
-      document.getElementById('t-modal-donate-kofi').innerText = dict.donateKofi;
-      document.getElementById('t-modal-donate-close').innerText = dict.donateClose;
-
-      document.getElementById('t-modal-vip-title').innerText = dict.vipTitle;
-      document.getElementById('t-modal-vip-desc').innerHTML = dict.vipDesc;
-      document.getElementById('t-modal-vip-join').innerText = dict.vipJoin;
-      document.getElementById('t-modal-vip-prompt').innerText = dict.vipPrompt;
-      document.getElementById('t-modal-vip-verify').innerText = dict.vipVerify;
-      document.getElementById('t-modal-vip-close').innerText = dict.vipClose;
-
-      updateTabsUI();
-      if (currentQuestion) {
-        renderCurrentQuestionText();
-        renderPad();
+      for (var i = 0; i < q.choices.length; i++) {
+        var btn = document.createElement('button');
+        btn.className = 'choice-btn';
+        btn.innerHTML = '<span>' + (i + 1) + '. ' + q.choices[i] + '</span>';
+        btn.setAttribute('onclick', 'checkAnswer(' + i + ')');
+        choicesBox.appendChild(btn);
       }
     }
 
-    function toggleLanguage() {
-      setLanguage(currentLang === 'KO' ? 'EN' : 'KO');
-    }
+    function checkAnswer(selectedIdx) {
+      if (answered) return;
+      answered = true;
 
-    // --- 문제 풀 및 데이터 (한/영 듀얼 지원) ---
-    const YOUTUBE_URL = "https://youtube.com/playlist?list=PLUhKlj-gxAgqQxhGNKJkvZF2ihiY0wQUC";
-    
-    let userProgress = { intermediateUnlocked: false, advancedUnlocked: false, isVip: false };
-    try {
-      const saved = localStorage.getItem('harmony_buster_save');
-      if (saved) userProgress = JSON.parse(saved);
-    } catch(e) {}
+      var q = quizData[curIdx];
+      var isCorrect = (selectedIdx === q.answer);
+      var btns = document.querySelectorAll('.choice-btn');
 
-    let currentTier = 'BEGINNER';
-    let combo = 0;
-    let advancedTrialCount = 0;
-    let currentQuestion = null;
-    let selectedRoot = '';
-
-    let timerInterval = null;
-    let maxTime = 10;
-    let timeLeft = 10;
-    let isQuestionActive = false;
-
-    let questionDecks = { BEGINNER: [], INTERMEDIATE: [], ADVANCED: [] };
-
-    const QUESTIONS = {
-      BEGINNER: [
-        { type: 'MCQ', catKO: '기본 음정 (1~4강)', catEN: 'Intervals (Ep. 1-4)', qKO: 'C 에서 Major 3rd 위의 음은?', qEN: 'What is the Major 3rd above C?', ans: 'E', opts: ['E', 'Eb', 'F', 'D#'], url: YOUTUBE_URL + '&index=1' },
-        { type: 'MCQ', catKO: '기본 음정 (1~4강)', catEN: 'Intervals (Ep. 1-4)', qKO: 'A 에서 Minor 3rd 위의 음은?', qEN: 'What is the Minor 3rd above A?', ans: 'C', opts: ['C', 'C#', 'B', 'D'], url: YOUTUBE_URL + '&index=1' },
-        { type: 'MCQ', catKO: '기본 음정 (1~4강)', catEN: 'Intervals (Ep. 1-4)', qKO: 'D 에서 Perfect 5th 위의 음은?', qEN: 'What is the Perfect 5th above D?', ans: 'A', opts: ['A', 'Ab', 'G', 'B'], url: YOUTUBE_URL + '&index=1' },
-        { type: 'MCQ', catKO: '기본 음정 (1~4강)', catEN: 'Intervals (Ep. 1-4)', qKO: 'F 에서 Minor 7th 위의 음은?', qEN: 'What is the Minor 7th above F?', ans: 'Eb', opts: ['Eb', 'E', 'D', 'Db'], url: YOUTUBE_URL + '&index=1' },
-        { type: 'MCQ', catKO: '기본 음정 (1~4강)', catEN: 'Intervals (Ep. 1-4)', qKO: 'G 에서 Major 6th 위의 음은?', qEN: 'What is the Major 6th above G?', ans: 'E', opts: ['E', 'Eb', 'F', 'D#'], url: YOUTUBE_URL + '&index=1' },
-        { type: 'MCQ', catKO: '기본 음정 (1~4강)', catEN: 'Intervals (Ep. 1-4)', qKO: 'Bb 에서 Perfect 4th 위의 음은?', qEN: 'What is the Perfect 4th above Bb?', ans: 'Eb', opts: ['Eb', 'E', 'D', 'F'], url: YOUTUBE_URL + '&index=1' },
-        { type: 'MCQ', catKO: '조표/키 (5~6강)', catEN: 'Key Signatures (Ep. 5-6)', qKO: '샵(#)이 2개 붙는 Major Key는?', qEN: 'Which Major Key has 2 sharps (#)?', ans: 'D Major', opts: ['D Major', 'G Major', 'A Major', 'E Major'], url: YOUTUBE_URL + '&index=5' },
-        { type: 'MCQ', catKO: '조표/키 (5~6강)', catEN: 'Key Signatures (Ep. 5-6)', qKO: '플랫(b)이 1개 붙는 Major Key는?', qEN: 'Which Major Key has 1 flat (b)?', ans: 'F Major', opts: ['F Major', 'Bb Major', 'Eb Major', 'C Major'], url: YOUTUBE_URL + '&index=5' },
-        { type: 'MCQ', catKO: '스케일 (7~8강)', catEN: 'Scales (Ep. 7-8)', qKO: 'G Major 스케일의 7번째 음은?', qEN: 'What is the 7th degree of G Major scale?', ans: 'F#', opts: ['F#', 'F', 'G', 'E'], url: YOUTUBE_URL + '&index=7' },
-        { type: 'MCQ', catKO: '스케일 (7~8강)', catEN: 'Scales (Ep. 7-8)', qKO: 'D Natural Minor 스케일의 6번째 음은?', qEN: 'What is the 6th degree of D Natural Minor?', ans: 'Bb', opts: ['Bb', 'B', 'C', 'A'], url: YOUTUBE_URL + '&index=7' },
-        { type: 'MCQ', catKO: '기본 3화음 (9~11강)', catEN: 'Triads (Ep. 9-11)', qKO: 'Am 트라이어드의 3음은?', qEN: 'What is the 3rd of an Am triad?', ans: 'C', opts: ['C', 'C#', 'E', 'B'], url: YOUTUBE_URL + '&index=9' },
-        { type: 'MCQ', catKO: '기본 3화음 (9~11강)', catEN: 'Triads (Ep. 9-11)', qKO: 'E Major 트라이어드의 3음은?', qEN: 'What is the 3rd of an E Major triad?', ans: 'G#', opts: ['G#', 'G', 'B', 'A'], url: YOUTUBE_URL + '&index=9' },
-        { type: 'MCQ', catKO: '4화음 가이드톤 (12~14강)', catEN: 'Guide Tones (Ep. 12-14)', qKO: 'G7 코드의 3음과 7음은?', qEN: 'What are the 3rd and 7th of G7?', ans: 'B / F', opts: ['B / F', 'Bb / F', 'B / F#', 'Bb / F#'], url: YOUTUBE_URL + '&index=12' },
-        { type: 'MCQ', catKO: '4화음 가이드톤 (12~14강)', catEN: 'Guide Tones (Ep. 12-14)', qKO: 'Cmaj7 코드의 7음은?', qEN: 'What is the 7th of Cmaj7?', ans: 'B', opts: ['B', 'Bb', 'A', 'C'], url: YOUTUBE_URL + '&index=12' }
-      ],
-      INTERMEDIATE: [
-        { type: 'KEYPAD_CHORD', catKO: '코드 구성 (9~14강)', catEN: 'Chord Spelling', qKO: '루트 D, 단3도 F, 완전5도 A 로 구성된 코드는?', qEN: 'Which chord has Root D, Minor 3rd F, and Perfect 5th A?', ans: 'Dm', url: YOUTUBE_URL + '&index=9' },
-        { type: 'KEYPAD_CHORD', catKO: '코드 구성 (9~14강)', catEN: 'Chord Spelling', qKO: '루트 Ab, 장3도 C, 완전5도 Eb, 단7도 Gb 인 코드는?', qEN: 'Which chord has Root Ab, Maj 3rd C, 5th Eb, and Min 7th Gb?', ans: 'Ab7', url: YOUTUBE_URL + '&index=12' },
-        { type: 'KEYPAD_CHORD', catKO: '하프 디미니쉬', catEN: 'Half-Diminished', qKO: '1(B) - b3(D) - b5(F) - b7(A) 코드는?', qEN: 'Which chord has 1(B) - b3(D) - b5(F) - b7(A)?', ans: 'Bm7b5', url: YOUTUBE_URL + '&index=12' },
-        { type: 'KEYPAD_CHORD', catKO: '마이너 세븐', catEN: 'Minor Seventh', qKO: '1(F) - b3(Ab) - 5(C) - b7(Eb) 코드는?', qEN: 'Which chord has 1(F) - b3(Ab) - 5(C) - b7(Eb)?', ans: 'Fm7', url: YOUTUBE_URL + '&index=12' },
-        { type: 'KEYPAD_CHORD', catKO: '메이저 세븐', catEN: 'Major Seventh', qKO: '1(Eb) - 3(G) - 5(Bb) - 7(D) 코드는?', qEN: 'Which chord has 1(Eb) - 3(G) - 5(Bb) - 7(D)?', ans: 'Ebmaj7', url: YOUTUBE_URL + '&index=12' },
-        { type: 'INVERSION', catKO: '3화음 전위 (9~11강)', catEN: 'Triad Inversions', qKO: 'F#m / A 는 몇 번째 전위인가?', qEN: 'Which inversion is F#m / A?', ans: '1st', opts: ['Root', '1st', '2nd'], url: YOUTUBE_URL + '&index=9' },
-        { type: 'INVERSION', catKO: '3화음 전위 (9~11강)', catEN: 'Triad Inversions', qKO: 'C / G 는 몇 번째 전위인가?', qEN: 'Which inversion is C / G?', ans: '2nd', opts: ['Root', '1st', '2nd'], url: YOUTUBE_URL + '&index=9' },
-        { type: 'INVERSION', catKO: '3화음 전위 (9~11강)', catEN: 'Triad Inversions', qKO: 'Bb / D 는 몇 번째 전위인가?', qEN: 'Which inversion is Bb / D?', ans: '1st', opts: ['Root', '1st', '2nd'], url: YOUTUBE_URL + '&index=9' },
-        { type: 'INVERSION', catKO: '3화음 전위 (9~11강)', catEN: 'Triad Inversions', qKO: 'Em / B 는 몇 번째 전위인가?', qEN: 'Which inversion is Em / B?', ans: '2nd', opts: ['Root', '1st', '2nd'], url: YOUTUBE_URL + '&index=9' }
-      ],
-      ADVANCED: [
-        { type: 'MCQ', catKO: 'Drop 2 보이싱 (심화)', catEN: 'Drop 2 Voicing', qKO: 'Drop 2 보이싱에서 최고음이 3음일 때 도수 배열은?', qEN: 'In Drop 2 with the 3rd on top, what is the degree order from bass?', ans: '7-3-5-1', opts: ['7-3-5-1', '1-5-7-3', '3-7-1-5', '5-1-3-7'], url: YOUTUBE_URL + '&index=12' },
-        { type: 'MCQ', catKO: 'Drop 2 보이싱 (심화)', catEN: 'Drop 2 Voicing', qKO: 'Drop 2 보이싱에서 최고음이 5음일 때 저음부터의 배열은?', qEN: 'In Drop 2 with the 5th on top, what is the degree order from bass?', ans: '1-5-7-3', opts: ['1-5-7-3', '7-3-5-1', '5-1-3-7', '3-7-1-5'], url: YOUTUBE_URL + '&index=12' },
-        { type: 'MCQ', catKO: 'Drop 3 보이싱 (심화)', catEN: 'Drop 3 Voicing', qKO: 'Drop 3 보이싱 (Root in Bass)의 저음부터 도수 순서는?', qEN: 'In Drop 3 with Root in bass, what is the degree order from bass?', ans: '1-7-3-5', opts: ['1-7-3-5', '1-5-7-3', '3-1-5-7', '7-5-1-3'], url: YOUTUBE_URL + '&index=12' },
-        { type: 'MCQ', catKO: '스케일 Leading Tone', catEN: 'Leading Tone Spelling', qKO: 'G# Harmonic Minor의 7번째 음(Leading tone)은?', qEN: 'What is the 7th degree (Leading tone) of G# Harmonic Minor?', ans: 'Fx (F##)', opts: ['Fx (F##)', 'G', 'F#', 'Gx'], url: YOUTUBE_URL + '&index=7' },
-        { type: 'MCQ', catKO: '스펠링 감7도 (bb7)', catEN: 'Diminished 7th Spelling', qKO: 'Ab dim7 코드의 감7도(bb7) 음은?', qEN: 'What is the diminished 7th (bb7) of Ab dim7?', ans: 'Gbb', opts: ['Gbb', 'F', 'Gb', 'Abb'], url: YOUTUBE_URL + '&index=12' }
-      ]
-    };
-
-    function saveState() {
-      try {
-        localStorage.setItem('harmony_buster_save', JSON.stringify(userProgress));
-      } catch(e) {}
-    }
-
-    function startGame() {
-      initAudio();
-      document.getElementById('welcomeScreen').classList.add('hidden');
-      document.getElementById('gameScreen').classList.remove('hidden');
-      updateTabsUI();
-      questionDecks[currentTier] = shuffleArray(QUESTIONS[currentTier]);
-      nextQuestion();
-    }
-
-    function updateTabsUI() {
-      const dict = I18N[currentLang];
-      const btnBeg = document.getElementById('btnTierBeg');
-      const btnInt = document.getElementById('btnTierInt');
-      const btnAdv = document.getElementById('btnTierAdv');
-
-      btnBeg.innerText = dict.tierBeg;
-      btnBeg.className = `py-2 text-xs font-bold rounded-lg transition-all ${currentTier === 'BEGINNER' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-400'}`;
-
-      if (userProgress.intermediateUnlocked) {
-        btnInt.innerText = dict.tierInt;
-        btnInt.className = `py-2 text-xs font-bold rounded-lg transition-all ${currentTier === 'INTERMEDIATE' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-300'}`;
-      } else {
-        btnInt.innerText = dict.tierIntLocked;
-        btnInt.className = 'py-2 text-xs font-bold rounded-lg text-gray-600 cursor-not-allowed';
-      }
-
-      if (userProgress.advancedUnlocked || userProgress.isVip) {
-        btnAdv.innerText = `${dict.tierAdv} ${!userProgress.isVip ? `(${5 - advancedTrialCount}/5)` : ''}`;
-        btnAdv.className = `py-2 text-xs font-bold rounded-lg transition-all ${currentTier === 'ADVANCED' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-300'}`;
-      } else {
-        btnAdv.innerText = dict.tierAdvLocked;
-        btnAdv.className = 'py-2 text-xs font-bold rounded-lg text-gray-600 cursor-not-allowed';
-      }
-
-      const guideBar = document.getElementById('unlockGuideBar');
-      if (!userProgress.intermediateUnlocked) {
-        guideBar.classList.remove('hidden');
-        document.getElementById('unlockProgress').innerText = combo;
-      } else {
-        guideBar.classList.add('hidden');
-      }
-    }
-
-    function selectTier(t) {
-      const dict = I18N[currentLang];
-      if (t === 'INTERMEDIATE' && !userProgress.intermediateUnlocked) {
-        alert(dict.intRequireAlert);
-        return;
-      }
-      if (t === 'ADVANCED' && !userProgress.advancedUnlocked && !userProgress.isVip) {
-        alert(dict.advRequireAlert);
-        return;
-      }
-      if (t === 'ADVANCED' && !userProgress.isVip && advancedTrialCount >= 5) {
-        document.getElementById('vipModal').classList.remove('hidden');
-        return;
-      }
-
-      currentTier = t;
-      updateTabsUI();
-      questionDecks[currentTier] = shuffleArray(QUESTIONS[currentTier]);
-      nextQuestion();
-    }
-
-    function startTimer() {
-      clearInterval(timerInterval);
-      maxTime = currentTier === 'INTERMEDIATE' ? 8 : 10;
-      timeLeft = maxTime;
-      isQuestionActive = true;
-
-      const bar = document.getElementById('timerBar');
-      const text = document.getElementById('timerText');
-      bar.style.width = '100%';
-      bar.className = 'h-full bg-[#06D6A0] transition-all duration-100 ease-linear';
-      text.innerText = `${timeLeft.toFixed(1)}s`;
-
-      const step = 100;
-      timerInterval = setInterval(() => {
-        timeLeft -= 0.1;
-        if (timeLeft <= 0) {
-          timeLeft = 0;
-          clearInterval(timerInterval);
-          isQuestionActive = false;
-          handleTimeout();
+      // 모든 버튼 비활성화 및 정답/오답 표시
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].disabled = true;
+        if (i === q.answer) {
+          btns[i].classList.add('correct-choice');
+        } else if (i === selectedIdx && !isCorrect) {
+          btns[i].classList.add('wrong-choice');
         }
+      }
 
-        const pct = Math.max(0, (timeLeft / maxTime) * 100);
-        bar.style.width = `${pct}%`;
-        text.innerText = `${timeLeft.toFixed(1)}s`;
+      var fbBox = document.getElementById('feedbackBox');
+      var fbBadge = document.getElementById('fbBadge');
+      var fbAnswerLabel = document.getElementById('fbAnswerLabel');
+      var fbAnswerText = document.getElementById('fbAnswerText');
+      var fbDesc = document.getElementById('fbDesc');
 
-        if (timeLeft <= 3) {
-          bar.className = 'h-full bg-[#EF476F] transition-all duration-100 ease-linear';
-          text.className = 'font-bold text-[#EF476F] animate-pulse';
-        } else {
-          text.className = 'font-bold text-[#FFB703]';
-        }
-      }, step);
-    }
+      if (isCorrect) {
+        streak++;
+        score += 10;
+        fbBox.className = 'feedback-box correct';
+        fbBadge.innerHTML = '✓ 정답입니다!';
+        fbAnswerLabel.style.display = 'none';
+        fbAnswerText.innerText = q.choices[q.answer];
+        fbDesc.innerText = q.desc;
+      } else {
+        streak = 0;
+        fbBox.className = 'feedback-box wrong';
+        fbBadge.innerHTML = '✕ 오답입니다!';
+        fbAnswerLabel.style.display = 'block';
+        fbAnswerLabel.innerText = '올바른 정답:';
+        // ★ 오답 시 크고 굵은 노란색 폰트로 정답 즉시 노출 ★
+        fbAnswerText.innerText = (q.answer + 1) + '번. ' + q.choices[q.answer];
+        fbDesc.innerHTML = '<strong>[해설]</strong> ' + q.desc;
+      }
 
-    function stopTimer() {
-      clearInterval(timerInterval);
-      isQuestionActive = false;
-    }
+      document.getElementById('streakCount').innerText = streak;
+      document.getElementById('scoreVal').innerText = score;
 
-    function handleTimeout() {
-      const dict = I18N[currentLang];
-      playWrongSound();
-      combo = 0;
-      updateComboBadge();
-      updateTabsUI();
-
-      const card = document.getElementById('cardBox');
-      card.className = "p-6 rounded-2xl bg-[#EF476F]/10 border-2 border-[#EF476F] flex flex-col items-center text-center shadow-2xl transition-all";
-
-      document.getElementById('feedbackAns').innerText = `${dict.timeoutMsg} (${dict.previewLabel} ${currentQuestion.ans})`;
-      document.getElementById('feedbackUrl').href = currentQuestion.url;
-      document.getElementById('feedbackBox').classList.remove('hidden');
-
-      document.getElementById('inputPadArea').innerHTML = '';
-    }
-
-    function renderCurrentQuestionText() {
-      if (!currentQuestion) return;
-      document.getElementById('qCategory').innerText = currentLang === 'KO' ? currentQuestion.catKO : currentQuestion.catEN;
-      document.getElementById('qText').innerText = currentLang === 'KO' ? currentQuestion.qKO : currentQuestion.qEN;
+      fbBox.style.display = 'block';
+      document.getElementById('nextBtn').style.display = 'block';
+      
+      // 모바일 화면에서 정답 카드가 잘 보이도록 부드럽게 스크롤
+      fbBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     function nextQuestion() {
-      selectedRoot = '';
-      document.getElementById('previewText').innerText = '-';
-      document.getElementById('inputPreviewBox').classList.add('hidden');
-      document.getElementById('feedbackBox').classList.add('hidden');
-
-      if (!questionDecks[currentTier] || questionDecks[currentTier].length === 0) {
-        questionDecks[currentTier] = shuffleArray(QUESTIONS[currentTier]);
-      }
-
-      currentQuestion = questionDecks[currentTier].pop();
-      renderCurrentQuestionText();
-
-      const card = document.getElementById('cardBox');
-      card.className = "p-6 rounded-2xl bg-gray-900 border-2 border-gray-800 flex flex-col items-center text-center shadow-2xl transition-all";
-
-      renderPad();
-      startTimer();
-    }
-
-    function renderPad() {
-      const dict = I18N[currentLang];
-      const padArea = document.getElementById('inputPadArea');
-      padArea.innerHTML = '';
-
-      if (currentQuestion.type === 'MCQ' || currentQuestion.type === 'INVERSION') {
-        const grid = document.createElement('div');
-        grid.className = currentQuestion.opts.length === 3 ? 'grid grid-cols-3 gap-2' : 'grid grid-cols-2 gap-3';
-
-        const shuffledOptions = shuffleArray(currentQuestion.opts);
-
-        shuffledOptions.forEach(opt => {
-          const btn = document.createElement('button');
-          btn.innerText = opt;
-          btn.className = 'py-4 text-sm font-bold bg-gray-800 hover:bg-gray-700 active:scale-95 rounded-xl border border-gray-700 shadow-md transition-transform';
-          btn.onclick = () => submitAnswer(opt);
-          grid.appendChild(btn);
-        });
-        padArea.appendChild(grid);
-      } else if (currentQuestion.type === 'KEYPAD_CHORD') {
-        document.getElementById('inputPreviewBox').classList.remove('hidden');
-
-        const wrapper = document.createElement('div');
-        wrapper.className = 'flex flex-col gap-2.5 bg-gray-900/90 p-3 rounded-2xl border border-gray-800';
-
-        const rootSection = document.createElement('div');
-        rootSection.innerHTML = `<div class="text-[10px] text-gray-400 font-bold mb-1">${dict.rootStepLabel}</div>`;
-        
-        const noteRow = document.createElement('div');
-        noteRow.className = 'grid grid-cols-7 gap-1 mb-1';
-        ['C', 'D', 'E', 'F', 'G', 'A', 'B'].forEach(n => {
-          const btn = document.createElement('button');
-          btn.innerText = n;
-          btn.className = `py-2 text-xs font-extrabold rounded-lg ${selectedRoot.startsWith(n) ? 'bg-[#FFB703] text-black' : 'bg-gray-800 text-gray-200'}`;
-          btn.onclick = () => { selectedRoot = n; updatePreview(); renderPad(); };
-          noteRow.appendChild(btn);
-        });
-
-        const accRow = document.createElement('div');
-        accRow.className = 'grid grid-cols-2 gap-2';
-        ['#', 'b'].forEach(acc => {
-          const btn = document.createElement('button');
-          btn.innerText = acc;
-          btn.className = 'py-1.5 text-xs font-bold bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-300';
-          btn.onclick = () => {
-            if (selectedRoot && !selectedRoot.includes('#') && !selectedRoot.includes('b')) {
-              selectedRoot += acc;
-              updatePreview();
-              renderPad();
-            }
-          };
-          accRow.appendChild(btn);
-        });
-
-        rootSection.appendChild(noteRow);
-        rootSection.appendChild(accRow);
-
-        const qualitySection = document.createElement('div');
-        qualitySection.innerHTML = `<div class="text-[10px] text-gray-400 font-bold mb-1">${dict.qualityStepLabel}</div>`;
-        const qGrid = document.createElement('div');
-        qGrid.className = 'grid grid-cols-4 gap-1.5';
-        
-        const qualities = [
-          { label: 'Maj', val: '' },
-          { label: 'm', val: 'm' },
-          { label: 'dim', val: 'dim' },
-          { label: 'aug', val: 'aug' },
-          { label: 'maj7', val: 'maj7' },
-          { label: '7', val: '7' },
-          { label: 'm7', val: 'm7' },
-          { label: 'm7b5', val: 'm7b5' }
-        ];
-
-        qualities.forEach(q => {
-          const btn = document.createElement('button');
-          btn.innerText = q.label;
-          btn.className = 'py-2.5 text-xs font-black bg-gray-800 hover:bg-gray-700 active:bg-[#FFB703] active:text-black rounded-lg border border-gray-700';
-          btn.onclick = () => {
-            if (!selectedRoot) {
-              alert(dict.needRootAlert);
-              return;
-            }
-            const fullChord = `${selectedRoot}${q.val}`;
-            submitAnswer(fullChord);
-          };
-          qGrid.appendChild(btn);
-        });
-        qualitySection.appendChild(qGrid);
-
-        wrapper.appendChild(rootSection);
-        wrapper.appendChild(qualitySection);
-        padArea.appendChild(wrapper);
-      }
-    }
-
-    function updatePreview() {
-      document.getElementById('previewText').innerText = selectedRoot || '-';
-    }
-
-    function clearCurrentInput() {
-      selectedRoot = '';
-      updatePreview();
-      renderPad();
-    }
-
-    function submitAnswer(chosen) {
-      if (!isQuestionActive) return;
-      stopTimer();
-      initAudio();
-
-      const dict = I18N[currentLang];
-      const card = document.getElementById('cardBox');
-      const isCorrect = chosen.replace(/\s+/g, '').toLowerCase() === currentQuestion.ans.replace(/\s+/g, '').toLowerCase();
-
-      if (isCorrect) {
-        playCorrectSound();
-        combo++;
-        card.className = "p-6 rounded-2xl bg-[#06D6A0]/10 border-2 border-[#06D6A0] flex flex-col items-center text-center shadow-2xl scale-102 transition-all";
-        
-        if (currentTier === 'BEGINNER' && combo >= 10 && !userProgress.intermediateUnlocked) {
-          userProgress.intermediateUnlocked = true;
-          saveState();
-          setTimeout(() => {
-            alert(dict.intUnlockAlert);
-            updateTabsUI();
-          }, 300);
-        }
-
-        if (currentTier === 'ADVANCED' && !userProgress.isVip) {
-          advancedTrialCount++;
-        }
-
-        updateComboBadge();
-        updateTabsUI();
-
-        setTimeout(() => {
-          nextQuestion();
-        }, 600);
-
+      curIdx++;
+      if (curIdx < quizData.length) {
+        loadQuestion(curIdx);
       } else {
-        playWrongSound();
-        combo = 0;
-        card.className = "p-6 rounded-2xl bg-[#EF476F]/10 border-2 border-[#EF476F] flex flex-col items-center text-center shadow-2xl transition-all";
-        
-        document.getElementById('feedbackAns').innerText = `${dict.wrongMsg} (${dict.previewLabel} ${currentQuestion.ans})`;
-        document.getElementById('feedbackUrl').href = currentQuestion.url;
-        document.getElementById('feedbackBox').classList.remove('hidden');
-
-        document.getElementById('inputPadArea').innerHTML = '';
-        updateComboBadge();
-        updateTabsUI();
+        // 모든 문제 완주 시
+        var quizCard = document.querySelector('.quiz-card');
+        quizCard.innerHTML = 
+          '<div style="text-align:center; padding:30px 10px;">' +
+            '<div style="font-size:42px; margin-bottom:12px;">🏆</div>' +
+            '<h2 style="font-size:22px; font-weight:900; color:#facc15; margin-bottom:8px;">퀴즈 완주 성공!</h2>' +
+            '<p style="font-size:15px; color:#cbd5e1; margin-bottom:20px;">최종 점수: <strong style="color:#22c55e; font-size:18px;">' + score + '점</strong></p>' +
+            '<button onclick="location.reload()" style="background:#22c55e; color:#000; font-weight:900; font-size:15px; padding:14px 28px; border-radius:10px; border:none; cursor:pointer;">처음부터 다시 풀기</button>' +
+          '</div>';
       }
     }
 
-    function updateComboBadge() {
-      const badge = document.getElementById('comboBadge');
-      if (combo > 1) {
-        badge.classList.remove('hidden');
-        document.getElementById('comboCount').innerText = combo;
-      } else {
-        badge.classList.add('hidden');
-      }
-    }
-
-    // 모달 제어
-    function openDonateModal() {
-      document.getElementById('donateModal').classList.remove('hidden');
-    }
-
-    function closeDonateModal() {
-      document.getElementById('donateModal').classList.add('hidden');
-    }
-
-    function verifyVipCode() {
-      const dict = I18N[currentLang];
-      const code = document.getElementById('secretInput').value.trim().toUpperCase();
-      if (code === 'HARMONY2026') {
-        userProgress.isVip = true;
-        userProgress.advancedUnlocked = true;
-        saveState();
-        closeVipModal();
-        alert(dict.vipSuccessAlert);
-        updateTabsUI();
-        selectTier('ADVANCED');
-      } else {
-        alert(dict.vipFailAlert);
-      }
-    }
-
-    function closeVipModal() {
-      document.getElementById('vipModal').classList.add('hidden');
-    }
-
-    // 초기화
-    window.onload = () => {
-      setLanguage(currentLang);
-    };
+    // 초기 실행
+    initQuiz();
   </script>
 </body>
 </html>
