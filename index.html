@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Harmony Buster - 화성학 기초 완전 격파기</title>
+  <title>Harmony Buster - Instinctive Music Theory Trainer</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
@@ -64,14 +64,14 @@
       <div class="w-full bg-gray-900/90 border border-gray-800 rounded-2xl p-4 mb-6 text-left space-y-3 shadow-xl text-xs text-gray-300">
         <div class="flex items-start gap-2.5">
           <span class="text-base leading-none">🎯</span>
-          <div class="leading-relaxed">
-            <strong class="text-white">메인 챌린지</strong>: 초급(음정·조표·3화음) → 중급(스케일·4화음) → 시험 → 고급 프로 코스
+          <div id="t-welcome-feat1" class="leading-relaxed">
+            <strong class="text-white">메인 챌린지</strong>: 초급(음정·조표·3화음) → 중급(스케일·4화음) → 승급시험 → 고급 프로 코스
           </div>
         </div>
         <div class="flex items-start gap-2.5">
           <span class="text-base leading-none">🕹️</span>
-          <div class="leading-relaxed">
-            <strong class="text-white">5대 개별 트레이닝</strong>: 음정 · 조표&스케일 · 코드톤 · 전위 · 실전 보이싱
+          <div id="t-welcome-feat2" class="leading-relaxed">
+            <strong class="text-white">5대 개별 트레이닝</strong>: 음정 · 조표&스케일 · 코드톤 · 전위 · 보이싱 자유 선택 훈련
           </div>
         </div>
       </div>
@@ -115,7 +115,7 @@
     <!-- 5대 개별 게임 바로가기 메뉴바 -->
     <div class="w-full mt-2 mb-1">
       <div class="flex items-center justify-between px-1 mb-1">
-        <span class="text-[10px] font-extrabold text-gray-400">🕹️ 개별 훈련 코스</span>
+        <span id="t-solo-title" class="text-[10px] font-extrabold text-gray-400">🕹️ 개별 훈련 코스</span>
         <button onclick="selectPlayMode('TIER')" id="btnBackToMain" class="text-[10px] font-bold text-[#FFB703] underline hidden">← 메인 퀴즈로 복귀</button>
       </div>
       <div class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5">
@@ -132,7 +132,7 @@
           4. 전위
         </button>
         <button onclick="selectSoloGame(5)" id="btnG5" class="whitespace-nowrap px-2.5 py-1.5 bg-gray-900 border border-purple-500/50 rounded-lg text-xs font-bold text-purple-300 hover:border-purple-400 transition-all flex items-center gap-1">
-          <span id="g5LockIcon">🔒</span> 5. 보이싱
+          <span id="g5LockIcon">🔒</span> <span id="t-g5-label">5. 보이싱</span>
         </button>
       </div>
     </div>
@@ -159,17 +159,17 @@
     <div id="examBanner" class="hidden w-full my-1">
       <button onclick="startExamMode()" class="w-full py-2 bg-gradient-to-r from-indigo-900 to-purple-900 hover:from-indigo-800 hover:to-purple-800 border border-purple-500/40 rounded-xl text-xs font-black text-purple-200 shadow-md flex items-center justify-center gap-1.5 transition-all">
         <span>🎓</span>
-        <span>고급 승급 라이선스 시험 도전 (20문항 / 85점 컷)</span>
+        <span id="t-exam-banner-text">고급 승급 라이선스 시험 도전 (20문항 / 85점 컷)</span>
       </button>
     </div>
 
     <!-- 시험 진행 헤더 -->
     <div id="examStatusHeader" class="hidden w-full py-1.5 px-3 bg-purple-950/60 border border-purple-800/80 rounded-xl my-1 flex justify-between items-center text-xs">
-      <span class="font-bold text-purple-300">🎓 승급 시험: <strong id="examCurrentQ" class="text-[#FFB703]">1</strong> / 20</span>
-      <span class="font-bold text-gray-300">현재 맞힌 개수: <strong id="examScore" class="text-[#06D6A0]">0</strong></span>
+      <span class="font-bold text-purple-300">🎓 <span id="t-exam-header-q">승급 시험</span>: <strong id="examCurrentQ" class="text-[#FFB703]">1</strong> / 20</span>
+      <span class="font-bold text-gray-300"><span id="t-exam-header-score">현재 맞힌 개수</span>: <strong id="examScore" class="text-[#06D6A0]">0</strong></span>
     </div>
 
-    <!-- 타이머 게이지 바 영역 (15.0s 표시) -->
+    <!-- 타이머 게이지 바 영역 -->
     <div id="timerContainer" class="w-full mt-1">
       <div class="flex justify-between items-center text-[11px] text-gray-400 mb-1 px-1">
         <span id="timerLabel">TIME ATTACK</span>
@@ -235,22 +235,22 @@
 
       <div class="bg-gray-950 border border-gray-800 rounded-2xl p-4 mb-6 flex justify-around">
         <div>
-          <span class="text-[10px] text-gray-500 block">총 문항수</span>
+          <span id="t-result-total-label" class="text-[10px] text-gray-500 block">총 문항수</span>
           <span class="text-lg font-black text-white">20</span>
         </div>
         <div>
-          <span class="text-[10px] text-gray-500 block">취득 점수</span>
+          <span id="t-result-score-label" class="text-[10px] text-gray-500 block">취득 점수</span>
           <span id="examFinalScore" class="text-2xl font-black text-[#FFB703]">0점</span>
         </div>
         <div>
-          <span class="text-[10px] text-gray-500 block">합격 기준</span>
-          <span class="text-lg font-black text-gray-400">85점 (17개)</span>
+          <span id="t-result-pass-label" class="text-[10px] text-gray-500 block">합격 기준</span>
+          <span id="examPassCriteria" class="text-lg font-black text-gray-400">85점 (17개)</span>
         </div>
       </div>
 
       <div class="flex flex-col gap-2">
         <button id="examActionBtn" onclick="finishExamAction()" class="w-full py-3.5 bg-[#FFB703] hover:bg-yellow-400 text-black font-black text-sm rounded-xl transition-all shadow-lg"></button>
-        <button onclick="backToTraining()" class="w-full py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold text-xs rounded-xl">중급 훈련으로 돌아가기</button>
+        <button onclick="backToTraining()" id="t-exam-back-btn" class="w-full py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold text-xs rounded-xl">중급 훈련으로 돌아가기</button>
       </div>
     </div>
   </section>
@@ -315,12 +315,12 @@
 
       <div class="text-4xl mb-2">🎓✨</div>
       
-      <h3 class="text-lg font-black text-white mb-2 leading-snug">
+      <h3 id="t-modal-vip-title" class="text-lg font-black text-white mb-2 leading-snug">
         고급 프로 코스 체험 완료!<br />
         이제 <span class="text-[#FFB703]">무제한 마스터</span>로
       </h3>
 
-      <div class="bg-gray-950/80 border border-gray-800 rounded-2xl p-3.5 mb-3 text-left space-y-1.5 text-xs text-gray-300">
+      <div id="t-modal-vip-desc" class="bg-gray-950/80 border border-gray-800 rounded-2xl p-3.5 mb-3 text-left space-y-1.5 text-xs text-gray-300">
         <p class="leading-relaxed">
           🎯 <strong>10문항 무료 체험 세션</strong>을 성공적으로 완료하셨습니다.
         </p>
@@ -329,11 +329,12 @@
         </p>
       </div>
 
-      <div class="w-full py-2 px-3 bg-amber-500/10 border border-amber-500/30 rounded-xl mb-3 text-left text-[11px] text-amber-200/90 leading-tight">
+      <div id="t-modal-vip-fee" class="w-full py-2 px-3 bg-amber-500/10 border border-amber-500/30 rounded-xl mb-3 text-left text-[11px] text-amber-200/90 leading-tight">
         💡 iOS(아이폰/아이패드)는 인앱 수수료가 추가되니 <strong class="text-[#FFB703] underline underline-offset-2">PC 브라우저</strong> 결제를 추천합니다.
       </div>
 
       <a 
+        id="t-modal-vip-join"
         href="https://youtube.com/@junkimmusic/join" 
         target="_blank" 
         rel="noreferrer"
@@ -343,7 +344,7 @@
       </a>
 
       <div class="pt-3 border-t border-gray-800/80 text-left">
-        <p class="text-[11px] text-gray-400 font-semibold mb-2">
+        <p id="t-modal-vip-prompt" class="text-[11px] text-gray-400 font-semibold mb-2">
           이미 멤버십 회원이신가요? <br />
           <span class="text-gray-500 font-normal">유튜브 커뮤니티 전용 시크릿 코드를 입력하세요:</span>
         </p>
@@ -355,6 +356,7 @@
             class="flex-1 bg-gray-950 border border-gray-700 px-3 py-2 text-xs rounded-xl text-white uppercase placeholder-gray-600 focus:outline-none focus:border-[#FFB703]" 
           />
           <button 
+            id="t-modal-vip-verify"
             onclick="verifyVipCode()" 
             class="bg-gray-800 hover:bg-gray-700 active:scale-95 px-4 py-2 text-xs font-bold text-white rounded-xl border border-gray-700"
           >
@@ -363,7 +365,7 @@
         </div>
       </div>
 
-      <button onclick="closeVipModal()" class="mt-4 text-xs text-gray-500 hover:text-gray-300">
+      <button id="t-modal-vip-close" onclick="closeVipModal()" class="mt-4 text-xs text-gray-500 hover:text-gray-300">
         나중에 둘러보기
       </button>
     </div>
@@ -419,26 +421,44 @@
       return copy;
     }
 
+    // --- 완벽한 다국어(i18n) 사전 ---
     let currentLang = localStorage.getItem('hb_lang') || 'KO';
     const I18N = {
       KO: {
         welcomeSub: "화성학 기초 완전 격파기",
         welcomeBadge: "⚡ 5대 화성학 게임 & 실전 라이선스",
         welcomeHeadline: '"머리로만 아는 화성학은 끝났다.<br />이제 지판과 건반 위에서 0.1초 만에 깬다!"',
+        welcomeFeat1: '<strong class="text-white">메인 챌린지</strong>: 초급(음정·조표·3화음) → 중급(스케일·4화음) → 승급시험 → 고급 프로 코스',
+        welcomeFeat2: '<strong class="text-white">5대 개별 트레이닝</strong>: 음정 · 조표&스케일 · 코드톤 · 전위 · 실전 보이싱',
         welcomeStartBtn: "지금 바로 격파 시작하기 🔥",
         welcomeSoundHint: "※ 소리를 켜시면 리얼 타임 코드 피드백 사운드가 재생됩니다.",
         gameSub: "화성학 기초 완전 격파기",
+        soloTitle: "🕹️ 개별 훈련 코스",
+        g1Label: "1. 음정",
+        g2Label: "2. 조표&스케일",
+        g3Label: "3. 코드톤",
+        g4Label: "4. 전위",
+        g5Label: "5. 보이싱",
+        backToMain: "← 메인 퀴즈로 복귀",
         tierBeg: "초급 (4선다)",
         tierInt: "중급 (키패드)",
         tierAdv: "고급",
         tierIntLocked: "🔒 중급",
         tierAdvLocked: "🔒 고급",
         unlockGuide: "중급 해금 조건: 10 콤보 달성",
+        examBannerText: "고급 승급 라이선스 시험 도전 (20문항 / 85점 컷)",
+        examHeaderQ: "승급 시험",
+        examHeaderScore: "현재 맞힌 개수",
         previewLabel: "선택한 코드:",
         previewClear: "⌫ 지우기",
         feedbackCorrectLabel: "정답",
         feedbackLink: "관련 무료 화성학 강의 바로보기 ↗",
         feedbackNextBtn: "확인 (다음 문제 풀기) >",
+        resultTotalLabel: "총 문항수",
+        resultScoreLabel: "취득 점수",
+        resultPassLabel: "합격 기준",
+        examPassCriteria: "85점 (17개)",
+        examBackBtn: "중급 훈련으로 돌아가기",
         footerYt: "화성학 1~14강",
         footerCoffeeSub: "앱이 유익했다면",
         footerCoffeeMain: "커피 한 잔 후원",
@@ -447,6 +467,13 @@
         donateKakao: "카카오페이로 송금 (국내 모바일)",
         donateKofi: "Ko-fi 후원 (카드 / PayPal / 해외)",
         donateClose: "닫기",
+        vipTitle: '고급 프로 코스 체험 완료!<br />이제 <span class="text-[#FFB703]">무제한 마스터</span>로',
+        vipDesc: '<p class="leading-relaxed">🎯 <strong>10문항 무료 체험 세션</strong>을 성공적으로 완료하셨습니다.</p><p class="leading-relaxed text-gray-400">✨ 지판 위에서 보이싱이 0.1초 만에 보이는 본능적 감각! <strong>유튜브 멤버십 회원으로 함께하시는 동안</strong> 이 프로 코스를 무제한으로 마음껏 훈련하세요.</p>',
+        vipFee: '💡 iOS(아이폰/아이패드)는 인앱 수수료가 추가되니 <strong class="text-[#FFB703] underline underline-offset-2">PC 브라우저</strong> 결제를 추천합니다.',
+        vipJoin: "👉 멤버십 가입하고 무제한 시크릿 코드 받기 ↗",
+        vipPrompt: '이미 멤버십 회원이신가요? <br /><span class="text-gray-500 font-normal">유튜브 커뮤니티 전용 시크릿 코드를 입력하세요:</span>',
+        vipVerify: "해금",
+        vipClose: "나중에 둘러보기",
         timeoutMsg: "⏰ 시간 초과!",
         wrongMsg: "❌ 오답!",
         rootStepLabel: "1단계: ROOT 선택",
@@ -462,20 +489,37 @@
         welcomeSub: "Instinctive Music Theory Trainer",
         welcomeBadge: "⚡ 5 Harmony Games & License Exam",
         welcomeHeadline: '"Stop overthinking music theory.<br />Master harmony with instant reflexes in 0.1s!"',
+        welcomeFeat1: '<strong class="text-white">Main Challenge</strong>: Beginner(Intervals·Keys) → Intermediate(Spelling·Scales) → Exam → Advanced',
+        welcomeFeat2: '<strong class="text-white">5 Solo Drill Games</strong>: Intervals · Keys&Scales · Chord Spelling · Inversions · Voicings',
         welcomeStartBtn: "Start Busting Harmony 🔥",
         welcomeSoundHint: "※ Turn on audio for real-time chord synthesis feedback.",
         gameSub: "Instinctive Music Theory Trainer",
+        soloTitle: "🕹️ Solo Drill Games",
+        g1Label: "1. Intervals",
+        g2Label: "2. Keys & Scales",
+        g3Label: "3. Chord Spelling",
+        g4Label: "4. Inversions",
+        g5Label: "5. Voicings",
+        backToMain: "← Back to Main Quiz",
         tierBeg: "Beginner",
         tierInt: "Intermediate",
         tierAdv: "Advanced",
         tierIntLocked: "🔒 Intermediate",
         tierAdvLocked: "🔒 Advanced",
         unlockGuide: "Unlock Intermediate: Reach 10 Combo",
+        examBannerText: "Take Advanced License Exam (20 Qs / 85% to pass)",
+        examHeaderQ: "License Exam",
+        examHeaderScore: "Score",
         previewLabel: "Selected Chord:",
         previewClear: "⌫ Clear",
         feedbackCorrectLabel: "CORRECT ANSWER",
         feedbackLink: "Watch Related Lesson Video ↗",
         feedbackNextBtn: "Next Question >",
+        resultTotalLabel: "Total Questions",
+        resultScoreLabel: "Final Score",
+        resultPassLabel: "Passing Grade",
+        examPassCriteria: "85% (17 / 20)",
+        examBackBtn: "Back to Intermediate Drills",
         footerYt: "Theory Ep. 1-14",
         footerCoffeeSub: "Enjoying the app?",
         footerCoffeeMain: "Buy Me a Coffee",
@@ -484,8 +528,15 @@
         donateKakao: "KakaoPay Transfer (Korea Mobile)",
         donateKofi: "Support via Ko-fi (Card / PayPal / Global)",
         donateClose: "Close",
-        timeoutMsg: "⏰ Time Out!",
-        wrongMsg: "❌ Incorrect!",
+        vipTitle: 'Advanced Preview Complete!<br />Unlock <span class="text-[#FFB703]">Unlimited Pro Drills</span>',
+        vipDesc: '<p class="leading-relaxed">🎯 You have completed the <strong>10-question free trial session</strong>.</p><p class="leading-relaxed text-gray-400">✨ Train your chord voicing reflexes with <strong>unlimited access as a YouTube channel member</strong>!</p>',
+        vipFee: '💡 Apple iOS charges extra in-app fees. Subscribing via <strong>PC Web Browser</strong> is recommended.',
+        vipJoin: "👉 Join Membership & Get Secret Passcode ↗",
+        vipPrompt: 'Already a member? <br /><span class="text-gray-500 font-normal">Enter the passcode from YouTube Community:</span>',
+        vipVerify: "Unlock",
+        vipClose: "Maybe Later",
+        timeoutMsg: "⏰ TIME OUT!",
+        wrongMsg: "❌ INCORRECT!",
         rootStepLabel: "STEP 1: SELECT ROOT",
         qualityStepLabel: "STEP 2: TAP QUALITY (SUBMIT)",
         needRootAlert: "Please select a Root note first!",
@@ -507,16 +558,36 @@
       document.getElementById('t-welcome-sub').innerText = dict.welcomeSub;
       document.getElementById('t-welcome-badge').innerText = dict.welcomeBadge;
       document.getElementById('t-welcome-headline').innerHTML = dict.welcomeHeadline;
+      document.getElementById('t-welcome-feat1').innerHTML = dict.welcomeFeat1;
+      document.getElementById('t-welcome-feat2').innerHTML = dict.welcomeFeat2;
       document.getElementById('t-welcome-start-btn').innerText = dict.welcomeStartBtn;
       document.getElementById('t-welcome-sound-hint').innerText = dict.welcomeSoundHint;
 
       document.getElementById('t-game-sub').innerText = dict.gameSub;
+      document.getElementById('t-solo-title').innerText = dict.soloTitle;
+      document.getElementById('btnG1').innerText = dict.g1Label;
+      document.getElementById('btnG2').innerText = dict.g2Label;
+      document.getElementById('btnG3').innerText = dict.g3Label;
+      document.getElementById('btnG4').innerText = dict.g4Label;
+      document.getElementById('t-g5-label').innerText = dict.g5Label;
+      document.getElementById('btnBackToMain').innerText = dict.backToMain;
+
       document.getElementById('t-unlock-guide').innerText = dict.unlockGuide;
+      document.getElementById('t-exam-banner-text').innerText = dict.examBannerText;
+      document.getElementById('t-exam-header-q').innerText = dict.examHeaderQ;
+      document.getElementById('t-exam-header-score').innerText = dict.examHeaderScore;
+
       document.getElementById('t-preview-label').innerText = dict.previewLabel;
       document.getElementById('t-preview-clear').innerText = dict.previewClear;
       document.getElementById('t-feedback-correct-label').innerText = dict.feedbackCorrectLabel;
       document.getElementById('t-feedback-link').innerText = dict.feedbackLink;
       document.getElementById('t-feedback-next-btn').innerText = dict.feedbackNextBtn;
+
+      document.getElementById('t-result-total-label').innerText = dict.resultTotalLabel;
+      document.getElementById('t-result-score-label').innerText = dict.resultScoreLabel;
+      document.getElementById('t-result-pass-label').innerText = dict.resultPassLabel;
+      document.getElementById('examPassCriteria').innerText = dict.examPassCriteria;
+      document.getElementById('t-exam-back-btn').innerText = dict.examBackBtn;
 
       document.getElementById('t-footer-yt').innerText = dict.footerYt;
       document.getElementById('t-footer-coffee-sub').innerText = dict.footerCoffeeSub;
@@ -527,6 +598,14 @@
       document.getElementById('t-modal-donate-kakao').innerText = dict.donateKakao;
       document.getElementById('t-modal-donate-kofi').innerText = dict.donateKofi;
       document.getElementById('t-modal-donate-close').innerText = dict.donateClose;
+
+      document.getElementById('t-modal-vip-title').innerHTML = dict.vipTitle;
+      document.getElementById('t-modal-vip-desc').innerHTML = dict.vipDesc;
+      document.getElementById('t-modal-vip-fee').innerHTML = dict.vipFee;
+      document.getElementById('t-modal-vip-join').innerText = dict.vipJoin;
+      document.getElementById('t-modal-vip-prompt').innerHTML = dict.vipPrompt;
+      document.getElementById('t-modal-vip-verify').innerText = dict.vipVerify;
+      document.getElementById('t-modal-vip-close').innerText = dict.vipClose;
 
       updateTabsUI();
       if (currentQuestion) {
@@ -681,12 +760,18 @@
       { triad: 'A', base: 'C#', inv: '1st' }, { triad: 'A', base: 'E', inv: '2nd' }
     ];
 
+    // 조표 다국어 풀
     const KEY_SIG_POOL = [
-      { key: 'G Major', sig: '샵(#) 1개' }, { key: 'D Major', sig: '샵(#) 2개' },
-      { key: 'A Major', sig: '샵(#) 3개' }, { key: 'E Major', sig: '샵(#) 4개' },
-      { key: 'B Major', sig: '샵(#) 5개' }, { key: 'F Major', sig: '플랫(b) 1개' },
-      { key: 'Bb Major', sig: '플랫(b) 2개' }, { key: 'Eb Major', sig: '플랫(b) 3개' },
-      { key: 'Ab Major', sig: '플랫(b) 4개' }, { key: 'Db Major', sig: '플랫(b) 5개' }
+      { key: 'G Major', sigKO: '샵(#) 1개', sigEN: '1 Sharp (#)' },
+      { key: 'D Major', sigKO: '샵(#) 2개', sigEN: '2 Sharps (#)' },
+      { key: 'A Major', sigKO: '샵(#) 3개', sigEN: '3 Sharps (#)' },
+      { key: 'E Major', sigKO: '샵(#) 4개', sigEN: '4 Sharps (#)' },
+      { key: 'B Major', sigKO: '샵(#) 5개', sigEN: '5 Sharps (#)' },
+      { key: 'F Major', sigKO: '플랫(b) 1개', sigEN: '1 Flat (b)' },
+      { key: 'Bb Major', sigKO: '플랫(b) 2개', sigEN: '2 Flats (b)' },
+      { key: 'Eb Major', sigKO: '플랫(b) 3개', sigEN: '3 Flats (b)' },
+      { key: 'Ab Major', sigKO: '플랫(b) 4개', sigEN: '4 Flats (b)' },
+      { key: 'Db Major', sigKO: '플랫(b) 5개', sigEN: '5 Flats (b)' }
     ];
 
     function generateDynamicInterval(isAdvanced = false) {
@@ -699,8 +784,7 @@
       const wrongOpts = shuffleArray(ROOTS_ALL.filter(n => n !== correctAns)).slice(0, 3);
       return {
         from: root,
-        nameKO: ivName,
-        nameEN: ivName,
+        name: ivName,
         ans: correctAns,
         opts: shuffleArray([correctAns, ...wrongOpts])
       };
@@ -715,8 +799,8 @@
           type: 'MCQ',
           catKO: '다이아토닉 음정 (1~4강)',
           catEN: 'Diatonic Intervals',
-          qKO: `[ ${item.from} ] 에서 [ ${item.nameKO} ] 위의 음은?`,
-          qEN: `What is the [ ${item.nameEN} ] above [ ${item.from} ]?`,
+          qKO: `[ ${item.from} ] 에서 [ ${item.name} ] 위의 음은?`,
+          qEN: `What is the [ ${item.name} ] above [ ${item.from} ]?`,
           ans: item.ans,
           opts: item.opts,
           url: YOUTUBE_URL + '&index=1'
@@ -729,8 +813,8 @@
           type: 'MCQ',
           catKO: '조표 & 키 (5~6강)',
           catEN: 'Key Signatures',
-          qKO: `[ ${item.sig} ] 가 붙는 Major Key는?`,
-          qEN: `Which Major Key has [ ${item.sig} ]?`,
+          qKO: `[ ${item.sigKO} ] 가 붙는 Major Key는?`,
+          qEN: `Which Major Key has [ ${item.sigEN} ]?`,
           ans: item.key,
           opts: shuffleArray([item.key, ...shuffleArray(wrongKeys).slice(0, 3)]),
           url: YOUTUBE_URL + '&index=5'
@@ -777,8 +861,8 @@
         type: 'MCQ',
         catKO: '음정 판독 (12음 루트)',
         catEN: 'Intervals (12 Roots)',
-        qKO: `[ ${item.from} ] 에서 [ ${item.nameKO} ] 위의 음은?`,
-        qEN: `What is the [ ${item.nameEN} ] above [ ${item.from} ]?`,
+        qKO: `[ ${item.from} ] 에서 [ ${item.name} ] 위의 음은?`,
+        qEN: `What is the [ ${item.name} ] above [ ${item.from} ]?`,
         ans: item.ans,
         opts: item.opts,
         url: YOUTUBE_URL + '&index=1'
@@ -795,8 +879,8 @@
           type: 'MCQ',
           catKO: '조표 판독 (기초~심화)',
           catEN: 'Key Signatures',
-          qKO: `[ ${item.sig} ] 가 붙는 Major Key는?`,
-          qEN: `Which Major Key has [ ${item.sig} ]?`,
+          qKO: `[ ${item.sigKO} ] 가 붙는 Major Key는?`,
+          qEN: `Which Major Key has [ ${item.sigEN} ]?`,
           ans: item.key,
           opts: shuffleArray([item.key, ...shuffleArray(wrongKeys).slice(0, 3)]),
           url: YOUTUBE_URL + '&index=5'
@@ -852,7 +936,7 @@
           catKO: '구성음 → 코드 판별',
           catEN: 'Notes to Chord',
           qKO: `구성음 [ ${notesStr} ] 로 이루어진 코드는?`,
-          qEN: `Which chord is formed by [ ${notesStr} ]?`,
+          qEN: `Which chord is formed by notes [ ${notesStr} ]?`,
           ans: chosenChord,
           url: YOUTUBE_URL + '&index=12'
         };
@@ -865,7 +949,7 @@
           catKO: '코드 → 구성음 판별',
           catEN: 'Chord to Notes',
           qKO: `[ ${chosenChord} ] 코드의 실제 구성음으로 알맞은 것은?`,
-          qEN: `What are the notes of [ ${chosenChord} ]?`,
+          qEN: `What are the actual notes of [ ${chosenChord} ]?`,
           ans: notesStr,
           opts: shuffleArray([notesStr, ...wrongOpts]),
           url: YOUTUBE_URL + '&index=12'
@@ -877,9 +961,9 @@
           gameTag: 'GAME 3. CHORD SPELL MASTER',
           type: 'KEYPAD_CHORD',
           catKO: `도수 공식 (${formula.nameKO})`,
-          catEN: 'Formula Spelling',
+          catEN: `Formula Spelling (${formula.nameKO})`,
           qKO: `Root [ ${root} ], 도수 구성 [ ${formula.tonesKO} ] 인 코드는?`,
-          qEN: `Root [ ${root} ] with formula [ ${formula.tonesKO} ]?`,
+          qEN: `Root [ ${root} ] with formula degrees [ ${formula.tonesKO} ]?`,
           ans: `${root}${formula.quality}`,
           url: YOUTUBE_URL + '&index=12'
         };
@@ -901,45 +985,25 @@
       };
     }
 
-    // ==========================================
-    // Game 5. 실전 드롭 보이싱 & 심화 스케일 엔진
-    // ==========================================
     function genGame5() {
       const r = Math.random();
 
-      // [유형 1: 30%] 실전 코드 드롭 보이싱 실제 음 구성 찾기 (예: Dm7 Drop 2 최저음 3음 -> F, C, D, A)
       if (r < 0.30) {
         const root = ROOTS_ALL[Math.floor(Math.random() * ROOTS_ALL.length)];
         const qTypes = ['maj7', '7', 'm7', 'm7b5'];
         const q = qTypes[Math.floor(Math.random() * qTypes.length)];
         const chord = `${root}${q}`;
-        const tones = ACCURATE_CHORD_DB[chord]; // [1, 3, 5, 7]
-        const [T1, T3, T5, T7] = tones;
+        const [T1, T3, T5, T7] = ACCURATE_CHORD_DB[chord];
 
-        const d2Forms = [
-          { bassDeg: '1음 (Root)', bassName: '1음 (Root)', ans: `${T5} - ${T1} - ${T3} - ${T7}`, dStr: '5-1-3-7 (Root top)' },
-          { bassDeg: '3음', bassName: '3음', ans: `${T3} - ${T7} - ${T1} - ${T5}`, dStr: '3-7-1-5 (5th top)' },
-          { bassDeg: '5음', bassName: '5음', ans: `${T5} - ${T3} - ${T7} - ${T1}`, dStr: '5-3-7-1' },
-          { bassDeg: '7음', bassName: '7음', ans: `${T7} - ${T5} - ${T1} - ${T3}`, dStr: '7-5-1-3' }
-        ];
-
-        // 정확한 Drop 2 순열 매핑:
-        // Close 1-3-5-7 -> Drop2: 5-1-3-7 (bass 5, top 7)
-        // Close 3-5-7-1 -> Drop2: 7-3-5-1 (bass 7, top 1)
-        // Close 5-7-1-3 -> Drop2: 1-5-7-3 (bass 1, top 3)
-        // Close 7-1-3-5 -> Drop2: 3-7-1-5 (bass 3, top 5)
         const d2Accurate = [
-          { bass: '1음(Root)을 최저음', ans: `${T1} - ${T5} - ${T7} - ${T3}` },
-          { bass: '3음을 최저음', ans: `${T3} - ${T7} - ${T1} - ${T5}` },
-          { bass: '5음을 최저음', ans: `${T5} - ${T1} - ${T3} - ${T7}` },
-          { bass: '7음을 최저음', ans: `${T7} - ${T3} - ${T5} - ${T1}` }
+          { bassKO: '1음(Root)을 최저음', bassEN: 'Root (1st) in Bass', ans: `${T1} - ${T5} - ${T7} - ${T3}` },
+          { bassKO: '3음을 최저음', bassEN: '3rd in Bass', ans: `${T3} - ${T7} - ${T1} - ${T5}` },
+          { bassKO: '5음을 최저음', bassEN: '5th in Bass', ans: `${T5} - ${T1} - ${T3} - ${T7}` },
+          { bassKO: '7음을 최저음', bassEN: '7th in Bass', ans: `${T7} - ${T3} - ${T5} - ${T1}` }
         ];
 
         const chosen = d2Accurate[Math.floor(Math.random() * d2Accurate.length)];
         const wrongPool = d2Accurate.filter(item => item.ans !== chosen.ans).map(item => item.ans);
-
-        // 추가 오답(Drop 3 폼의 음 배열):
-        // Drop 3 Close 1-3-5-7 -> 1-7-3-5, Close 3-5-7-1 -> 3-1-5-7
         wrongPool.push(`${T3} - ${T1} - ${T5} - ${T7}`);
         wrongPool.push(`${T1} - ${T7} - ${T3} - ${T5}`);
 
@@ -948,15 +1012,14 @@
           type: 'MCQ',
           catKO: '실전 Drop 2 음 구성',
           catEN: 'Real Drop 2 Notes',
-          qKO: `[ ${chord} ] 코드의 Drop 2 보이싱 중 [ ${chosen.bass} ] 으로 하는 실제 음 배열(저음→고음)은?`,
-          qEN: `In [ ${chord} ] Drop 2 voicing with [ ${chosen.bass} ], what is the note order from bass?`,
+          qKO: `[ ${chord} ] 코드의 Drop 2 보이싱 중 [ ${chosen.bassKO} ] 으로 하는 실제 음 배열(저음→고음)은?`,
+          qEN: `In [ ${chord} ] Drop 2 voicing with [ ${chosen.bassEN} ], what is the note order from bass?`,
           ans: chosen.ans,
           opts: shuffleArray([chosen.ans, ...shuffleArray(wrongPool).slice(0, 3)]),
           url: YOUTUBE_URL + '&index=12'
         };
       }
 
-      // [유형 2: 30%] 역방향: 실제 음 배열 보고 무슨 보이싱인지 맞히기 (Drop 2 vs Drop 3 믹스)
       if (r < 0.60) {
         const root = ROOTS_ALL[Math.floor(Math.random() * ROOTS_ALL.length)];
         const qTypes = ['maj7', 'm7', '7'];
@@ -982,7 +1045,7 @@
           gameTag: 'GAME 5. VOICING DETECTOR',
           type: 'MCQ',
           catKO: '보이싱 역산 판독 (Drop 2 / Drop 3)',
-          catEN: 'Voicing Detector',
+          catEN: 'Voicing Detector (Drop 2 & 3)',
           qKO: `[ ${chord} ] 코드를 낮은 음부터 [ ${chosen.notes} ] 로 쌓아올린 보이싱은?`,
           qEN: `[ ${chord} ] voiced from bass as [ ${chosen.notes} ]. Which voicing is this?`,
           ans: chosen.label,
@@ -991,15 +1054,14 @@
         };
       }
 
-      // [유형 3: 20%] 도수 구조 문제 (보기 4개에 Drop 2와 Drop 3를 교차 혼합)
       if (r < 0.80) {
         const isD2 = Math.random() > 0.5;
         if (isD2) {
           const d2List = [
-            { cond: '최고음이 1음 (Root)', ans: '7-3-5-1' },
-            { cond: '최고음이 3음', ans: '1-5-7-3' },
-            { cond: '최고음이 5음', ans: '3-7-1-5' },
-            { cond: '최고음이 7음', ans: '5-1-3-7' }
+            { condKO: '최고음이 1음 (Root)', condEN: 'Top Note is Root', ans: '7-3-5-1' },
+            { condKO: '최고음이 3음', condEN: 'Top Note is 3rd', ans: '1-5-7-3' },
+            { condKO: '최고음이 5음', condEN: 'Top Note is 5th', ans: '3-7-1-5' },
+            { condKO: '최고음이 7음', condEN: 'Top Note is 7th', ans: '5-1-3-7' }
           ];
           const chosen = d2List[Math.floor(Math.random() * d2List.length)];
           const confusionPool = ['3-1-5-7', '1-7-3-5', '5-3-7-1', '7-5-1-3', '7-3-5-1', '1-5-7-3', '3-7-1-5', '5-1-3-7'].filter(x => x !== chosen.ans);
@@ -1008,18 +1070,18 @@
             type: 'MCQ',
             catKO: 'Drop 2 도수 구조 (혼합 선지)',
             catEN: 'Drop 2 Degree Formula',
-            qKO: `Drop 2 보이싱에서 [ ${chosen.cond} ] 일 때 저음부터의 도수 배열은?`,
-            qEN: `In Drop 2 with [ ${chosen.cond} ], what is degree order from bass?`,
+            qKO: `Drop 2 보이싱에서 [ ${chosen.condKO} ] 일 때 저음부터의 도수 배열은?`,
+            qEN: `In Drop 2 with [ ${chosen.condEN} ], what is degree order from bass?`,
             ans: chosen.ans,
             opts: shuffleArray([chosen.ans, ...shuffleArray(confusionPool).slice(0, 3)]),
             url: YOUTUBE_URL + '&index=12'
           };
         } else {
           const d3List = [
-            { cond: '최저음(Bass)이 1음 (Root)', ans: '1-7-3-5' },
-            { cond: '최저음(Bass)이 3음', ans: '3-1-5-7' },
-            { cond: '최저음(Bass)이 5음', ans: '5-3-7-1' },
-            { cond: '최저음(Bass)이 7음', ans: '7-5-1-3' }
+            { condKO: '최저음(Bass)이 1음 (Root)', condEN: 'Bass is Root', ans: '1-7-3-5' },
+            { condKO: '최저음(Bass)이 3음', condEN: 'Bass is 3rd', ans: '3-1-5-7' },
+            { condKO: '최저음(Bass)이 5음', condEN: 'Bass is 5th', ans: '5-3-7-1' },
+            { condKO: '최저음(Bass)이 7음', condEN: 'Bass is 7th', ans: '7-5-1-3' }
           ];
           const chosen = d3List[Math.floor(Math.random() * d3List.length)];
           const confusionPool = ['7-3-5-1', '1-5-7-3', '3-7-1-5', '5-1-3-7', '1-7-3-5', '3-1-5-7', '5-3-7-1', '7-5-1-3'].filter(x => x !== chosen.ans);
@@ -1028,8 +1090,8 @@
             type: 'MCQ',
             catKO: 'Drop 3 도수 구조 (혼합 선지)',
             catEN: 'Drop 3 Degree Formula',
-            qKO: `Drop 3 보이싱에서 [ ${chosen.cond} ] 일 때 저음부터의 도수 배열은?`,
-            qEN: `In Drop 3 with [ ${chosen.cond} ], what is degree order from bass?`,
+            qKO: `Drop 3 보이싱에서 [ ${chosen.condKO} ] 일 때 저음부터의 도수 배열은?`,
+            qEN: `In Drop 3 with [ ${chosen.condEN} ], what is degree order from bass?`,
             ans: chosen.ans,
             opts: shuffleArray([chosen.ans, ...shuffleArray(confusionPool).slice(0, 3)]),
             url: YOUTUBE_URL + '&index=12'
@@ -1037,10 +1099,8 @@
         }
       }
 
-      // [유형 4: 20%] 하모닉 마이너 & 멜로딕 마이너 스케일 및 고급 스펠링
       const subType = Math.random();
       if (subType < 0.5) {
-        // 멜로딕 마이너 스케일 전체 구성음
         const mmKeys = Object.keys(MELODIC_MINORS);
         const chosen = mmKeys[Math.floor(Math.random() * mmKeys.length)];
         const correctStr = MELODIC_MINORS[chosen].join(', ');
@@ -1051,22 +1111,21 @@
           catKO: '재즈 멜로딕 마이너 (1-2-b3-4-5-6-7)',
           catEN: 'Melodic Minor Scale',
           qKO: `[ ${chosen} Melodic Minor (Jazz Minor) ] 스케일의 전체 구성음은?`,
-          qEN: `Scale notes of [ ${chosen} Melodic Minor ]?`,
+          qEN: `Scale notes of [ ${chosen} Melodic Minor (Jazz Minor) ]?`,
           ans: correctStr,
           opts: shuffleArray([correctStr, ...wrongOpts]),
           url: YOUTUBE_URL + '&index=7'
         };
       } else {
-        // 고급 스펠링 / 하모닉 마이너 리딩톤
         const hardSpellings = [
-          { qKO: 'G# Harmonic Minor의 7번째 음 (Leading tone)은?', ans: 'Fx (F##)', opts: ['Fx (F##)', 'G', 'F#', 'Gx'] },
-          { qKO: 'D# Harmonic Minor의 7번째 음 (Leading tone)은?', ans: 'Cx (C##)', opts: ['Cx (C##)', 'D', 'C#', 'Dx'] },
-          { qKO: 'A# Harmonic Minor의 7번째 음 (Leading tone)은?', ans: 'Gx (G##)', opts: ['Gx (G##)', 'A', 'G#', 'Ax'] },
-          { qKO: 'C Melodic Minor 스케일의 6번째와 7번째 음은?', ans: 'A, B', opts: ['A, B', 'Ab, Bb', 'Ab, B', 'A, Bb'] },
-          { qKO: 'F Melodic Minor 스케일의 6번째와 7번째 음은?', ans: 'D, E', opts: ['D, E', 'Db, Eb', 'Db, E', 'D, Eb'] },
-          { qKO: 'G Melodic Minor 스케일의 6번째와 7번째 음은?', ans: 'E, F#', opts: ['E, F#', 'Eb, F', 'Eb, F#', 'E, F'] },
-          { qKO: 'Ab dim7 코드의 감7도 (bb7) 정확한 스펠링은?', ans: 'Gbb', opts: ['Gbb', 'F', 'Gb', 'Abb'] },
-          { qKO: 'Db dim7 코드의 감7도 (bb7) 정확한 스펠링은?', ans: 'Cbb', opts: ['Cbb', 'Bb', 'Cb', 'Bbb'] }
+          { qKO: 'G# Harmonic Minor의 7번째 음 (Leading tone)은?', qEN: '7th tone (Leading tone) of G# Harmonic Minor?', ans: 'Fx (F##)', opts: ['Fx (F##)', 'G', 'F#', 'Gx'] },
+          { qKO: 'D# Harmonic Minor의 7번째 음 (Leading tone)은?', qEN: '7th tone (Leading tone) of D# Harmonic Minor?', ans: 'Cx (C##)', opts: ['Cx (C##)', 'D', 'C#', 'Dx'] },
+          { qKO: 'A# Harmonic Minor의 7번째 음 (Leading tone)은?', qEN: '7th tone (Leading tone) of A# Harmonic Minor?', ans: 'Gx (G##)', opts: ['Gx (G##)', 'A', 'G#', 'Ax'] },
+          { qKO: 'C Melodic Minor 스케일의 6번째와 7번째 음은?', qEN: '6th & 7th degrees of C Melodic Minor scale?', ans: 'A, B', opts: ['A, B', 'Ab, Bb', 'Ab, B', 'A, Bb'] },
+          { qKO: 'F Melodic Minor 스케일의 6번째와 7번째 음은?', qEN: '6th & 7th degrees of F Melodic Minor scale?', ans: 'D, E', opts: ['D, E', 'Db, Eb', 'Db, E', 'D, Eb'] },
+          { qKO: 'G Melodic Minor 스케일의 6번째와 7번째 음은?', qEN: '6th & 7th degrees of G Melodic Minor scale?', ans: 'E, F#', opts: ['E, F#', 'Eb, F', 'Eb, F#', 'E, F'] },
+          { qKO: 'Ab dim7 코드의 감7도 (bb7) 정확한 스펠링은?', qEN: 'Accurate spelling of diminished 7th (bb7) of Ab dim7?', ans: 'Gbb', opts: ['Gbb', 'F', 'Gb', 'Abb'] },
+          { qKO: 'Db dim7 코드의 감7도 (bb7) 정확한 스펠링은?', qEN: 'Accurate spelling of diminished 7th (bb7) of Db dim7?', ans: 'Cbb', opts: ['Cbb', 'Bb', 'Cb', 'Bbb'] }
         ];
         const item = hardSpellings[Math.floor(Math.random() * hardSpellings.length)];
         return {
@@ -1075,7 +1134,7 @@
           catKO: '하모닉/멜로딕 마이너 스펠링',
           catEN: 'Minor Scale Spelling',
           qKO: item.qKO,
-          qEN: item.qKO,
+          qEN: item.qEN,
           ans: item.ans,
           opts: shuffleArray(item.opts),
           url: YOUTUBE_URL + '&index=7'
@@ -1204,7 +1263,10 @@
 
     function selectTier(t) {
       if (isExamMode) {
-        if (!confirm('시험 도중에 티어를 변경하시겠습니까? 현재 시험 기록은 초기화됩니다.')) return;
+        const msg = currentLang === 'KO' 
+          ? '시험 도중에 티어를 변경하시겠습니까? 현재 시험 기록은 초기화됩니다.' 
+          : 'Do you want to switch tier during the exam? Current progress will be lost.';
+        if (!confirm(msg)) return;
         exitExamMode();
       }
 
@@ -1229,7 +1291,11 @@
     }
 
     function startExamMode() {
-      if (!confirm('🎓 [고급 승급 라이선스 시험]\n- 총 20문항\n- 구성: 스케일 구성음, 4화음 코드톤, 심화 음정, 전위\n- 합격 기준: 85점 이상 (17문제 이상 정답)\n- 통과 시 [고급 프로 코스 10문항 체험 세션]이 오픈됩니다!\n\n시험을 시작하시겠습니까?')) return;
+      const confirmMsg = currentLang === 'KO'
+        ? '🎓 [고급 승급 라이선스 시험]\n- 총 20문항\n- 구성: 스케일 구성음, 4화음 코드톤, 심화 음정, 전위\n- 합격 기준: 85점 이상 (17문제 이상 정답)\n- 통과 시 [고급 프로 코스 10문항 체험 세션]이 오픈됩니다!\n\n시험을 시작하시겠습니까?'
+        : '🎓 [Advanced License Exam]\n- 20 Questions\n- Topics: Scales, 7th Chords, Intervals, Inversions\n- Pass: 85%+ (17+ correct)\n- Passing unlocks a 10-Question Advanced Pro trial!\n\nDo you want to start now?';
+
+      if (!confirm(confirmMsg)) return;
 
       isExamMode = true;
       examCurrentIndex = 0;
@@ -1260,7 +1326,7 @@
       document.getElementById('examResultScreen').classList.remove('hidden');
 
       const finalScore = Math.round((examCorrectCount / examTotalCount) * 100);
-      document.getElementById('examFinalScore').innerText = `${finalScore}점`;
+      document.getElementById('examFinalScore').innerText = `${finalScore}${currentLang === 'KO' ? '점' : '%'}`;
 
       const isPass = finalScore >= 85;
       const icon = document.getElementById('examResultIcon');
@@ -1274,17 +1340,21 @@
         saveState();
 
         icon.innerText = '🎉';
-        title.innerText = '축하합니다! 라이선스 합격!';
+        title.innerText = currentLang === 'KO' ? '축하합니다! 라이선스 합격!' : 'Congratulations! Exam Passed!';
         title.className = 'text-xl font-black text-[#06D6A0] mb-2';
-        desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong>를 정확히 격파했습니다.<br />실전 연주자들을 위한 <strong>[고급 보이싱 10문항 특별 체험]</strong>을 지금 시작하세요!`;
-        actionBtn.innerText = '고급 코스 10문항 체험 시작하기 🚀';
+        desc.innerHTML = currentLang === 'KO'
+          ? `20문제 중 <strong>${examCorrectCount}문제</strong>를 정확히 격파했습니다.<br />실전 연주자들을 위한 <strong>[고급 보이싱 10문항 특별 체험]</strong>을 지금 시작하세요!`
+          : `You scored <strong>${examCorrectCount} out of 20</strong>!<br />Start your <strong>10-Question Advanced Pro Session</strong> now!`;
+        actionBtn.innerText = currentLang === 'KO' ? '고급 코스 10문항 체험 시작하기 🚀' : 'Start Advanced 10-Q Session 🚀';
         actionBtn.className = 'w-full py-3.5 bg-[#06D6A0] hover:bg-emerald-400 text-black font-black text-sm rounded-xl transition-all shadow-lg';
       } else {
         icon.innerText = '💡';
-        title.innerText = '아쉽습니다! 재도전 필요';
+        title.innerText = currentLang === 'KO' ? '아쉽습니다! 재도전 필요' : 'Not Quite! Try Again';
         title.className = 'text-xl font-black text-[#EF476F] mb-2';
-        desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong> 정답 (기준: 17문제 이상).<br />스케일과 4화음 코드톤을 보강하고 다시 도전해 보세요!`;
-        actionBtn.innerText = '시험 다시 치르기 🔄';
+        desc.innerHTML = currentLang === 'KO'
+          ? `20문제 중 <strong>${examCorrectCount}문제</strong> 정답 (기준: 17문제 이상).<br />스케일과 4화음 코드톤을 보강하고 다시 도전해 보세요!`
+          : `You got <strong>${examCorrectCount} / 20</strong> (Needed: 17+).<br />Brush up on scales and chord spellings and retake!`;
+        actionBtn.innerText = currentLang === 'KO' ? '시험 다시 치르기 🔄' : 'Retake Exam 🔄';
         actionBtn.className = 'w-full py-3.5 bg-[#FFB703] hover:bg-yellow-400 text-black font-black text-sm rounded-xl transition-all shadow-lg';
       }
     }
