@@ -15,96 +15,208 @@
     }
   </style>
 </head>
-<body class="min-h-screen text-[#EDEDED] flex flex-col items-center justify-between p-4 font-sans">
+<body class="min-h-screen text-[#EDEDED] flex flex-col items-center justify-between p-4 font-sans max-w-md mx-auto">
 
-  <!-- 헤더 -->
-  <header class="w-full max-w-md flex justify-between items-center py-2 border-b border-gray-800">
-    <div>
-      <h1 class="text-xl font-black tracking-wider text-[#FFB703]">HARMONY BUSTER</h1>
-      <p class="text-xs text-gray-400">화성학 기초 완전 격파기</p>
-    </div>
-    <div class="flex items-center gap-2">
-      <div id="comboBadge" class="hidden text-xs font-bold bg-[#EF476F]/20 text-[#EF476F] px-2.5 py-1 rounded-full animate-pulse">
-        🔥 <span id="comboCount">0</span> COMBO
+  <!-- ========================================== -->
+  <!-- 0. 오프닝 웰컴 화면 (초기 노출) -->
+  <!-- ========================================== -->
+  <section id="welcomeScreen" class="w-full flex-1 flex flex-col justify-between items-center text-center px-2 py-4 my-auto">
+    
+    <!-- 웰컴 헤더 (상단 채널 배너 포함) -->
+    <header class="w-full flex justify-between items-center py-2 border-b border-gray-800/80 mb-4">
+      <div class="text-left">
+        <h2 class="text-base font-black tracking-wider text-[#FFB703]">HARMONY BUSTER</h2>
+        <p class="text-[10px] text-gray-400">화성학 기초 완전 격파기</p>
       </div>
-    </div>
-  </header>
 
-  <!-- 티어 선택 탭 -->
-  <div class="w-full max-w-md grid grid-cols-3 gap-2 my-2 bg-gray-900 p-1 rounded-xl text-center">
-    <button id="btnTierBeg" onclick="selectTier('BEGINNER')" class="py-2 text-xs font-bold rounded-lg bg-[#FFB703] text-black transition-all">
-      초급 (4선다)
-    </button>
-    <button id="btnTierInt" onclick="selectTier('INTERMEDIATE')" class="py-2 text-xs font-bold rounded-lg text-gray-600 cursor-not-allowed transition-all">
-      🔒 중급
-    </button>
-    <button id="btnTierAdv" onclick="selectTier('ADVANCED')" class="py-2 text-xs font-bold rounded-lg text-gray-600 cursor-not-allowed transition-all">
-      🔒 고급
-    </button>
-  </div>
+      <!-- by Jun Kim 유튜브 채널 배너 -->
+      <div class="flex items-center gap-1.5">
+        <span class="text-[11px] text-gray-500 font-medium">by</span>
+        <a 
+          href="https://youtube.com/@junkimmusic" 
+          target="_blank" 
+          rel="noreferrer"
+          class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-600/15 hover:bg-red-600/25 active:scale-95 border border-red-500/40 rounded-full transition-all shadow-sm"
+        >
+          <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+          <span class="text-[11px] font-black text-red-400 tracking-tight">Jun Kim ▶</span>
+        </a>
+      </div>
+    </header>
 
-  <!-- 초급 진행도 안내 바 -->
-  <div id="unlockGuideBar" class="w-full max-w-md text-center py-1 bg-gray-900/60 rounded-lg text-[11px] text-gray-400">
-    💡 중급 해금 조건: <span class="text-[#FFB703] font-bold">10 콤보 달성</span> (<span id="unlockProgress">0</span>/10)
-  </div>
-
-  <!-- 타이머 게이지 바 영역 -->
-  <div class="w-full max-w-md mt-2">
-    <div class="flex justify-between items-center text-[11px] text-gray-400 mb-1 px-1">
-      <span>TIME ATTACK</span>
-      <span id="timerText" class="font-bold text-[#FFB703]">10.0s</span>
-    </div>
-    <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
-      <div id="timerBar" class="h-full bg-[#06D6A0] transition-all duration-100 ease-linear" style="width: 100%;"></div>
-    </div>
-  </div>
-
-  <!-- 문제 카드 -->
-  <main class="w-full max-w-md flex-1 flex flex-col justify-center my-3">
-    <div id="cardBox" class="p-6 rounded-2xl bg-gray-900 border-2 border-gray-800 flex flex-col items-center text-center shadow-2xl transition-all">
-      <span id="qCategory" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-gray-800 text-gray-300 mb-3">
-        카테고리
-      </span>
-      <p id="qText" class="text-xl font-extrabold text-white leading-relaxed mb-4">
-        질문 로딩 중...
+    <div class="my-auto w-full flex flex-col items-center">
+      <div class="inline-block px-3 py-1 bg-[#FFB703]/10 border border-[#FFB703]/30 rounded-full text-xs font-bold text-[#FFB703] mb-4">
+        ⚡ 0.1초 본능적 화성 연산 트레이너
+      </div>
+      
+      <h1 class="text-3xl font-black tracking-wider text-white mb-2 leading-tight">
+        HARMONY <span class="text-[#FFB703]">BUSTER</span>
+      </h1>
+      <p class="text-sm font-bold text-gray-300 mb-6">
+        "머리로만 아는 화성학은 끝났다.<br />
+        이제 지판과 건반 위에서 바로 깬다!"
       </p>
 
-      <!-- 중급/고급 패드 입력 조합 디스플레이 -->
-      <div id="inputPreviewBox" class="hidden w-full py-2 px-3 bg-gray-950 rounded-lg border border-gray-800 mb-2 flex justify-between items-center text-sm">
-        <span class="text-gray-400 text-xs">선택한 코드:</span>
-        <span id="previewText" class="font-bold text-[#FFB703] text-base tracking-wide">-</span>
-        <button onclick="clearCurrentInput()" class="text-xs text-gray-500 hover:text-red-400">⌫ 지우기</button>
+      <!-- 핵심 가치 요약 박스 -->
+      <div class="w-full bg-gray-900/90 border border-gray-800 rounded-2xl p-4 mb-6 text-left space-y-2.5 shadow-xl text-xs text-gray-300">
+        <div class="flex items-center gap-2">
+          <span class="text-base">🎯</span>
+          <span><strong>초급 4지선다</strong>: 음정·조표·스케일 기초 스피드런</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-base">🎹</span>
+          <span><strong>중급 키패드</strong>: 12키 3화음 전위 & 4화음 원터치 연산</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-base">🏆</span>
+          <span><strong>10 콤보 달성 시</strong>: 중급 키패드 즉시 자동 해금</span>
+        </div>
       </div>
 
-      <!-- 오답 시 노출되는 피드백 + 확인(다음 문제) 버튼 -->
-      <div id="feedbackBox" class="hidden w-full mt-2 p-4 bg-gray-950 rounded-xl border border-gray-800 text-left flex flex-col gap-2">
-        <p id="feedbackAns" class="text-sm text-[#EF476F] font-bold"></p>
-        <a id="feedbackUrl" href="#" target="_blank" class="text-xs text-[#FFB703] hover:underline bg-[#FFB703]/10 p-2.5 rounded-lg border border-[#FFB703]/30 block text-center font-semibold">
-          ▶ 관련 무료 화성학 강의 바로보기 ↗
-        </a>
-        <button onclick="nextQuestion()" class="w-full mt-2 py-3 bg-[#EF476F] hover:bg-red-500 text-white font-extrabold text-sm rounded-xl shadow-lg transition-transform active:scale-95">
-          확인 (다음 문제 풀기) >
-        </button>
-      </div>
+      <!-- 시작 버튼 -->
+      <button 
+        onclick="startGame()" 
+        class="w-full py-4 bg-[#FFB703] hover:bg-yellow-400 active:scale-95 text-black font-black text-base rounded-2xl shadow-lg shadow-[#FFB703]/20 transition-all mb-3"
+      >
+        지금 바로 격파 시작하기 🔥
+      </button>
+      <p class="text-[11px] text-gray-500">※ 소리를 켜시면 리얼 타임 코드 피드백 사운드가 재생됩니다.</p>
     </div>
-  </main>
-
-  <!-- 하단 입력 패드 영역 -->
-  <section id="inputPadArea" class="w-full max-w-md mb-2">
-    <!-- 동적으로 생성 -->
   </section>
 
-  <!-- 푸터 링크 -->
-  <footer class="w-full max-w-md pt-2 text-center text-[11px] text-gray-500 border-t border-gray-800/60 flex justify-between items-center px-1">
-    <a href="https://youtube.com/playlist?list=PLUhKlj-gxAgqQxhGNKJkvZF2ihiY0wQUC" target="_blank" class="hover:text-gray-300 underline">
-      무료 화성학 1~14강 재생목록
-    </a>
-    <a href="https://buymeacoffee.com" target="_blank" class="text-[#FFB703] hover:underline font-semibold">
-      ☕ 준킴에게 커피 후원하기
-    </a>
+  <!-- ========================================== -->
+  <!-- 1. 메인 퀴즈 게임 화면 (시작 후 노출) -->
+  <!-- ========================================== -->
+  <div id="gameScreen" class="hidden w-full flex-1 flex flex-col justify-between">
+    
+    <!-- 상단 헤더 -->
+    <header class="w-full flex justify-between items-center py-2 border-b border-gray-800">
+      <div>
+        <h2 class="text-lg font-black tracking-wider text-[#FFB703] leading-none">HARMONY BUSTER</h2>
+        <p class="text-[10px] text-gray-400 mt-0.5">화성학 기초 완전 격파기</p>
+      </div>
+      
+      <div class="flex items-center gap-2">
+        <!-- by Jun Kim 유튜브 채널 배너 -->
+        <div class="flex items-center gap-1.5">
+          <span class="text-[11px] text-gray-500 font-medium">by</span>
+          <a 
+            href="https://youtube.com/@junkimmusic" 
+            target="_blank" 
+            rel="noreferrer"
+            class="inline-flex items-center gap-1 px-2 py-0.5 bg-red-600/15 hover:bg-red-600/25 active:scale-95 border border-red-500/40 rounded-full transition-all"
+          >
+            <span class="text-[10px] font-black text-red-400 tracking-tight">Jun Kim ▶</span>
+          </a>
+        </div>
+
+        <div id="comboBadge" class="hidden text-xs font-bold bg-[#EF476F]/20 text-[#EF476F] px-2 py-0.5 rounded-full animate-pulse">
+          🔥 <span id="comboCount">0</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 티어 선택 탭 -->
+    <div class="w-full grid grid-cols-3 gap-2 my-2 bg-gray-900 p-1 rounded-xl text-center">
+      <button id="btnTierBeg" onclick="selectTier('BEGINNER')" class="py-2 text-xs font-bold rounded-lg bg-[#FFB703] text-black transition-all">
+        초급 (4선다)
+      </button>
+      <button id="btnTierInt" onclick="selectTier('INTERMEDIATE')" class="py-2 text-xs font-bold rounded-lg text-gray-600 cursor-not-allowed transition-all">
+        🔒 중급
+      </button>
+      <button id="btnTierAdv" onclick="selectTier('ADVANCED')" class="py-2 text-xs font-bold rounded-lg text-gray-600 cursor-not-allowed transition-all">
+        🔒 고급
+      </button>
+    </div>
+
+    <!-- 초급 진행도 안내 바 -->
+    <div id="unlockGuideBar" class="w-full text-center py-1 bg-gray-900/60 rounded-lg text-[11px] text-gray-400">
+      💡 중급 해금 조건: <span class="text-[#FFB703] font-bold">10 콤보 달성</span> (<span id="unlockProgress">0</span>/10)
+    </div>
+
+    <!-- 타이머 게이지 바 영역 -->
+    <div class="w-full mt-1.5">
+      <div class="flex justify-between items-center text-[11px] text-gray-400 mb-1 px-1">
+        <span>TIME ATTACK</span>
+        <span id="timerText" class="font-bold text-[#FFB703]">10.0s</span>
+      </div>
+      <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+        <div id="timerBar" class="h-full bg-[#06D6A0] transition-all duration-100 ease-linear" style="width: 100%;"></div>
+      </div>
+    </div>
+
+    <!-- 문제 카드 -->
+    <main class="w-full flex-1 flex flex-col justify-center my-3">
+      <div id="cardBox" class="p-6 rounded-2xl bg-gray-900 border-2 border-gray-800 flex flex-col items-center text-center shadow-2xl transition-all">
+        <span id="qCategory" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-gray-800 text-gray-300 mb-3">
+          카테고리
+        </span>
+        <p id="qText" class="text-xl font-extrabold text-white leading-relaxed mb-4">
+          질문 로딩 중...
+        </p>
+
+        <!-- 중급/고급 패드 입력 조합 디스플레이 -->
+        <div id="inputPreviewBox" class="hidden w-full py-2 px-3 bg-gray-950 rounded-lg border border-gray-800 mb-2 flex justify-between items-center text-sm">
+          <span class="text-gray-400 text-xs">선택한 코드:</span>
+          <span id="previewText" class="font-bold text-[#FFB703] text-base tracking-wide">-</span>
+          <button onclick="clearCurrentInput()" class="text-xs text-gray-500 hover:text-red-400">⌫ 지우기</button>
+        </div>
+
+        <!-- 오답 시 노출되는 피드백 + 확인(다음 문제) 버튼 -->
+        <div id="feedbackBox" class="hidden w-full mt-2 p-4 bg-gray-950 rounded-xl border border-gray-800 text-left flex flex-col gap-2">
+          <p id="feedbackAns" class="text-sm text-[#EF476F] font-bold"></p>
+          <a id="feedbackUrl" href="#" target="_blank" class="text-xs text-[#FFB703] hover:underline bg-[#FFB703]/10 p-2.5 rounded-lg border border-[#FFB703]/30 block text-center font-semibold">
+            ▶ 관련 무료 화성학 강의 바로보기 ↗
+          </a>
+          <button onclick="nextQuestion()" class="w-full mt-2 py-3 bg-[#EF476F] hover:bg-red-500 text-white font-extrabold text-sm rounded-xl shadow-lg transition-transform active:scale-95">
+            확인 (다음 문제 풀기) >
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- 하단 입력 패드 영역 -->
+    <section id="inputPadArea" class="w-full mb-3">
+      <!-- 동적으로 생성 -->
+    </section>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 2. 강화된 하단 배너 (재생목록 & 커피 후원) -->
+  <!-- ========================================== -->
+  <footer class="w-full pt-3 pb-1 border-t border-gray-800/80 mt-auto">
+    <div class="grid grid-cols-2 gap-2">
+      <!-- 유튜브 1~14강 링크 배너 -->
+      <a 
+        href="https://youtube.com/playlist?list=PLUhKlj-gxAgqQxhGNKJkvZF2ihiY0wQUC" 
+        target="_blank" 
+        class="flex items-center justify-center gap-1.5 py-3 px-2 bg-gray-900 hover:bg-gray-800 active:scale-95 border border-red-500/40 rounded-xl shadow-md transition-all text-center"
+      >
+        <span class="text-base">📺</span>
+        <div class="text-left">
+          <p class="text-[9px] text-gray-400 font-bold leading-none">Jun Kim 유튜브</p>
+          <p class="text-xs text-red-400 font-black tracking-tight leading-tight mt-0.5">화성학 1~14강</p>
+        </div>
+      </a>
+
+      <!-- 커피 후원 링크 배너 -->
+      <a 
+        href="https://buymeacoffee.com" 
+        target="_blank" 
+        class="flex items-center justify-center gap-1.5 py-3 px-2 bg-gray-900 hover:bg-gray-800 active:scale-95 border border-[#FFB703]/40 rounded-xl shadow-md transition-all text-center"
+      >
+        <span class="text-base">☕</span>
+        <div class="text-left">
+          <p class="text-[9px] text-gray-400 font-bold leading-none">앱이 유익했다면</p>
+          <p class="text-xs text-[#FFB703] font-black tracking-tight leading-tight mt-0.5">커피 한 잔 후원</p>
+        </div>
+      </a>
+    </div>
   </footer>
 
-  <!-- VIP 멤버십 안내 모달 -->
+  <!-- ========================================== -->
+  <!-- 3. VIP 멤버십 안내 모달 -->
+  <!-- ========================================== -->
   <div id="vipModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
     <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl max-w-sm w-full text-center shadow-2xl">
       <div class="text-3xl mb-2">🎓</div>
@@ -169,6 +281,16 @@
       });
     }
 
+    // 배열 셔플 (Fisher-Yates 알고리즘)
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
     // --- 문제 풀 및 데이터 ---
     const YOUTUBE_URL = "https://youtube.com/playlist?list=PLUhKlj-gxAgqQxhGNKJkvZF2ihiY0wQUC";
     
@@ -184,11 +306,17 @@
     let currentQuestion = null;
     let selectedRoot = '';
 
-    // 타임어택 타이머 변수
     let timerInterval = null;
-    let maxTime = 10; // 초급 10초, 중급 8초
+    let maxTime = 10;
     let timeLeft = 10;
     let isQuestionActive = false;
+
+    // 셔플된 문제 덱 관리
+    let questionDecks = {
+      BEGINNER: [],
+      INTERMEDIATE: [],
+      ADVANCED: []
+    };
 
     const QUESTIONS = {
       BEGINNER: [
@@ -196,24 +324,38 @@
         { type: 'MCQ', cat: '기본 음정 (1~4강)', q: 'A 에서 Minor 3rd 위의 음은?', ans: 'C', opts: ['C', 'C#', 'B', 'D'], url: YOUTUBE_URL + '&index=1' },
         { type: 'MCQ', cat: '기본 음정 (1~4강)', q: 'D 에서 Perfect 5th 위의 음은?', ans: 'A', opts: ['A', 'Ab', 'G', 'B'], url: YOUTUBE_URL + '&index=1' },
         { type: 'MCQ', cat: '기본 음정 (1~4강)', q: 'F 에서 Minor 7th 위의 음은?', ans: 'Eb', opts: ['Eb', 'E', 'D', 'Db'], url: YOUTUBE_URL + '&index=1' },
+        { type: 'MCQ', cat: '기본 음정 (1~4강)', q: 'G 에서 Major 6th 위의 음은?', ans: 'E', opts: ['E', 'Eb', 'F', 'D#'], url: YOUTUBE_URL + '&index=1' },
+        { type: 'MCQ', cat: '기본 음정 (1~4강)', q: 'Bb 에서 Perfect 4th 위의 음은?', ans: 'Eb', opts: ['Eb', 'E', 'D', 'F'], url: YOUTUBE_URL + '&index=1' },
         { type: 'MCQ', cat: '조표/키 (5~6강)', q: '샵(#)이 2개 붙는 Major Key는?', ans: 'D Major', opts: ['D Major', 'G Major', 'A Major', 'E Major'], url: YOUTUBE_URL + '&index=5' },
         { type: 'MCQ', cat: '조표/키 (5~6강)', q: '플랫(b)이 1개 붙는 Major Key는?', ans: 'F Major', opts: ['F Major', 'Bb Major', 'Eb Major', 'C Major'], url: YOUTUBE_URL + '&index=5' },
+        { type: 'MCQ', cat: '조표/키 (5~6강)', q: '샵(#)이 3개 붙는 Major Key는?', ans: 'A Major', opts: ['A Major', 'D Major', 'E Major', 'B Major'], url: YOUTUBE_URL + '&index=5' },
+        { type: 'MCQ', cat: '조표/키 (5~6강)', q: '플랫(b)이 3개 붙는 Major Key는?', ans: 'Eb Major', opts: ['Eb Major', 'Bb Major', 'Ab Major', 'F Major'], url: YOUTUBE_URL + '&index=5' },
         { type: 'MCQ', cat: '스케일 (7~8강)', q: 'G Major 스케일의 7번째 음은?', ans: 'F#', opts: ['F#', 'F', 'G', 'E'], url: YOUTUBE_URL + '&index=7' },
+        { type: 'MCQ', cat: '스케일 (7~8강)', q: 'D Natural Minor 스케일의 6번째 음은?', ans: 'Bb', opts: ['Bb', 'B', 'C', 'A'], url: YOUTUBE_URL + '&index=7' },
         { type: 'MCQ', cat: '기본 3화음 (9~11강)', q: 'Am 트라이어드의 3음은?', ans: 'C', opts: ['C', 'C#', 'E', 'B'], url: YOUTUBE_URL + '&index=9' },
+        { type: 'MCQ', cat: '기본 3화음 (9~11강)', q: 'E Major 트라이어드의 3음은?', ans: 'G#', opts: ['G#', 'G', 'B', 'A'], url: YOUTUBE_URL + '&index=9' },
         { type: 'MCQ', cat: '4화음 가이드톤 (12~14강)', q: 'G7 코드의 3음과 7음은?', ans: 'B / F', opts: ['B / F', 'Bb / F', 'B / F#', 'Bb / F#'], url: YOUTUBE_URL + '&index=12' },
-        { type: 'MCQ', cat: '4화음 가이드톤 (12~14강)', q: 'Cmaj7 코드의 7음은?', ans: 'B', opts: ['B', 'Bb', 'A', 'C'], url: YOUTUBE_URL + '&index=12' }
+        { type: 'MCQ', cat: '4화음 가이드톤 (12~14강)', q: 'Cmaj7 코드의 7음은?', ans: 'B', opts: ['B', 'Bb', 'A', 'C'], url: YOUTUBE_URL + '&index=12' },
+        { type: 'MCQ', cat: '4화음 가이드톤 (12~14강)', q: 'Dm7 코드의 3음과 7음은?', ans: 'F / C', opts: ['F / C', 'F# / C', 'F / C#', 'G / C'], url: YOUTUBE_URL + '&index=12' }
       ],
       INTERMEDIATE: [
         { type: 'KEYPAD_CHORD', cat: '코드 구성 (9~14강)', q: '루트 D, 단3도 F, 완전5도 A 로 구성된 코드는?', ans: 'Dm', url: YOUTUBE_URL + '&index=9' },
         { type: 'KEYPAD_CHORD', cat: '코드 구성 (9~14강)', q: '루트 Ab, 장3도 C, 완전5도 Eb, 단7도 Gb 인 코드는?', ans: 'Ab7', url: YOUTUBE_URL + '&index=12' },
         { type: 'KEYPAD_CHORD', cat: '하프 디미니쉬', q: '1(B) - b3(D) - b5(F) - b7(A) 코드는?', ans: 'Bm7b5', url: YOUTUBE_URL + '&index=12' },
+        { type: 'KEYPAD_CHORD', cat: '마이너 세븐', q: '1(F) - b3(Ab) - 5(C) - b7(Eb) 코드는?', ans: 'Fm7', url: YOUTUBE_URL + '&index=12' },
+        { type: 'KEYPAD_CHORD', cat: '메이저 세븐', q: '1(Eb) - 3(G) - 5(Bb) - 7(D) 코드는?', ans: 'Ebmaj7', url: YOUTUBE_URL + '&index=12' },
         { type: 'INVERSION', cat: '3화음 전위 (9~11강)', q: 'F#m / A 는 몇 번째 전위인가?', ans: '1st', opts: ['Root', '1st', '2nd'], url: YOUTUBE_URL + '&index=9' },
-        { type: 'INVERSION', cat: '3화음 전위 (9~11강)', q: 'C / G 는 몇 번째 전위인가?', ans: '2nd', opts: ['Root', '1st', '2nd'], url: YOUTUBE_URL + '&index=9' }
+        { type: 'INVERSION', cat: '3화음 전위 (9~11강)', q: 'C / G 는 몇 번째 전위인가?', ans: '2nd', opts: ['Root', '1st', '2nd'], url: YOUTUBE_URL + '&index=9' },
+        { type: 'INVERSION', cat: '3화음 전위 (9~11강)', q: 'Bb / D 는 몇 번째 전위인가?', ans: '1st', opts: ['Root', '1st', '2nd'], url: YOUTUBE_URL + '&index=9' },
+        { type: 'INVERSION', cat: '3화음 전위 (9~11강)', q: 'Em / B 는 몇 번째 전위인가?', ans: '2nd', opts: ['Root', '1st', '2nd'], url: YOUTUBE_URL + '&index=9' }
       ],
       ADVANCED: [
         { type: 'MCQ', cat: 'Drop 2 보이싱 (심화)', q: 'Drop 2 보이싱에서 최고음이 3음일 때 도수 배열은?', ans: '7-3-5-1', opts: ['7-3-5-1', '1-5-7-3', '3-7-1-5', '5-1-3-7'], url: YOUTUBE_URL + '&index=12' },
+        { type: 'MCQ', cat: 'Drop 2 보이싱 (심화)', q: 'Drop 2 보이싱에서 최고음이 5음일 때 저음부터의 배열은?', ans: '1-5-7-3', opts: ['1-5-7-3', '7-3-5-1', '5-1-3-7', '3-7-1-5'], url: YOUTUBE_URL + '&index=12' },
         { type: 'MCQ', cat: 'Drop 3 보이싱 (심화)', q: 'Drop 3 보이싱 (Root in Bass)의 저음부터 도수 순서는?', ans: '1-7-3-5', opts: ['1-7-3-5', '1-5-7-3', '3-1-5-7', '7-5-1-3'], url: YOUTUBE_URL + '&index=12' },
-        { type: 'MCQ', cat: '스케일 Leading Tone', q: 'G# Harmonic Minor의 7번째 음(Leading tone)은?', ans: 'Fx (F##)', opts: ['Fx (F##)', 'G', 'F#', 'Gx'], url: YOUTUBE_URL + '&index=7' }
+        { type: 'MCQ', cat: '스케일 Leading Tone', q: 'G# Harmonic Minor의 7번째 음(Leading tone)은?', ans: 'Fx (F##)', opts: ['Fx (F##)', 'G', 'F#', 'Gx'], url: YOUTUBE_URL + '&index=7' },
+        { type: 'MCQ', cat: '스케일 Leading Tone', q: 'D# Harmonic Minor의 7번째 음(Leading tone)은?', ans: 'Cx (C##)', opts: ['Cx (C##)', 'D', 'C#', 'Dx'], url: YOUTUBE_URL + '&index=7' },
+        { type: 'MCQ', cat: '스펠링 감7도 (bb7)', q: 'Ab dim7 코드의 감7도(bb7) 음은?', ans: 'Gbb', opts: ['Gbb', 'F', 'Gb', 'Abb'], url: YOUTUBE_URL + '&index=12' }
       ]
     };
 
@@ -221,6 +363,16 @@
       try {
         localStorage.setItem('harmony_buster_save', JSON.stringify(userProgress));
       } catch(e) {}
+    }
+
+    function startGame() {
+      initAudio();
+      document.getElementById('welcomeScreen').classList.add('hidden');
+      document.getElementById('gameScreen').classList.remove('hidden');
+      updateTabsUI();
+      // 시작 시 덱 초기화
+      questionDecks[currentTier] = shuffleArray(QUESTIONS[currentTier]);
+      nextQuestion();
     }
 
     function updateTabsUI() {
@@ -271,10 +423,11 @@
 
       currentTier = t;
       updateTabsUI();
+      // 티어 변경 시 덱 새로 셔플
+      questionDecks[currentTier] = shuffleArray(QUESTIONS[currentTier]);
       nextQuestion();
     }
 
-    // 타임어택 타이머 시작
     function startTimer() {
       clearInterval(timerInterval);
       maxTime = currentTier === 'INTERMEDIATE' ? 8 : 10;
@@ -287,7 +440,7 @@
       bar.className = 'h-full bg-[#06D6A0] transition-all duration-100 ease-linear';
       text.innerText = `${timeLeft.toFixed(1)}s`;
 
-      const step = 100; // 0.1초마다 갱신
+      const step = 100;
       timerInterval = setInterval(() => {
         timeLeft -= 0.1;
         if (timeLeft <= 0) {
@@ -301,7 +454,6 @@
         bar.style.width = `${pct}%`;
         text.innerText = `${timeLeft.toFixed(1)}s`;
 
-        // 남은 시간 3초 이하 시 붉은색 경고 점멸
         if (timeLeft <= 3) {
           bar.className = 'h-full bg-[#EF476F] transition-all duration-100 ease-linear';
           text.className = 'font-bold text-[#EF476F] animate-pulse';
@@ -316,7 +468,6 @@
       isQuestionActive = false;
     }
 
-    // 시간 초과 처리
     function handleTimeout() {
       playWrongSound();
       combo = 0;
@@ -330,7 +481,6 @@
       document.getElementById('feedbackUrl').href = currentQuestion.url;
       document.getElementById('feedbackBox').classList.remove('hidden');
 
-      // 입력 패드 비활성화
       document.getElementById('inputPadArea').innerHTML = '';
     }
 
@@ -340,8 +490,13 @@
       document.getElementById('inputPreviewBox').classList.add('hidden');
       document.getElementById('feedbackBox').classList.add('hidden');
 
-      const pool = QUESTIONS[currentTier];
-      currentQuestion = pool[Math.floor(Math.random() * pool.length)];
+      // 덱이 비어있으면 새로 무작위 셔플해서 채움
+      if (!questionDecks[currentTier] || questionDecks[currentTier].length === 0) {
+        questionDecks[currentTier] = shuffleArray(QUESTIONS[currentTier]);
+      }
+
+      // 맨 앞 문제 하나 추출 (비복원 추출로 중복 방지)
+      currentQuestion = questionDecks[currentTier].pop();
 
       document.getElementById('qCategory').innerText = currentQuestion.cat;
       document.getElementById('qText').innerText = currentQuestion.q;
@@ -361,7 +516,10 @@
         const grid = document.createElement('div');
         grid.className = currentQuestion.opts.length === 3 ? 'grid grid-cols-3 gap-2' : 'grid grid-cols-2 gap-3';
 
-        currentQuestion.opts.forEach(opt => {
+        // 4지선다 보기 순서도 매번 무작위 셔플
+        const shuffledOptions = shuffleArray(currentQuestion.opts);
+
+        shuffledOptions.forEach(opt => {
           const btn = document.createElement('button');
           btn.innerText = opt;
           btn.className = 'py-4 text-sm font-bold bg-gray-800 hover:bg-gray-700 active:scale-95 rounded-xl border border-gray-700 shadow-md transition-transform';
@@ -468,7 +626,6 @@
         combo++;
         card.className = "p-6 rounded-2xl bg-[#06D6A0]/10 border-2 border-[#06D6A0] flex flex-col items-center text-center shadow-2xl scale-102 transition-all";
         
-        // 초급 10콤보 달성 시 중급 해금!
         if (currentTier === 'BEGINNER' && combo >= 10 && !userProgress.intermediateUnlocked) {
           userProgress.intermediateUnlocked = true;
           saveState();
@@ -485,13 +642,11 @@
         updateComboBadge();
         updateTabsUI();
 
-        // 정답일 때는 경쾌하게 0.6초 후 다음 문제
         setTimeout(() => {
           nextQuestion();
         }, 600);
 
       } else {
-        // 오답일 때: 타이머 멈춤, 패드 숨김, 확인 버튼 누를 때까지 정지!
         playWrongSound();
         combo = 0;
         card.className = "p-6 rounded-2xl bg-[#EF476F]/10 border-2 border-[#EF476F] flex flex-col items-center text-center shadow-2xl transition-all";
@@ -534,11 +689,6 @@
     function closeVipModal() {
       document.getElementById('vipModal').classList.add('hidden');
     }
-
-    window.onload = () => {
-      updateTabsUI();
-      nextQuestion();
-    };
   </script>
 </body>
 </html>
