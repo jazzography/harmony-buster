@@ -65,7 +65,7 @@
         <div class="flex items-start gap-2.5">
           <span class="text-base leading-none">🎯</span>
           <div class="leading-relaxed">
-            <strong class="text-white">메인 챌린지</strong>: 초급(음정·조표·3화음) → 중급(스케일·4화음) → 시험 → 고급
+            <strong class="text-white">메인 챌린지</strong>: 초급(음정·조표·3화음) → 중급(스케일·4화음) → 승급시험 → 고급 프로 코스
           </div>
         </div>
         <div class="flex items-start gap-2.5">
@@ -250,7 +250,7 @@
 
       <div class="flex flex-col gap-2">
         <button id="examActionBtn" onclick="finishExamAction()" class="w-full py-3.5 bg-[#FFB703] hover:bg-yellow-400 text-black font-black text-sm rounded-xl transition-all shadow-lg"></button>
-        <button onclick="backToTraining()" class="w-full py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold text-xs rounded-xl">일반 훈련으로 돌아가기</button>
+        <button onclick="backToTraining()" class="w-full py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold text-xs rounded-xl">중급 훈련으로 돌아가기</button>
       </div>
     </div>
   </section>
@@ -305,7 +305,9 @@
     </div>
   </div>
 
-  <!-- 4. VIP 멤버십 안내 모달 (애플 수수료 안내 탑재) -->
+  <!-- ========================================== -->
+  <!-- 4. VIP 멤버십 안내 모달 (수정된 문구 적용) -->
+  <!-- ========================================== -->
   <div id="vipModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
     <div class="bg-gray-900 border border-[#FFB703]/40 p-6 rounded-3xl max-w-sm w-full text-center shadow-2xl relative overflow-hidden">
       
@@ -313,19 +315,19 @@
         PRO LEVEL VOICING
       </div>
 
-      <div class="text-4xl mb-2">🎸🎹</div>
+      <div class="text-4xl mb-2">🎓✨</div>
       
       <h3 class="text-lg font-black text-white mb-2 leading-snug">
-        지판과 건반 위 보이싱,<br />
-        이제 <span class="text-[#FFB703]">0.1초 본능</span>이 됩니다
+        고급 프로 코스 체험 완료!<br />
+        이제 <span class="text-[#FFB703]">무제한 마스터</span>로
       </h3>
 
       <div class="bg-gray-950/80 border border-gray-800 rounded-2xl p-3.5 mb-3 text-left space-y-1.5 text-xs text-gray-300">
         <p class="leading-relaxed">
-          🎯 <strong>Drop 2 & Drop 3 실전 배치</strong>: 재즈와 세션 연주자들이 지판을 한눈에 보는 핵심 시야를 훈련합니다.
+          🎯 <strong>10문항 무료 체험 세션</strong>을 성공적으로 완료하셨습니다.
         </p>
         <p class="leading-relaxed text-gray-400">
-          ✨ <strong>준킴 유튜브 멤버십 회원</strong>에게 전체 화성학 마스터 강의와 함께 영구 무제한으로 제공되는 스페셜 코스입니다.
+          ✨ 지판 위에서 보이싱이 0.1초 만에 보이는 본능적 감각! <strong>유튜브 멤버십 회원으로 함께하시는 동안</strong> 이 프로 코스를 무제한으로 마음껏 훈련하세요.
         </p>
       </div>
 
@@ -339,7 +341,7 @@
         rel="noreferrer"
         class="block w-full py-3.5 bg-gradient-to-r from-[#FFB703] to-yellow-400 hover:from-yellow-400 hover:to-yellow-300 active:scale-95 text-black font-black text-sm rounded-xl mb-4 shadow-lg shadow-[#FFB703]/20 transition-all"
       >
-        👉 멤버십 가입하고 시크릿 코드 받기 ↗
+        👉 멤버십 가입하고 무제한 시크릿 코드 받기 ↗
       </a>
 
       <div class="pt-3 border-t border-gray-800/80 text-left">
@@ -434,7 +436,7 @@
         tierInt: "중급 (키패드)",
         tierAdv: "고급",
         tierIntLocked: "🔒 중급",
-        tierAdvLocked: "🔒 고급 (시험 통과 필요)",
+        tierAdvLocked: "🔒 고급",
         unlockGuide: "중급 해금 조건: 10 콤보 달성",
         previewLabel: "선택한 코드:",
         previewClear: "⌫ 지우기",
@@ -456,8 +458,8 @@
         needRootAlert: "먼저 Root 음을 선택해주세요!",
         intUnlockAlert: "🎉 축하합니다! 10 콤보를 달성하여 [중급 키패드 모드]가 해금되었습니다!",
         intRequireAlert: "🔒 초급에서 10 콤보를 먼저 달성해야 중급이 열립니다!",
-        advRequireAlert: "🔒 중급 승급 라이선스 시험(85점 이상)을 통과해야 고급 모드가 열립니다!",
-        vipSuccessAlert: "🎉 VIP 인증 완료! 5. 보이싱 버스터 모드가 영구 해금되었습니다.",
+        advRequireAlert: "🔒 중급 승급 라이선스 시험(85점 이상)을 통과해야 고급 체험 세션이 열립니다!",
+        vipSuccessAlert: "🎉 VIP 인증 완료! Harmony Buster 모든 모드가 영구 무제한 해금되었습니다.",
         vipFailAlert: "올바르지 않은 코드입니다. 유튜브 커뮤니티 전용 코드를 확인해 주세요."
       },
       EN: {
@@ -471,7 +473,7 @@
         tierInt: "Intermediate",
         tierAdv: "Advanced",
         tierIntLocked: "🔒 Intermediate",
-        tierAdvLocked: "🔒 Advanced (Exam Required)",
+        tierAdvLocked: "🔒 Advanced",
         unlockGuide: "Unlock Intermediate: Reach 10 Combo",
         previewLabel: "Selected Chord:",
         previewClear: "⌫ Clear",
@@ -493,8 +495,8 @@
         needRootAlert: "Please select a Root note first!",
         intUnlockAlert: "🎉 Congratulations! You reached 10 Combo and unlocked Intermediate Keypad!",
         intRequireAlert: "🔒 Reach 10 Combo in Beginner Mode to unlock Intermediate!",
-        advRequireAlert: "🔒 Pass the Intermediate License Exam (85%+) to unlock Advanced!",
-        vipSuccessAlert: "🎉 VIP Verified! Voicing Buster is permanently unlocked.",
+        advRequireAlert: "🔒 Pass the Intermediate License Exam (85%+) to unlock Advanced Preview!",
+        vipSuccessAlert: "🎉 VIP Verified! All modes are permanently unlocked.",
         vipFailAlert: "Invalid code. Please check your YouTube Community tab."
       }
     };
@@ -554,6 +556,7 @@
     let currentSoloGame = 1;
 
     let combo = 0;
+    let advancedTrialCount = 0;
     let currentQuestion = null;
     let selectedRoot = '';
 
@@ -562,13 +565,12 @@
     let examCurrentIndex = 0;
     let examCorrectCount = 0;
 
-    // 전 모드 15초 세팅
     let timerInterval = null;
     let maxTime = 15;
     let timeLeft = 15;
     let isQuestionActive = false;
 
-    // --- 12음 루트 완전 지원 데이터베이스 ---
+    // --- 12음 루트 데이터베이스 ---
     const ROOTS_ALL = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
 
     const ROOT_INTERVAL_MAP = {
@@ -673,19 +675,14 @@
       { key: 'Ab Major', sig: '플랫(b) 4개' }, { key: 'Db Major', sig: '플랫(b) 5개' }
     ];
 
-    // --- 동적 음정 문제 연산기 (12음 루트 균등 출제) ---
     function generateDynamicInterval(isAdvanced = false) {
       const root = ROOTS_ALL[Math.floor(Math.random() * ROOTS_ALL.length)];
-      
       const basicIntervalNames = ['Major 2nd', 'Minor 3rd', 'Major 3rd', 'Perfect 4th', 'Perfect 5th', 'Major 6th', 'Minor 7th'];
       const advIntervalNames = ['Diminished 5th', 'Augmented 4th', 'Minor 6th', 'Major 7th'];
-      
       const targetPool = isAdvanced ? advIntervalNames : basicIntervalNames;
       const ivName = targetPool[Math.floor(Math.random() * targetPool.length)];
-      
       const correctAns = ROOT_INTERVAL_MAP[root][ivName];
       const wrongOpts = shuffleArray(ROOTS_ALL.filter(n => n !== correctAns)).slice(0, 3);
-
       return {
         from: root,
         nameKO: ivName,
@@ -695,12 +692,9 @@
       };
     }
 
-    // --- 초급 전용 문제 생성기 (12음 루트 골고루 출제) ---
     function genBeginnerQuestion() {
       const r = Math.random();
-
       if (r < 0.3) {
-        // 1. 12음 루트 기반 다이아토닉 기본 음정
         const item = generateDynamicInterval(false);
         return {
           gameTag: 'BEGINNER · INTERVAL',
@@ -714,7 +708,6 @@
           url: YOUTUBE_URL + '&index=1'
         };
       } else if (r < 0.55) {
-        // 2. 기본 조표
         const item = KEY_SIG_POOL[Math.floor(Math.random() * KEY_SIG_POOL.length)];
         const wrongKeys = KEY_SIG_POOL.filter(k => k.key !== item.key).map(k => k.key);
         return {
@@ -729,15 +722,12 @@
           url: YOUTUBE_URL + '&index=5'
         };
       } else if (r < 0.8) {
-        // 3. 12음 전체 루트 기반 3화음 (Major, Minor)
         const root = ROOTS_ALL[Math.floor(Math.random() * ROOTS_ALL.length)];
         const quality = Math.random() > 0.5 ? '' : 'm';
         const chordName = `${root}${quality}`;
         const notesStr = ACCURATE_CHORD_DB[chordName].join(', ');
-
         const allTriadKeys = Object.keys(ACCURATE_CHORD_DB).filter(c => !c.includes('7') && c !== chordName);
         const wrongOpts = shuffleArray(allTriadKeys).slice(0, 3).map(c => ACCURATE_CHORD_DB[c].join(', '));
-
         return {
           gameTag: 'BEGINNER · TRIAD',
           type: 'MCQ',
@@ -750,7 +740,6 @@
           url: YOUTUBE_URL + '&index=9'
         };
       } else {
-        // 4. 기본 3화음 전위 판독
         const item = BASIC_INVERSIONS[Math.floor(Math.random() * BASIC_INVERSIONS.length)];
         return {
           gameTag: 'BEGINNER · INVERSION',
@@ -766,7 +755,6 @@
       }
     }
 
-    // --- 5대 개별 게임 전용 생성기 (12음 루트 완전 믹스) ---
     function genGame1() {
       const isAdv = Math.random() > 0.5;
       const item = generateDynamicInterval(isAdv);
@@ -963,7 +951,6 @@
       }
     }
 
-    // 모드 및 레벨별 문제 통합 출제
     function generateQuestion() {
       if (playMode === 'SOLO') {
         if (currentSoloGame === 1) return genGame1();
@@ -1062,7 +1049,8 @@
       }
 
       if (userProgress.advancedUnlocked || userProgress.examPassed || userProgress.isVip) {
-        btnAdv.innerText = dict.tierAdv;
+        const countText = !userProgress.isVip ? ` (${Math.max(0, 10 - advancedTrialCount)}/10)` : '';
+        btnAdv.innerText = `${dict.tierAdv}${countText}`;
         btnAdv.className = `py-2 text-xs font-bold rounded-lg transition-all ${currentTier === 'ADVANCED' && playMode === 'TIER' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-300'}`;
       } else {
         btnAdv.innerText = dict.tierAdvLocked;
@@ -1097,6 +1085,10 @@
         alert(dict.advRequireAlert);
         return;
       }
+      if (t === 'ADVANCED' && !userProgress.isVip && advancedTrialCount >= 10) {
+        document.getElementById('vipModal').classList.remove('hidden');
+        return;
+      }
 
       playMode = 'TIER';
       currentTier = t;
@@ -1105,7 +1097,7 @@
     }
 
     function startExamMode() {
-      if (!confirm('🎓 [고급 승급 라이선스 시험]\n- 총 20문항\n- 구성: 스케일 구성음, 4화음 코드톤, 심화 음정, 전위\n- 합격 기준: 85점 이상 (17문제 이상 정답)\n- 통과 시 고급 모드가 영구 해금됩니다!\n\n시험을 시작하시겠습니까?')) return;
+      if (!confirm('🎓 [고급 승급 라이선스 시험]\n- 총 20문항\n- 구성: 스케일 구성음, 4화음 코드톤, 심화 음정, 전위\n- 합격 기준: 85점 이상 (17문제 이상 정답)\n- 통과 시 [고급 프로 코스 10문항 체험 세션]이 오픈됩니다!\n\n시험을 시작하시겠습니까?')) return;
 
       isExamMode = true;
       examCurrentIndex = 0;
@@ -1152,8 +1144,8 @@
         icon.innerText = '🎉';
         title.innerText = '축하합니다! 라이선스 합격!';
         title.className = 'text-xl font-black text-[#06D6A0] mb-2';
-        desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong>를 정확히 격파했습니다.<br />이제 Harmony Buster의 모든 <strong>[고급 모드]</strong>가 영구 해금되었습니다!`;
-        actionBtn.innerText = '고급 모드 바로 시작하기 🚀';
+        desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong>를 정확히 격파했습니다.<br />실전 연주자들을 위한 <strong>[고급 보이싱 10문항 특별 체험]</strong>을 지금 시작하세요!`;
+        actionBtn.innerText = '고급 코스 10문항 체험 시작하기 🚀';
         actionBtn.className = 'w-full py-3.5 bg-[#06D6A0] hover:bg-emerald-400 text-black font-black text-sm rounded-xl transition-all shadow-lg';
       } else {
         icon.innerText = '💡';
@@ -1180,7 +1172,6 @@
       selectTier('INTERMEDIATE');
     }
 
-    // 전 모드 15초 타이머
     function startTimer() {
       clearInterval(timerInterval);
       maxTime = 15;
@@ -1247,6 +1238,11 @@
     }
 
     function nextQuestion() {
+      if (currentTier === 'ADVANCED' && !userProgress.isVip && advancedTrialCount >= 10) {
+        document.getElementById('vipModal').classList.remove('hidden');
+        return;
+      }
+
       if (isExamMode) {
         examCurrentIndex++;
         if (examCurrentIndex > examTotalCount) {
@@ -1395,6 +1391,10 @@
         combo++;
         if (isExamMode) examCorrectCount++;
 
+        if (currentTier === 'ADVANCED' && !userProgress.isVip) {
+          advancedTrialCount++;
+        }
+
         card.className = "p-6 rounded-2xl bg-[#06D6A0]/10 border-2 border-[#06D6A0] flex flex-col items-center text-center shadow-2xl scale-102 transition-all";
         
         if (playMode === 'TIER' && currentTier === 'BEGINNER' && combo >= 10 && !userProgress.intermediateUnlocked) {
@@ -1449,7 +1449,11 @@
         closeVipModal();
         alert(dict.vipSuccessAlert);
         updateTabsUI();
-        selectSoloGame(5);
+        if (playMode === 'SOLO') {
+          selectSoloGame(5);
+        } else {
+          selectTier('ADVANCED');
+        }
       } else {
         alert(dict.vipFailAlert);
       }
@@ -1457,6 +1461,9 @@
 
     function closeVipModal() {
       document.getElementById('vipModal').classList.add('hidden');
+      if (currentTier === 'ADVANCED') {
+        selectTier('INTERMEDIATE');
+      }
     }
 
     function openDonateModal() {
