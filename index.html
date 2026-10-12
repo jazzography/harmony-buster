@@ -169,11 +169,11 @@
       <span class="font-bold text-gray-300">현재 맞힌 개수: <strong id="examScore" class="text-[#06D6A0]">0</strong></span>
     </div>
 
-    <!-- 타이머 게이지 바 영역 -->
+    <!-- 타이머 게이지 바 영역 (15.0s 표시) -->
     <div id="timerContainer" class="w-full mt-1">
       <div class="flex justify-between items-center text-[11px] text-gray-400 mb-1 px-1">
         <span id="timerLabel">TIME ATTACK</span>
-        <span id="timerText" class="font-bold text-[#FFB703]">10.0s</span>
+        <span id="timerText" class="font-bold text-[#FFB703]">15.0s</span>
       </div>
       <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
         <div id="timerBar" class="h-full bg-[#06D6A0] transition-all duration-100 ease-linear" style="width: 100%;"></div>
@@ -562,37 +562,15 @@
     let examCurrentIndex = 0;
     let examCorrectCount = 0;
 
+    // 전 모드 15초 세팅
     let timerInterval = null;
-    let maxTime = 10;
-    let timeLeft = 10;
+    let maxTime = 15;
+    let timeLeft = 15;
     let isQuestionActive = false;
 
     // --- 12음 루트 완전 지원 데이터베이스 ---
     const ROOTS_ALL = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
 
-    // 반음(Semitone) 연산 테이블 (C=0 기준)
-    const NOTE_TO_SEMITONE = {
-      'C': 0, 'B#': 0, 'C#': 1, 'Db': 1, 'D': 2, 'D#': 3, 'Eb': 3,
-      'E': 4, 'Fb': 4, 'F': 5, 'E#': 5, 'F#': 6, 'Gb': 6, 'G': 7,
-      'G#': 8, 'Ab': 8, 'A': 9, 'A#': 10, 'Bb': 10, 'B': 11, 'Cb': 11
-    };
-
-    // 음정 규칙 (반음 차이 및 표준 타겟 음)
-    const INTERVAL_RULES = {
-      'Major 2nd': { semi: 2, nameKO: 'Major 2nd', nameEN: 'Major 2nd' },
-      'Minor 3rd': { semi: 3, nameKO: 'Minor 3rd', nameEN: 'Minor 3rd' },
-      'Major 3rd': { semi: 4, nameKO: 'Major 3rd', nameEN: 'Major 3rd' },
-      'Perfect 4th': { semi: 5, nameKO: 'Perfect 4th', nameEN: 'Perfect 4th' },
-      'Diminished 5th': { semi: 6, nameKO: 'Diminished 5th', nameEN: 'Diminished 5th' },
-      'Augmented 4th': { semi: 6, nameKO: 'Augmented 4th', nameEN: 'Augmented 4th' },
-      'Perfect 5th': { semi: 7, nameKO: 'Perfect 5th', nameEN: 'Perfect 5th' },
-      'Minor 6th': { semi: 8, nameKO: 'Minor 6th', nameEN: 'Minor 6th' },
-      'Major 6th': { semi: 9, nameKO: 'Major 6th', nameEN: 'Major 6th' },
-      'Minor 7th': { semi: 10, nameKO: 'Minor 7th', nameEN: 'Minor 7th' },
-      'Major 7th': { semi: 11, nameKO: 'Major 7th', nameEN: 'Major 7th' }
-    };
-
-    // 12개 루트 음별 정확한 음정 타겟 음 사전 (이명동음 오류 방지)
     const ROOT_INTERVAL_MAP = {
       'C': { 'Major 2nd': 'D', 'Minor 3rd': 'Eb', 'Major 3rd': 'E', 'Perfect 4th': 'F', 'Diminished 5th': 'Gb', 'Augmented 4th': 'F#', 'Perfect 5th': 'G', 'Minor 6th': 'Ab', 'Major 6th': 'A', 'Minor 7th': 'Bb', 'Major 7th': 'B' },
       'Db': { 'Major 2nd': 'Eb', 'Minor 3rd': 'Fb', 'Major 3rd': 'F', 'Perfect 4th': 'Gb', 'Diminished 5th': 'Abb', 'Augmented 4th': 'G', 'Perfect 5th': 'Ab', 'Minor 6th': 'Bbb', 'Major 6th': 'Bb', 'Minor 7th': 'Cb', 'Major 7th': 'C' },
@@ -608,7 +586,6 @@
       'B': { 'Major 2nd': 'C#', 'Minor 3rd': 'D', 'Major 3rd': 'D#', 'Perfect 4th': 'E', 'Diminished 5th': 'F', 'Augmented 4th': 'E#', 'Perfect 5th': 'F#', 'Minor 6th': 'G', 'Major 6th': 'G#', 'Minor 7th': 'A', 'Major 7th': 'A#' }
     };
 
-    // 12개 키 Major 스케일
     const MAJOR_SCALES = {
       'C': ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
       'G': ['G', 'A', 'B', 'C', 'D', 'E', 'F#'],
@@ -633,7 +610,6 @@
       'C Harmonic Minor': ['C', 'D', 'Eb', 'F', 'G', 'Ab', 'B']
     };
 
-    // 12개 모든 루트 음의 코드톤 데이터베이스 (정확한 스펠링 보장)
     const ACCURATE_CHORD_DB = {
       'C': ['C', 'E', 'G'], 'Cm': ['C', 'Eb', 'G'], 'Cdim': ['C', 'Eb', 'Gb'], 'Caug': ['C', 'E', 'G#'],
       'Cmaj7': ['C', 'E', 'G', 'B'], 'C7': ['C', 'E', 'G', 'Bb'], 'Cm7': ['C', 'Eb', 'G', 'Bb'], 'Cm7b5': ['C', 'Eb', 'Gb', 'Bb'],
@@ -699,7 +675,6 @@
 
     // --- 동적 음정 문제 연산기 (12음 루트 균등 출제) ---
     function generateDynamicInterval(isAdvanced = false) {
-      // 12개 모든 루트 중 무작위 1개 균등 선택
       const root = ROOTS_ALL[Math.floor(Math.random() * ROOTS_ALL.length)];
       
       const basicIntervalNames = ['Major 2nd', 'Minor 3rd', 'Major 3rd', 'Perfect 4th', 'Perfect 5th', 'Major 6th', 'Minor 7th'];
@@ -709,8 +684,6 @@
       const ivName = targetPool[Math.floor(Math.random() * targetPool.length)];
       
       const correctAns = ROOT_INTERVAL_MAP[root][ivName];
-
-      // 오답 3개 무작위 생성 (12개 음 중 정답 제외)
       const wrongOpts = shuffleArray(ROOTS_ALL.filter(n => n !== correctAns)).slice(0, 3);
 
       return {
@@ -762,7 +735,6 @@
         const chordName = `${root}${quality}`;
         const notesStr = ACCURATE_CHORD_DB[chordName].join(', ');
 
-        // 오답 3화음 3개
         const allTriadKeys = Object.keys(ACCURATE_CHORD_DB).filter(c => !c.includes('7') && c !== chordName);
         const wrongOpts = shuffleArray(allTriadKeys).slice(0, 3).map(c => ACCURATE_CHORD_DB[c].join(', '));
 
@@ -796,7 +768,6 @@
 
     // --- 5대 개별 게임 전용 생성기 (12음 루트 완전 믹스) ---
     function genGame1() {
-      // 12음 루트 전체에서 기본/심화 음정 무작위 연산
       const isAdv = Math.random() > 0.5;
       const item = generateDynamicInterval(isAdv);
       return {
@@ -829,7 +800,6 @@
           url: YOUTUBE_URL + '&index=5'
         };
       } else if (r < 0.7) {
-        // 12개 모든 Major 스케일 골고루 출제
         const keyList = Object.keys(MAJOR_SCALES);
         const chosenKey = keyList[Math.floor(Math.random() * keyList.length)];
         const correctStr = MAJOR_SCALES[chosenKey].join(', ');
@@ -867,7 +837,6 @@
     }
 
     function genGame3() {
-      // 12개 모든 루트의 3·4화음(96개 코드)에서 무작위 선택
       const chordNames = Object.keys(ACCURATE_CHORD_DB);
       const chosenChord = chordNames[Math.floor(Math.random() * chordNames.length)];
       const notes = ACCURATE_CHORD_DB[chosenChord];
@@ -1009,10 +978,10 @@
       }
       if (currentTier === 'INTERMEDIATE') {
         const rand = Math.random();
-        if (rand < 0.40) return genGame3();  // 코드톤 (12음 루트 3·4화음 양방향)
-        if (rand < 0.65) return genGame2();  // 조표 & 12개 키 메이저/마이너 스케일
-        if (rand < 0.85) return genGame4();  // 3화음 전위 판독
-        return genGame1();                   // 12음 루트 음정 판독
+        if (rand < 0.40) return genGame3();
+        if (rand < 0.65) return genGame2();
+        if (rand < 0.85) return genGame4();
+        return genGame1();
       }
       if (currentTier === 'ADVANCED') {
         return genGame5();
@@ -1211,11 +1180,10 @@
       selectTier('INTERMEDIATE');
     }
 
+    // 전 모드 15초 타이머
     function startTimer() {
       clearInterval(timerInterval);
-      const isHeavy = (playMode === 'TIER' && (currentTier === 'INTERMEDIATE' || currentTier === 'ADVANCED')) || 
-                      (playMode === 'SOLO' && currentSoloGame >= 3);
-      maxTime = isHeavy ? 15 : 10;
+      maxTime = 15;
       timeLeft = maxTime;
       isQuestionActive = true;
 
