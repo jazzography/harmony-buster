@@ -576,7 +576,7 @@
     let examTotalCount = 20;
     let examCurrentIndex = 0;
     let examCorrectCount = 0;
-    let examWrongAnswers = []; // 오답 노트 수집
+    let examWrongAnswers = [];
 
     let timerInterval = null;
     let maxTime = 10;
@@ -625,20 +625,20 @@
       { triad: 'D', base: 'F#', inv: '1st' }, { triad: 'A', base: 'C#', inv: '1st' }
     ];
 
+    // [B안 반영] 한글(약어 병기) + 영문 풀네임
     function genGame1() {
       const root = ROOTS_POOL[Math.floor(Math.random() * ROOTS_POOL.length)];
       const ivDefs = [
-        { key: 'm3', nameKO: 'Minor 3rd (단3도)', nameEN: 'Minor 3rd' },
-        { key: 'M3', nameKO: 'Major 3rd (장3도)', nameEN: 'Major 3rd' },
-        { key: 'P4', nameKO: 'Perfect 4th (완전4도)', nameEN: 'Perfect 4th' },
-        { key: 'P5', nameKO: 'Perfect 5th (완전5도)', nameEN: 'Perfect 5th' },
-        { key: 'M6', nameKO: 'Major 6th (장6도)', nameEN: 'Major 6th' },
-        { key: 'm7', nameKO: 'Minor 7th (단7도)', nameEN: 'Minor 7th' }
+        { key: 'm3', nameKO: '단3도 (m3)', nameEN: 'Minor 3rd' },
+        { key: 'M3', nameKO: '장3도 (M3)', nameEN: 'Major 3rd' },
+        { key: 'P4', nameKO: '완전4도 (P4)', nameEN: 'Perfect 4th' },
+        { key: 'P5', nameKO: '완전5도 (P5)', nameEN: 'Perfect 5th' },
+        { key: 'M6', nameKO: '장6도 (M6)', nameEN: 'Major 6th' },
+        { key: 'm7', nameKO: '단7도 (m7)', nameEN: 'Minor 7th' }
       ];
       const iv = ivDefs[Math.floor(Math.random() * ivDefs.length)];
       const ans = INTERVAL_EXACT_MAP[root][iv.key];
 
-      // 정확한 정답 풀에서 오답 추출
       const allPossibleNotes = ['C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
       const wrongOpts = shuffleArray(allPossibleNotes.filter(n => n !== ans)).slice(0, 3);
 
@@ -907,7 +907,7 @@
       isExamMode = true;
       examCurrentIndex = 0;
       examCorrectCount = 0;
-      examWrongAnswers = []; // 오답 기록 초기화
+      examWrongAnswers = [];
 
       document.getElementById('tierNav').classList.add('hidden');
       document.getElementById('examBanner').classList.add('hidden');
@@ -946,7 +946,6 @@
       const reviewSection = document.getElementById('examReviewSection');
       const reviewList = document.getElementById('examReviewList');
 
-      // 오답 노트 렌더링
       if (examWrongAnswers.length > 0) {
         reviewSection.classList.remove('hidden');
         reviewList.innerHTML = examWrongAnswers.map((w, idx) => `
@@ -1045,7 +1044,6 @@
       updateTabsUI();
 
       if (isExamMode) {
-        // 시험 모드에서는 오답 노트 수집 후 즉시 다음 문제 진행
         examWrongAnswers.push({
           q: currentLang === 'KO' ? currentQuestion.qKO : currentQuestion.qEN,
           chosen: '시간 초과',
@@ -1238,7 +1236,6 @@
         combo = 0;
 
         if (isExamMode) {
-          // 시험 모드에서는 멈추지 않고 오답 노트 기록 후 바로 다음 진행
           examWrongAnswers.push({
             q: currentLang === 'KO' ? currentQuestion.qKO : currentQuestion.qEN,
             chosen: chosen,
