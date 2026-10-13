@@ -91,7 +91,6 @@
   <!-- ========================================== -->
   <div id="gameScreen" class="hidden w-full flex-1 flex flex-col justify-between">
     
-    <!-- 최상단 헤더 -->
     <header class="w-full flex justify-between items-center py-2 border-b border-gray-800">
       <div>
         <h2 class="text-lg font-black tracking-wider text-[#FFB703] leading-none">HARMONY BUSTER</h2>
@@ -584,7 +583,7 @@
     let isQuestionActive = false;
 
     // =========================================================================
-    // 정밀 음악 이론 연산 엔진 (이명동음 스펠링 보장)
+    // 정밀 음악 이론 연산 엔진
     // =========================================================================
     const INTERVAL_EXACT_MAP = {
       'C':  { 'm3': 'Eb', 'M3': 'E',  'P4': 'F',  'P5': 'G',  'M6': 'A',  'm7': 'Bb' },
@@ -603,81 +602,21 @@
 
     const ROOTS_POOL = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'F', 'Bb', 'Eb', 'Ab'];
 
-    // 12키 코드톤 라이브러리 (동일 Root 오답 생성용)
+    // 12키 코드톤 라이브러리
     const CHORD_TONES_DATABASE = {
-      'C': {
-        'maj7': 'C E G B',
-        '7': 'C E G Bb',
-        'm7': 'C Eb G Bb',
-        'm(maj7)': 'C Eb G B',
-        'm7b5': 'C Eb Gb Bb'
-      },
-      'F': {
-        'maj7': 'F A C E',
-        '7': 'F A C Eb',
-        'm7': 'F Ab C Eb',
-        'm(maj7)': 'F Ab C E',
-        'm7b5': 'F Ab Cb Eb'
-      },
-      'Bb': {
-        'maj7': 'Bb D F A',
-        '7': 'Bb D F Ab',
-        'm7': 'Bb Db F Ab',
-        'm(maj7)': 'Bb Db F A',
-        'm7b5': 'Bb Db Fb Ab'
-      },
-      'Eb': {
-        'maj7': 'Eb G Bb D',
-        '7': 'Eb G Bb Db',
-        'm7': 'Eb Gb Bb Db',
-        'm(maj7)': 'Eb Gb Bb D',
-        'm7b5': 'Eb Gb Bbb Db'
-      },
-      'Ab': {
-        'maj7': 'Ab C Eb G',
-        '7': 'Ab C Eb Gb',
-        'm7': 'Ab Cb Eb Gb',
-        'm(maj7)': 'Ab Cb Eb G',
-        'm7b5': 'Ab Cb Ebb Gb'
-      },
-      'G': {
-        'maj7': 'G B D F#',
-        '7': 'G B D F',
-        'm7': 'G Bb D F',
-        'm(maj7)': 'G Bb D F#',
-        'm7b5': 'G Bb Db F'
-      },
-      'D': {
-        'maj7': 'D F# A C#',
-        '7': 'D F# A C',
-        'm7': 'D F A C',
-        'm(maj7)': 'D F A C#',
-        'm7b5': 'D F Ab C'
-      },
-      'A': {
-        'maj7': 'A C# E G#',
-        '7': 'A C# E G',
-        'm7': 'A C E G',
-        'm(maj7)': 'A C E G#',
-        'm7b5': 'A C Eb G'
-      },
-      'E': {
-        'maj7': 'E G# B D#',
-        '7': 'E G# B D',
-        'm7': 'E G B D',
-        'm(maj7)': 'E G B D#',
-        'm7b5': 'E G Bb D'
-      },
-      'B': {
-        'maj7': 'B D# F# A#',
-        '7': 'B D# F# A',
-        'm7': 'B D F# A',
-        'm(maj7)': 'B D F# A#',
-        'm7b5': 'B D F A'
-      }
+      'C': { 'maj7': 'C E G B', '7': 'C E G Bb', 'm7': 'C Eb G Bb', 'm(maj7)': 'C Eb G B', 'm7b5': 'C Eb Gb Bb' },
+      'F': { 'maj7': 'F A C E', '7': 'F A C Eb', 'm7': 'F Ab C Eb', 'm(maj7)': 'F Ab C E', 'm7b5': 'F Ab Cb Eb' },
+      'Bb': { 'maj7': 'Bb D F A', '7': 'Bb D F Ab', 'm7': 'Bb Db F Ab', 'm(maj7)': 'Bb Db F A', 'm7b5': 'Bb Db Fb Ab' },
+      'Eb': { 'maj7': 'Eb G Bb D', '7': 'Eb G Bb Db', 'm7': 'Eb Gb Bb Db', 'm(maj7)': 'Eb Gb Bb D', 'm7b5': 'Eb Gb Bbb Db' },
+      'Ab': { 'maj7': 'Ab C Eb G', '7': 'Ab C Eb Gb', 'm7': 'Ab Cb Eb Gb', 'm(maj7)': 'Ab Cb Eb G', 'm7b5': 'Ab Cb Ebb Gb' },
+      'G': { 'maj7': 'G B D F#', '7': 'G B D F', 'm7': 'G Bb D F', 'm(maj7)': 'G Bb D F#', 'm7b5': 'G Bb Db F' },
+      'D': { 'maj7': 'D F# A C#', '7': 'D F# A C', 'm7': 'D F A C', 'm(maj7)': 'D F A C#', 'm7b5': 'D F Ab C' },
+      'A': { 'maj7': 'A C# E G#', '7': 'A C# E G', 'm7': 'A C E G', 'm(maj7)': 'A C E G#', 'm7b5': 'A C Eb G' },
+      'E': { 'maj7': 'E G# B D#', '7': 'E G# B D', 'm7': 'E G B D', 'm(maj7)': 'E G B D#', 'm7b5': 'E G Bb D' },
+      'B': { 'maj7': 'B D# F# A#', '7': 'B D# F# A', 'm7': 'B D F# A', 'm(maj7)': 'B D F# A#', 'm7b5': 'B D F A' }
     };
 
-    // 12키 스케일 라이브러리 (동일 Root 오답 생성용)
+    // 12키 스케일 라이브러리
     const SCALES_DATABASE = {
       'C': {
         'Major': 'C D E F G A B',
@@ -780,33 +719,31 @@
       };
     }
 
-    // 초급 2번 게임: 조표 및 스케일 구성음 (동일 Root 고정 4지선다 탑재)
     function genGame2() {
       const isScaleQ = Math.random() > 0.5;
 
       if (isScaleQ) {
-        // [루트 고정 스케일 구성음 연산 문제]
         const roots = Object.keys(SCALES_DATABASE);
         const root = roots[Math.floor(Math.random() * roots.length)];
-        const scaleTypes = Object.keys(SCALES_DATABASE[root]);
-        const targetType = scaleTypes[Math.floor(Math.random() * scaleTypes.length)];
         
-        const ans = SCALES_DATABASE[root][targetType];
-        const wrongOpts = scaleTypes.filter(t => t !== targetType).map(t => SCALES_DATABASE[root][t]);
+        const targetType = 'Major';
+        const ans = SCALES_DATABASE[root]['Major'];
+        
+        const otherTypes = Object.keys(SCALES_DATABASE[root]).filter(t => t !== 'Major');
+        const wrongOpts = otherTypes.map(t => SCALES_DATABASE[root][t]);
 
         return {
           gameTag: 'GAME 2. SCALE SPELLING',
           type: 'MCQ',
-          catKO: '스케일 구성음 (5~8강)',
-          catEN: 'Scale Spelling (Ep. 5-8)',
-          qKO: `[ ${root} ${targetType} Scale ] 의 올바른 구성음은?`,
-          qEN: `Correct notes of [ ${root} ${targetType} Scale ]?`,
+          catKO: '메이저 스케일 구성음 (5~8강)',
+          catEN: 'Major Scale Spelling (Ep. 5-8)',
+          qKO: `[ ${root} Major Scale ] 의 올바른 구성음은?`,
+          qEN: `Correct notes of [ ${root} Major Scale ]?`,
           ans: ans,
           opts: shuffleArray([ans, ...wrongOpts]),
           url: YOUTUBE_URL + '&index=5'
         };
       } else {
-        // 기존 조표 문제
         const keys = [
           { key: 'G Major', sigKO: '샵(#) 1개', sigEN: '1 Sharp (#)' },
           { key: 'D Major', sigKO: '샵(#) 2개', sigEN: '2 Sharps (#)' },
@@ -835,12 +772,32 @@
       }
     }
 
-    // 중급 3번 게임: 2-Step 키패드 또는 동일 Root 코드톤 4지선다 출제
     function genGame3() {
-      // 50% 확률로 동일 Root 4지선다 코드톤 판독 문제 출제
-      const isMcqTone = Math.random() > 0.5;
+      const rand = Math.random();
 
-      if (isMcqTone) {
+      if (rand < 0.25) {
+        const roots = Object.keys(SCALES_DATABASE);
+        const root = roots[Math.floor(Math.random() * roots.length)];
+        const scaleChoices = ['Major', 'Natural Minor'];
+        const targetType = scaleChoices[Math.floor(Math.random() * scaleChoices.length)];
+
+        const ans = SCALES_DATABASE[root][targetType];
+        const allTypes = Object.keys(SCALES_DATABASE[root]);
+        const wrongOpts = allTypes.filter(t => t !== targetType).map(t => SCALES_DATABASE[root][t]);
+
+        const labelKO = targetType === 'Major' ? '메이저 스케일' : '내추럴 마이너 스케일';
+        return {
+          gameTag: 'GAME 3. SCALE SPELLING',
+          type: 'MCQ',
+          catKO: '중급 스케일 구성음 연산',
+          catEN: 'Intermediate Scale Spelling',
+          qKO: `[ ${root} ${labelKO} ] 의 올바른 구성음은?`,
+          qEN: `Correct notes of [ ${root} ${targetType} Scale ]?`,
+          ans: ans,
+          opts: shuffleArray([ans, ...wrongOpts]),
+          url: YOUTUBE_URL + '&index=7'
+        };
+      } else if (rand < 0.6) {
         const roots = Object.keys(CHORD_TONES_DATABASE);
         const root = roots[Math.floor(Math.random() * roots.length)];
         const qualities = Object.keys(CHORD_TONES_DATABASE[root]);
@@ -861,7 +818,6 @@
           url: YOUTUBE_URL + '&index=12'
         };
       } else {
-        // 기존 2-Step 키패드 완성형
         const roots = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
         const root = roots[Math.floor(Math.random() * roots.length)];
         const formula = CHORD_FORMULAS[Math.floor(Math.random() * CHORD_FORMULAS.length)];
@@ -1282,7 +1238,6 @@
 
       if (currentQuestion.type === 'MCQ' || currentQuestion.type === 'INVERSION') {
         const grid = document.createElement('div');
-        // 보기가 긴 텍스트(스케일/코드톤)일 경우를 대비해 여백과 폰트 크기 최적화
         grid.className = currentQuestion.opts.length === 3 ? 'grid grid-cols-3 gap-2' : 'grid grid-cols-2 gap-2.5';
 
         currentQuestion.opts.forEach(opt => {
