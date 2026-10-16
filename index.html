@@ -95,7 +95,7 @@
           <div class="flex items-start gap-2.5">
             <span class="text-base leading-none">🕹️</span>
             <div class="leading-relaxed">
-              <strong class="text-white">5대 개별 트레이닝</strong>: 음정 · 스케일(하모닉/멜로딕) · 코드톤 · 특수코드 · 프로 보이싱
+              <strong class="text-white">5대 개별 트레이닝</strong>: 음정 · 스케일(하모닉/멜로딕) · 코드톤 · 전위 · 프로 보이싱
             </div>
           </div>
           <div class="flex items-start gap-2.5">
@@ -680,7 +680,7 @@
       return intervals[scaleType].map(sem => getNoteByInterval(root, sem)).join(' ');
     }
 
-    // [요청하신 3가지 보이싱 문제 유형 정밀 생성기]
+    // [요청하신 3가지 보이싱 문제 유형 정밀 생성기 - Amaj7, Bbmaj7 등 모든 키 완벽 대응]
     function generateDropVoicingProblem(isDrop3 = false) {
       const voicingName = isDrop3 ? 'Drop 3' : 'Drop 2';
       const rootList = ['C', 'F', 'G', 'Bb', 'Eb', 'D', 'A', 'E'];
@@ -701,12 +701,11 @@
       const typeNum = Math.floor(Math.random() * 3) + 1;
 
       if (typeNum === 1) {
-        // 유형 1: 구성음이 아닌 것 (오답 색출)
-        const validVoicing = isDrop3 ? `${n1} - ${n7} - ${n3} - ${n5}` : `${n1} - ${n5} - ${n7} - ${n3}`;
-        const invalidVoicing = `${n3} - ${n1} - ${n5} - ${n7}`; // 무작위 구조
-        const alt1 = isDrop3 ? `${n3} - ${n1} - ${n5} - ${n7}` : `${n3} - ${n7} - ${n1} - ${n5}`;
-        const alt2 = isDrop3 ? `${n5} - ${n3} - ${n7} - ${n1}` : `${n5} - ${n1} - ${n3} - ${n7}`;
-        const alt3 = isDrop3 ? `${n7} - ${n5} - ${n1} - ${n3}` : `${n7} - ${n3} - ${n5} - ${n1}`;
+        // 유형 1: 구성음이 아닌 것 (오답 색출) - 올바른 보이싱 구조를 기준 삼아 확실한 오답 선지 구성
+        const correct1 = isDrop3 ? `${n1} - ${n7} - ${n3} - ${n5}` : `${n1} - ${n5} - ${n7} - ${n3}`;
+        const correct2 = isDrop3 ? `${n3} - ${n1} - ${n5} - ${n7}` : `${n3} - ${n7} - ${n1} - ${n5}`;
+        const correct3 = isDrop3 ? `${n5} - ${n3} - ${n7} - ${n1}` : `${n5} - ${n1} - ${n3} - ${n7}`;
+        const invalidVoicing = `${n3} - ${n3} - ${n1} - ${n5}`; // 중복 및 엉킨 가짜 오답
 
         return {
           gameTag: `GAME 5. ${voicingName.toUpperCase()} BUSTER`,
@@ -716,7 +715,7 @@
           qKO: `[ ${chordName} ] 의 ${voicingName} 보이싱 구성이 아닌 것은?`,
           qEN: `Which is NOT a valid ${voicingName} voicing structure for ${chordName}?`,
           ans: invalidVoicing,
-          opts: shuffleArray([invalidVoicing, alt1, alt2, alt3]),
+          opts: shuffleArray([invalidVoicing, correct1, correct2, correct3]),
           url: YOUTUBE_URL + '&index=12'
         };
       } else if (typeNum === 2) {
@@ -733,7 +732,7 @@
           url: YOUTUBE_URL + '&index=12'
         };
       } else {
-        // 유형 3: 숫자 구성이 아닌 것 찾기 (드롭2: 1573, 3715, 5137 / 드롭3: 1735, 3157, 5371, 7513)
+        // 유형 3: 숫자 구성이 아닌 것 찾기
         const wrongAns = isDrop3 ? '1 - 5 - 7 - 3' : '7 - 5 - 1 - 3';
         const correctList = isDrop3 ? ['1 - 7 - 3 - 5', '3 - 1 - 5 - 7', '5 - 3 - 7 - 1', '7 - 5 - 1 - 3'] : ['1 - 5 - 7 - 3', '3 - 7 - 1 - 5', '5 - 1 - 3 - 7', '7 - 3 - 5 - 1'];
         
@@ -751,16 +750,16 @@
       }
     }
 
-    // [고급 모드 비율 적용]: 드롭2 20%, 드롭3 20%, 하모닉마이너 20%, 멜로딕마이너 20%, 특수코드 10%, 음정 10%
+    // [고급 모드 비율 개편]: 드롭2(25%), 드롭3(25%), 하모닉마이너(25%), 멜로딕마이너(25%)
     function genAdvancedProblem() {
       const rand = Math.random();
       
-      if (rand < 0.20) {
-        return generateDropVoicingProblem(false); // Drop 2 (20%)
-      } else if (rand < 0.40) {
-        return generateDropVoicingProblem(true);  // Drop 3 (20%)
-      } else if (rand < 0.60) {
-        // 하모닉 마이너 스케일 (동일 루트 4지선다 - 20%)
+      if (rand < 0.25) {
+        return generateDropVoicingProblem(false); // Drop 2 (25%)
+      } else if (rand < 0.50) {
+        return generateDropVoicingProblem(true);  // Drop 3 (25%)
+      } else if (rand < 0.75) {
+        // 하모닉 마이너 스케일 (동일 루트 4지선다 - 25%)
         const root = ROOTS_POOL[Math.floor(Math.random() * ROOTS_POOL.length)];
         const ans = getScaleNotes(root, 'Harmonic Minor');
         const opts = shuffleArray([
@@ -780,8 +779,8 @@
           opts: opts,
           url: YOUTUBE_URL + '&index=7'
         };
-      } else if (rand < 0.80) {
-        // 멜로딕 마이너 스케일 (동일 루트 4지선다 - 20%)
+      } else {
+        // 멜로딕 마이너 스케일 (동일 루트 4지선다 - 25%)
         const root = ROOTS_POOL[Math.floor(Math.random() * ROOTS_POOL.length)];
         const ans = getScaleNotes(root, 'Melodic Minor');
         const opts = shuffleArray([
@@ -800,39 +799,6 @@
           ans: ans,
           opts: opts,
           url: YOUTUBE_URL + '&index=8'
-        };
-      } else if (rand < 0.90) {
-        // 특수 재즈 코드 (aug7, dim7, mM7 - 10%)
-        const root = ROOTS_POOL[Math.floor(Math.random() * ROOTS_POOL.length)];
-        const specialChords = [
-          { q: 'aug7', name: 'Augmented Dominant 7th', tones: `${root} - E - G# - B` },
-          { q: 'dim7', name: 'Diminished 7th', tones: `${root} - Eb - Gb - Bbb` },
-          { q: 'mM7', name: 'Minor Major 7th', tones: `${root} - Eb - G - B` }
-        ];
-        const item = specialChords[Math.floor(Math.random() * specialChords.length)];
-        return {
-          gameTag: 'GAME 5. SPECIAL CHORD TONES',
-          type: 'MCQ',
-          catKO: '특수 재즈 코드톤 (aug7, dim7, mM7)',
-          catEN: 'Special Jazz Chords',
-          qKO: `[ ${root}${item.q} ] (${item.name}) 코드의 올바른 구성음은?`,
-          qEN: `Chord tones for [ ${root}${item.q} ]?`,
-          ans: item.tones,
-          opts: shuffleArray([item.tones, `${root} - E - G - B`, `${root} - Eb - Gb - Bb`, `${root} - E - G# - C`]),
-          url: YOUTUBE_URL + '&index=12'
-        };
-      } else {
-        // 고난도 음정 (겹감 5도 등 정확한 계산 - 10%)
-        return {
-          gameTag: 'GAME 5. PRO INTERVAL BUSTER',
-          type: 'MCQ',
-          catKO: '고난도 음정 (겹감 5도 등)',
-          catEN: 'Advanced Intervals',
-          qKO: `C 에서 겹감 5도(Double Diminished 5th) 위의 음은?`,
-          qEN: `Double diminished 5th above C?`,
-          ans: 'Gbb',
-          opts: shuffleArray(['Gbb', 'Gb', 'F#', 'G']),
-          url: YOUTUBE_URL + '&index=2'
         };
       }
     }
@@ -930,7 +896,7 @@
       };
     }
 
-    // [요청 반영]: 개별훈련 보이싱 파트에서는 드롭2와 드롭3 문제만 50% 확률로 출제
+    // [요청 반영]: 개별훈련 보이싱 파트(Game 5)에서는 드롭2와 드롭3 문제만 50% 확률로 출제
     function genGame5() {
       return generateDropVoicingProblem(Math.random() > 0.5);
     }
@@ -1501,6 +1467,7 @@
         document.getElementById('feedbackStatus').innerText = dict.wrongMsg;
         document.getElementById('feedbackAnsValue').innerText = currentQuestion.ans;
         document.getElementById('feedbackUrl').href = currentQuestion.url;
+        document.getElementById('feedbackBox').classList.add('hidden'); // Fix typo visibility
         document.getElementById('feedbackBox').classList.remove('hidden');
 
         document.getElementById('inputPadArea').innerHTML = '';
