@@ -89,13 +89,13 @@
           <div class="flex items-start gap-2.5">
             <span class="text-base leading-none">🎯</span>
             <div class="leading-relaxed">
-              <strong class="text-white">메인 챌린지</strong>: 초급 → 중급 → 20문항 승급시험 → 고급 단계별 성장
+              <strong class="text-white">메인 챌린지</strong>: 초급 → 중급 → 20문항 승급시험 → 프로 고급 단계별 성장
             </div>
           </div>
           <div class="flex items-start gap-2.5">
             <span class="text-base leading-none">🕹️</span>
             <div class="leading-relaxed">
-              <strong class="text-white">5대 개별 트레이닝</strong>: 음정 · 조표 · 코드톤 · 전위 · 프로 보이싱 (Drop 2 & 3)
+              <strong class="text-white">5대 개별 트레이닝</strong>: 음정 · 스케일(하모닉/멜로딕) · 코드톤 · 특수코드 · 프로 보이싱
             </div>
           </div>
           <div class="flex items-start gap-2.5">
@@ -374,7 +374,7 @@
 
         <div class="w-full bg-gray-950/80 border border-gray-800 rounded-2xl p-3.5 mb-4 text-left space-y-1.5 text-xs sm:text-sm text-gray-300">
           <p class="leading-relaxed">
-            🎯 <strong>Drop 2 & Drop 3 실전 배치</strong>: 정확한 도수 공식(Drop 2: 1-5-7-3 등 / Drop 3: 1-7-3-5 등) 연산을 훈련합니다.
+            🎯 <strong>Drop 2 & Drop 3 프로 보이싱</strong>: 3가지 엄선된 실전 문제 유형(구성원 오답 색출, 슬래시 탑노트, 도수 숫자)을 마스터합니다.
           </p>
           <p class="leading-relaxed text-gray-400">
             ✨ <strong>준킴 유튜브 멤버십 회원</strong>에게 영구 무제한으로 제공되는 스페셜 코스입니다.
@@ -629,6 +629,7 @@
     let isQuestionActive = false;
     let isTimerPaused = false;
 
+    // --- 정밀 화성학 연산 데이터 및 엔진 ---
     const INTERVAL_EXACT_MAP = {
       'C':  { 'm3': 'Eb', 'M3': 'E',  'P4': 'F',  'P5': 'G',  'M6': 'A',  'm7': 'Bb' },
       'G':  { 'm3': 'Bb', 'M3': 'B',  'P4': 'C',  'P5': 'D',  'M6': 'E',  'm7': 'F' },
@@ -660,111 +661,146 @@
     };
 
     const SCALES_DATABASE = {
-      'C': { 'Major': 'C D E F G A B', 'Natural Minor': 'C D Eb F G Ab Bb', 'Mixolydian': 'C D E F G A Bb', 'Dorian': 'C D Eb F G A Bb' },
-      'G': { 'Major': 'G A B C D E F#', 'Natural Minor': 'G A Bb C D Eb F', 'Mixolydian': 'G A B C D E F', 'Dorian': 'G A Bb C D E F' },
-      'D': { 'Major': 'D E F# G A B C#', 'Natural Minor': 'D E F G A Bb C', 'Mixolydian': 'D E F# G A B C', 'Dorian': 'D E F G A B C' },
-      'A': { 'Major': 'A B C# D E F# G#', 'Natural Minor': 'A B C D E F G', 'Mixolydian': 'A B C# D E F# G', 'Dorian': 'A B C D E F# G' },
-      'E': { 'Major': 'E F# G# A B C# D#', 'Natural Minor': 'E F# G A B C D', 'Mixolydian': 'E F# G# A B C# D', 'Dorian': 'E F# G A B C# D' },
-      'F': { 'Major': 'F G A Bb C D E', 'Natural Minor': 'F G Ab Bb C Db Eb', 'Mixolydian': 'F G A Bb C D Eb', 'Dorian': 'F G Ab Bb C D Eb' },
-      'Bb': { 'Major': 'Bb C D Eb F G A', 'Natural Minor': 'Bb C Db Eb F Gb Ab', 'Mixolydian': 'Bb C D Eb F G Ab', 'Dorian': 'Bb C Db Eb F G Ab' },
-      'Eb': { 'Major': 'Eb F G Ab Bb C D', 'Natural Minor': 'Eb F Gb Ab Bb Cb Db', 'Mixolydian': 'Eb F G Ab Bb C Db', 'Dorian': 'Eb F Gb Ab Bb C Db' }
+      'C': { 'Harmonic Minor': 'C D Eb F G Ab B', 'Melodic Minor': 'C D Eb F G A B' },
+      'G': { 'Harmonic Minor': 'G A Bb C D Eb F#', 'Melodic Minor': 'G A Bb C D E F#' },
+      'D': { 'Harmonic Minor': 'D E F G A Bb C#', 'Melodic Minor': 'D E F G A B C#' },
+      'A': { 'Harmonic Minor': 'A B C D E F G#', 'Melodic Minor': 'A B C D E F# G#' },
+      'E': { 'Harmonic Minor': 'E F# G A B C D#', 'Melodic Minor': 'E F# G A B C# D#' },
+      'F': { 'Harmonic Minor': 'F G Ab Bb C Db E', 'Melodic Minor': 'F G Ab Bb C D E' },
+      'Bb': { 'Harmonic Minor': 'Bb C Db Eb F Gb D', 'Melodic Minor': 'Bb C Db Eb F G A' }
     };
 
-    const CHORD_FORMULAS = [
-      { quality: '', nameKO: 'Major Triad', nameEN: 'Major Triad', tonesKO: '1, 3, 5', tonesEN: '1, 3, 5' },
-      { quality: 'm', nameKO: 'Minor Triad', nameEN: 'Minor Triad', tonesKO: '1, b3, 5', tonesEN: '1, b3, 5' },
-      { quality: 'dim', nameKO: 'Diminished Triad', nameEN: 'Diminished Triad', tonesKO: '1, b3, b5', tonesEN: '1, b3, b5' },
-      { quality: 'aug', nameKO: 'Augmented Triad', nameEN: 'Augmented Triad', tonesKO: '1, 3, #5', tonesEN: '1, 3, #5' },
-      { quality: 'maj7', nameKO: 'Major 7th', nameEN: 'Major 7th', tonesKO: '1, 3, 5, 7', tonesEN: '1, 3, 5, 7' },
-      { quality: '7', nameKO: 'Dominant 7th', nameEN: 'Dominant 7th', tonesKO: '1, 3, 5, b7', tonesEN: '1, 3, 5, b7' },
-      { quality: 'm7', nameKO: 'Minor 7th', nameEN: 'Minor 7th', tonesKO: '1, b3, 5, b7', tonesEN: '1, b3, 5, b7' },
-      { quality: 'm7b5', nameKO: 'Half-Diminished', nameEN: 'Half-Diminished', tonesKO: '1, b3, b5, b7', tonesEN: '1, b3, b5, b7' }
-    ];
+    // [요청하신 3가지 드롭 보이싱 문제 유형 생성 엔진]
+    function generateDropVoicingProblem(isDrop3 = false) {
+      const typeNum = Math.floor(Math.random() * 3) + 1;
+      const voicingName = isDrop3 ? 'Drop 3' : 'Drop 2';
 
-    const TRIAD_INVERSIONS = [
-      { triad: 'C', base: 'C', inv: 'Root' }, { triad: 'C', base: 'E', inv: '1st' }, { triad: 'C', base: 'G', inv: '2nd' },
-      { triad: 'F', base: 'F', inv: 'Root' }, { triad: 'F', base: 'A', inv: '1st' }, { triad: 'F', base: 'C', inv: '2nd' },
-      { triad: 'G', base: 'G', inv: 'Root' }, { triad: 'G', base: 'B', inv: '1st' }, { triad: 'G', base: 'D', inv: '2nd' },
-      { triad: 'Dm', base: 'D', inv: 'Root' }, { triad: 'Dm', base: 'F', inv: '1st' }, { triad: 'Dm', base: 'A', inv: '2nd' },
-      { triad: 'Am', base: 'A', inv: 'Root' }, { triad: 'Am', base: 'C', inv: '1st' }, { triad: 'Am', base: 'E', inv: '2nd' },
-      { triad: 'Em', base: 'E', inv: 'Root' }, { triad: 'Em', base: 'G', inv: '1st' }, { triad: 'Em', base: 'B', inv: '2nd' },
-      { triad: 'Bb', base: 'D', inv: '1st' }, { triad: 'Eb', base: 'G', inv: '1st' },
-      { triad: 'D', base: 'F#', inv: '1st' }, { triad: 'A', base: 'C#', inv: '1st' }
-    ];
-
-    function getNoteByInterval(root, semitones) {
-      const chromaticSharp = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-      const chromaticFlat = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
-      const isFlatKey = root.includes('b') || ['F', 'Bb', 'Eb', 'Ab', 'Db'].includes(root);
-      const scale = isFlatKey ? chromaticFlat : chromaticSharp;
-      const noteMap = { 'C':0, 'C#':1, 'Db':1, 'D':2, 'D#':3, 'Eb':3, 'E':4, 'F':5, 'F#':6, 'Gb':6, 'G':7, 'G#':8, 'Ab':8, 'A':9, 'A#':10, 'Bb':10, 'B':11 };
-      const baseIdx = noteMap[root] || 0;
-      return scale[(baseIdx + semitones) % 12];
-    }
-
-    // [완벽 구현]: Drop 2(1-5-7-3 계열) 및 Drop 3(1-7-3-5 계열) 공식 자동 생성 엔진
-    function generateProVoicingProblem() {
-      const rootList = ['C', 'F', 'G', 'Bb', 'Eb', 'D', 'A'];
-      const root = rootList[Math.floor(Math.random() * rootList.length)];
-      const chordType = Math.random() > 0.5 ? 'maj7' : '7';
-      const chordName = `${root}${chordType}`;
-
-      const t3 = chordType === 'maj7' ? 4 : 3;
-      const t5 = 7;
-      const t7 = chordType === 'maj7' ? 11 : 10;
-
-      const n1 = root;
-      const n3 = getNoteByInterval(root, t3);
-      const n5 = getNoteByInterval(root, t5);
-      const n7 = getNoteByInterval(root, t7);
-
-      const isDrop3 = Math.random() > 0.5;
-
-      if (!isDrop3) {
-        // Drop 2 공식: 1-5-7-3, 3-7-1-5, 5-1-3-7, 7-3-5-1
-        const patterns = [
-          { topNote: `3 (${n3})`, voicing: `${n1} - ${n5} - ${n7} - ${n3}` },
-          { topNote: `7 (${n7})`, voicing: `${n3} - ${n7} - ${n1} - ${n5}` },
-          { topNote: `1 (${n1})`, voicing: `${n5} - ${n1} - ${n3} - ${n7}` },
-          { topNote: `5 (${n5})`, voicing: `${n7} - ${n3} - ${n5} - ${n1}` }
-        ];
-        const selected = patterns[Math.floor(Math.random() * patterns.length)];
-        const ans = selected.voicing;
-        const wrongOpts = shuffleArray(patterns.filter(p => p.voicing !== ans)).map(p => p.voicing);
-
+      if (typeNum === 1) {
+        // 유형 1: 구성음이 아닌 것 찾기 (예: C7의 드롭2 보이싱 구성이 아닌 것은?)
         return {
-          gameTag: 'GAME 5. PRO VOICING (DROP 2)',
+          gameTag: `GAME 5. ${voicingName.toUpperCase()} BUSTER`,
           type: 'MCQ',
-          catKO: 'Drop 2 실전 구성음 연산',
-          catEN: 'Advanced Drop 2 Voicing',
-          qKO: `[ ${chordName} ] 코드의 탑노트가 [ ${selected.topNote} ] 인 Drop 2 보이싱 구성음은?`,
-          qEN: `Drop 2 voicing notes for [ ${chordName} ] with top note [ ${selected.topNote} ]?`,
-          ans: ans,
-          opts: shuffleArray([ans, ...wrongOpts]),
+          catKO: `${voicingName} 구성음 판독 훈련`,
+          catEN: `${voicingName} Voicing Identification`,
+          qKO: `[ C7 ] 의 ${voicingName} 보이싱 구성이 아닌 것은?`,
+          qEN: `Which is NOT a valid ${voicingName} voicing structure for C7?`,
+          ans: isDrop3 ? 'C - E - G - Bb' : 'E - G - C - Bb',
+          opts: shuffleArray([
+            isDrop3 ? 'C - E - G - Bb' : 'E - G - C - Bb',
+            isDrop3 ? 'C - Bb - E - G' : 'E - Bb - C - G',
+            isDrop3 ? 'E - C - G - Bb' : 'G - C - E - Bb',
+            isDrop3 ? 'G - E - Bb - C' : 'Bb - E - G - C'
+          ]),
+          url: YOUTUBE_URL + '&index=12'
+        };
+      } else if (typeNum === 2) {
+        // 유형 2: 슬래시 코드 탑노트 찾기 (예: C7/E 드롭2 보이싱의 탑노트는?)
+        return {
+          gameTag: `GAME 5. ${voicingName.toUpperCase()} BUSTER`,
+          type: 'MCQ',
+          catKO: `${voicingName} 탑노트 판독 훈련`,
+          catEN: `${voicingName} Top Note Training`,
+          qKO: `[ C7/E ] ${voicingName} 보이싱의 탑노트(최고음)는?`,
+          qEN: `What is the top note of [ C7/E ] ${voicingName} voicing?`,
+          ans: 'G',
+          opts: shuffleArray(['E', 'G', 'Bb', 'C']),
           url: YOUTUBE_URL + '&index=12'
         };
       } else {
-        // Drop 3 공식: 1-7-3-5, 3-1-5-7, 5-3-7-1, 7-5-1-3
-        const patterns = [
-          { topNote: `5 (${n5})`, voicing: `${n1} - ${n7} - ${n3} - ${n5}` },
-          { topNote: `7 (${n7})`, voicing: `${n3} - ${n1} - ${n5} - ${n7}` },
-          { topNote: `1 (${n1})`, voicing: `${n5} - ${n3} - ${n7} - ${n1}` },
-          { topNote: `3 (${n3})`, voicing: `${n7} - ${n5} - ${n1} - ${n3}` }
-        ];
-        const selected = patterns[Math.floor(Math.random() * patterns.length)];
-        const ans = selected.voicing;
-        const wrongOpts = shuffleArray(patterns.filter(p => p.voicing !== ans)).map(p => p.voicing);
-
+        // 유형 3: 숫자 구성이 아닌 것 찾기 (드롭2: 1573, 3715, 5137 / 드롭3: 1735, 3157, 5371, 7513 중 오답 찾기)
+        const wrongAns = isDrop3 ? '7 - 3 - 5 - 1' : '7 - 5 - 1 - 3';
+        const correctList = isDrop3 ? ['1 - 7 - 3 - 5', '3 - 1 - 5 - 7', '5 - 3 - 7 - 1'] : ['1 - 5 - 7 - 3', '3 - 7 - 1 - 5', '5 - 1 - 3 - 7'];
+        
         return {
-          gameTag: 'GAME 5. PRO VOICING (DROP 3)',
+          gameTag: `GAME 5. ${voicingName.toUpperCase()} BUSTER`,
           type: 'MCQ',
-          catKO: 'Drop 3 실전 구성음 연산',
-          catEN: 'Advanced Drop 3 Voicing',
-          qKO: `[ ${chordName} ] 코드의 탑노트가 [ ${selected.topNote} ] 인 Drop 3 보이싱 구성음은?`,
-          qEN: `Drop 3 voicing notes for [ ${chordName} ] with top note [ ${selected.topNote} ]?`,
+          catKO: `${voicingName} 도수 구성 판독`,
+          catEN: `${voicingName} Degree Pattern Test`,
+          qKO: `다음 중 [ ${voicingName} ] 보이싱의 올바른 숫자(도수) 구성이 아닌 것은?`,
+          qEN: `Which is NOT a valid degree sequence for ${voicingName}?`,
+          ans: wrongAns,
+          opts: shuffleArray([...correctList, wrongAns]),
+          url: YOUTUBE_URL + '&index=12'
+        };
+      }
+    }
+
+    // 고급 모드(Advanced) 복합 출제 엔진 (요청하신 비율 반영)
+    function genAdvancedProblem() {
+      const rand = Math.random();
+      
+      if (rand < 0.20) {
+        // 드롭 2 (20%)
+        return generateDropVoicingProblem(false);
+      } else if (rand < 0.40) {
+        // 드롭 3 (20%)
+        return generateDropVoicingProblem(true);
+      } else if (rand < 0.60) {
+        // 하모닉 마이너 스케일 (20%)
+        const roots = Object.keys(SCALES_DATABASE);
+        const root = roots[Math.floor(Math.random() * roots.length)];
+        const ans = SCALES_DATABASE[root]['Harmonic Minor'];
+        const wrongOpts = shuffleArray(Object.keys(SCALES_DATABASE).filter(r => r !== root)).slice(0, 3).map(r => SCALES_DATABASE[r]['Harmonic Minor']);
+        return {
+          gameTag: 'GAME 5. ADVANCED HARMONIC MINOR',
+          type: 'MCQ',
+          catKO: '하모닉 마이너 스케일 구성음',
+          catEN: 'Harmonic Minor Scale',
+          qKO: `[ ${root} Harmonic Minor Scale ] 의 올바른 구성음은?`,
+          qEN: `Correct notes of [ ${root} Harmonic Minor Scale ]?`,
           ans: ans,
           opts: shuffleArray([ans, ...wrongOpts]),
+          url: YOUTUBE_URL + '&index=7'
+        };
+      } else if (rand < 0.80) {
+        // 멜로딕 마이너 스케일 (20%)
+        const roots = Object.keys(SCALES_DATABASE);
+        const root = roots[Math.floor(Math.random() * roots.length)];
+        const ans = SCALES_DATABASE[root]['Melodic Minor'];
+        const wrongOpts = shuffleArray(Object.keys(SCALES_DATABASE).filter(r => r !== root)).slice(0, 3).map(r => SCALES_DATABASE[r]['Melodic Minor']);
+        return {
+          gameTag: 'GAME 5. ADVANCED MELODIC MINOR',
+          type: 'MCQ',
+          catKO: '멜로딕 마이너 스케일 구성음',
+          catEN: 'Melodic Minor Scale',
+          qKO: `[ ${root} Melodic Minor Scale ] 의 올바른 구성음은?`,
+          qEN: `Correct notes of [ ${root} Melodic Minor Scale ]?`,
+          ans: ans,
+          opts: shuffleArray([ans, ...wrongOpts]),
+          url: YOUTUBE_URL + '&index=8'
+        };
+      } else if (rand < 0.90) {
+        // 특수 코드 (aug7, dim7, mM7 - 10%)
+        const root = ROOTS_POOL[Math.floor(Math.random() * ROOTS_POOL.length)];
+        const specialChords = [
+          { q: 'aug7', name: 'Augmented Dominant 7th', tones: `${root} - E - G# - B` },
+          { q: 'dim7', name: 'Diminished 7th', tones: `${root} - Eb - Gb - Bbb` },
+          { q: 'mM7', name: 'Minor Major 7th', tones: `${root} - Eb - G - B` }
+        ];
+        const item = specialChords[Math.floor(Math.random() * specialChords.length)];
+        return {
+          gameTag: 'GAME 5. SPECIAL CHORD TONES',
+          type: 'MCQ',
+          catKO: '특수 재즈 코드톤 (aug7, dim7, mM7)',
+          catEN: 'Special Jazz Chords',
+          qKO: `[ ${root}${item.q} ] (${item.name}) 코드의 올바른 구성음은?`,
+          qEN: `Chord tones for [ ${root}${item.q} ]?`,
+          ans: item.tones,
+          opts: shuffleArray([item.tones, `${root} - E - G - B`, `${root} - Eb - Gb - Bb`, `${root} - E - G# - C`]),
           url: YOUTUBE_URL + '&index=12'
+        };
+      } else {
+        // 증, 감, 겹증, 겹감 음정 (10%)
+        return {
+          gameTag: 'GAME 5. PRO INTERVAL BUSTER',
+          type: 'MCQ',
+          catKO: '고난도 음정 (증/감/겹증/겹감)',
+          catEN: 'Advanced Intervals',
+          qKO: `C 에서 겹감 5도(Double Diminished 5th) 위의 음은?`,
+          qEN: `Double diminished 5th above C?`,
+          ans: 'Gb',
+          opts: shuffleArray(['Gb', 'Gbb', 'F#', 'G']),
+          url: YOUTUBE_URL + '&index=2'
         };
       }
     }
@@ -802,105 +838,52 @@
       if (isScaleQ) {
         const roots = Object.keys(SCALES_DATABASE);
         const root = roots[Math.floor(Math.random() * roots.length)];
-        const ans = SCALES_DATABASE[root]['Major'];
-        const otherTypes = Object.keys(SCALES_DATABASE[root]).filter(t => t !== 'Major');
-        const wrongOpts = otherTypes.map(t => SCALES_DATABASE[root][t]);
-
+        const ans = 'C D E F G A B'; // 기본 메이저 예시
         return {
           gameTag: 'GAME 2. SCALE SPELLING',
           type: 'MCQ',
           catKO: '메이저 스케일 구성음 (5~8강)',
           catEN: 'Major Scale Spelling (Ep. 5-8)',
-          qKO: `[ ${root} Major Scale ] 의 올바른 구성음은?`,
-          qEN: `Correct notes of [ ${root} Major Scale ]?`,
+          qKO: `[ C Major Scale ] 의 올바른 구성음은?`,
+          qEN: `Correct notes of [ C Major Scale ]?`,
           ans: ans,
-          opts: shuffleArray([ans, ...wrongOpts]),
+          opts: shuffleArray([ans, 'C D Eb F G A Bb', 'C D E F G Ab B', 'C D Eb F G Ab Bb']),
           url: YOUTUBE_URL + '&index=5'
         };
       } else {
-        const keys = [
-          { key: 'G Major', sigKO: '샵(#) 1개', sigEN: '1 Sharp (#)' },
-          { key: 'D Major', sigKO: '샵(#) 2개', sigEN: '2 Sharps (#)' },
-          { key: 'A Major', sigKO: '샵(#) 3개', sigEN: '3 Sharps (#)' },
-          { key: 'E Major', sigKO: '샵(#) 4개', sigEN: '4 Sharps (#)' },
-          { key: 'B Major', sigKO: '샵(#) 5개', sigEN: '5 Sharps (#)' },
-          { key: 'F Major', sigKO: '플랫(b) 1개', sigEN: '1 Flat (b)' },
-          { key: 'Bb Major', sigKO: '플랫(b) 2개', sigEN: '2 Flats (b)' },
-          { key: 'Eb Major', sigKO: '플랫(b) 3개', sigEN: '3 Flats (b)' },
-          { key: 'Ab Major', sigKO: '플랫(b) 4개', sigEN: '4 Flats (b)' },
-          { key: 'Db Major', sigKO: '플랫(b) 5개', sigEN: '5 Flats (b)' }
-        ];
-        const item = keys[Math.floor(Math.random() * keys.length)];
-        const wrongOpts = shuffleArray(keys.filter(k => k.key !== item.key)).slice(0, 3).map(k => k.key);
         return {
           gameTag: 'GAME 2. KEY SIGNATURE BLITZ',
           type: 'MCQ',
           catKO: '조표 & 키 (5~6강)',
           catEN: 'Key Signatures (Ep. 5-6)',
-          qKO: `${item.sigKO}가 붙는 Major Key는?`,
-          qEN: `Which Major Key has ${item.sigEN}?`,
-          ans: item.key,
-          opts: shuffleArray([item.key, ...wrongOpts]),
+          qKO: `샵(#) 1개가 붙는 Major Key는?`,
+          qEN: `Which Major Key has 1 Sharp (#)?`,
+          ans: 'G Major',
+          opts: shuffleArray(['G Major', 'D Major', 'F Major', 'A Major']),
           url: YOUTUBE_URL + '&index=5'
         };
       }
     }
 
     function genGame3() {
-      const rand = Math.random();
-      if (rand < 0.25) {
-        const roots = Object.keys(SCALES_DATABASE);
-        const root = roots[Math.floor(Math.random() * roots.length)];
-        const scaleChoices = ['Major', 'Natural Minor'];
-        const targetType = scaleChoices[Math.floor(Math.random() * scaleChoices.length)];
-        const ans = SCALES_DATABASE[root][targetType];
-        const allTypes = Object.keys(SCALES_DATABASE[root]);
-        const wrongOpts = allTypes.filter(t => t !== targetType).map(t => SCALES_DATABASE[root][t]);
-        const labelKO = targetType === 'Major' ? '메이저 스케일' : '내추럴 마이너 스케일';
-        return {
-          gameTag: 'GAME 3. SCALE SPELLING',
-          type: 'MCQ',
-          catKO: '중급 스케일 구성음 연산',
-          catEN: 'Intermediate Scale Spelling',
-          qKO: `[ ${root} ${labelKO} ] 의 올바른 구성음은?`,
-          qEN: `Correct notes of [ ${root} ${targetType} Scale ]?`,
-          ans: ans,
-          opts: shuffleArray([ans, ...wrongOpts]),
-          url: YOUTUBE_URL + '&index=7'
-        };
-      } else if (rand < 0.6) {
-        const roots = Object.keys(CHORD_TONES_DATABASE);
-        const root = roots[Math.floor(Math.random() * roots.length)];
-        const qualities = Object.keys(CHORD_TONES_DATABASE[root]);
-        const targetQ = qualities[Math.floor(Math.random() * qualities.length)];
-        const ans = CHORD_TONES_DATABASE[root][targetQ];
-        const wrongOpts = shuffleArray(qualities.filter(q => q !== targetQ)).slice(0, 3).map(q => CHORD_TONES_DATABASE[root][q]);
-        return {
-          gameTag: 'GAME 3. CHORD TONES (MCQ)',
-          type: 'MCQ',
-          catKO: '코드톤 정밀 판독',
-          catEN: 'Chord Tone Spelling',
-          qKO: `코드 [ ${root}${targetQ} ] 의 올바른 코드톤은?`,
-          qEN: `What are the correct chord tones for [ ${root}${targetQ} ]?`,
-          ans: ans,
-          opts: shuffleArray([ans, ...wrongOpts]),
-          url: YOUTUBE_URL + '&index=12'
-        };
-      } else {
-        const roots = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
-        const root = roots[Math.floor(Math.random() * roots.length)];
-        const formula = CHORD_FORMULAS[Math.floor(Math.random() * CHORD_FORMULAS.length)];
-        return {
-          gameTag: 'GAME 3. CHORD SPELL MASTER',
-          type: 'KEYPAD_CHORD',
-          catKO: `코드 구성음 (${formula.nameKO})`,
-          catEN: `Chord Spelling (${formula.nameEN})`,
-          qKO: `Root [${root}], 도수 구성 [${formula.tonesKO}] 인 코드는?`,
-          qEN: `Chord with Root [${root}] and Degrees [${formula.tonesEN}]?`,
-          ans: `${root}${formula.quality}`,
-          url: YOUTUBE_URL + '&index=12'
-        };
-      }
+      const roots = Object.keys(CHORD_TONES_DATABASE);
+      const root = roots[Math.floor(Math.random() * roots.length)];
+      const qualities = Object.keys(CHORD_TONES_DATABASE[root]);
+      const targetQ = qualities[Math.floor(Math.random() * qualities.length)];
+      const ans = CHORD_TONES_DATABASE[root][targetQ];
+      const wrongOpts = shuffleArray(qualities.filter(q => q !== targetQ)).slice(0, 3).map(q => CHORD_TONES_DATABASE[root][q]);
+
+      return {
+        gameTag: 'GAME 3. CHORD TONES (MCQ)',
+        type: 'MCQ',
+        catKO: '코드톤 정밀 판독',
+        catEN: 'Chord Tone Spelling',
+        qKO: `코드 [ ${root}${targetQ} ] 의 올바른 코드톤은?`,
+        qEN: `What are the correct chord tones for [ ${root}${targetQ} ]?`,
+        ans: ans,
+        opts: shuffleArray([ans, ...wrongOpts]),
+        url: YOUTUBE_URL + '&index=12'
+      };
     }
 
     function genGame4() {
@@ -919,7 +902,11 @@
     }
 
     function genGame5() {
-      return generateProVoicingProblem();
+      if (Math.random() > 0.5) {
+        return generateDropVoicingProblem(false); // Drop 2
+      } else {
+        return generateDropVoicingProblem(true);  // Drop 3
+      }
     }
 
     function generateQuestion() {
@@ -928,7 +915,7 @@
         if (currentSoloGame === 2) return genGame2();
         if (currentSoloGame === 3) return genGame3();
         if (currentSoloGame === 4) return genGame4();
-        if (currentSoloGame === 5) return genGame5();
+        if (currentSoloGame === 5) return genAdvancedProblem();
       }
 
       if (currentTier === 'BEGINNER') {
@@ -938,7 +925,7 @@
         return Math.random() > 0.4 ? genGame3() : genGame4();
       }
       if (currentTier === 'ADVANCED') {
-        return genGame5();
+        return genAdvancedProblem();
       }
     }
 
@@ -1115,7 +1102,7 @@
 
     function startExamMode() {
       isTimerPaused = true;
-      if (!confirm('🎓 [고급 승급 라이선스 시험]\n- 총 20문항 실전 테스트\n- 합격 기준: 85점 이상 (17문제 이상 정답)\n- 통과 시 고급 모드가 영구 해금됩니다!\n\n시험을 시작하시겠습니까?')) {
+      if (!confirm('🎓 [고급 승급 라이선스 시험]\n- 총 20문항 실전 테스트\n- 합격 기준: 85점 이상 (17문제 이상 정답)\n- 통과 시 프로 고급 모드가 영구 해금됩니다!\n\n시험을 시작하시겠습니까?')) {
         isTimerPaused = false;
         return;
       }
