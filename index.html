@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Harmony Buster - 화성학 두뇌 연산 자동화 트레이너</title>
   
-  <!-- PWA & Mobile WebApp 설정 -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="HarmonyBuster">
@@ -47,12 +46,9 @@
 </head>
 <body class="min-h-screen w-full flex justify-center items-center font-sans text-[#EDEDED] antialiased">
 
-  <!-- 데스크톱 스마트폰 프레임 래퍼 -->
   <div class="w-full max-w-[480px] h-[100dvh] bg-[#121316] sm:border sm:border-gray-800 sm:rounded-[36px] sm:shadow-[0_0_50px_rgba(255,183,3,0.08)] flex flex-col justify-between overflow-hidden relative">
 
-    <!-- ========================================== -->
     <!-- 0. 오프닝 웰컴 화면 -->
-    <!-- ========================================== -->
     <section id="welcomeScreen" class="w-full flex-1 flex flex-col justify-between items-center text-center px-4 pt-safe-top pb-3 my-auto overflow-y-auto no-scrollbar">
       <header class="w-full flex justify-between items-center py-2.5 border-b border-gray-800/80 mb-2 shrink-0">
         <div class="text-left">
@@ -99,7 +95,7 @@
           <div class="flex items-start gap-2.5">
             <span class="text-base leading-none">🕹️</span>
             <div class="leading-relaxed">
-              <strong class="text-white">5대 개별 트레이닝</strong>: 음정 · 조표 · 코드톤 · 전위 · 프로 보이싱
+              <strong class="text-white">5대 개별 트레이닝</strong>: 음정 · 조표 · 코드톤 · 전위 · 프로 보이싱 (Drop 2 & 3)
             </div>
           </div>
           <div class="flex items-start gap-2.5">
@@ -117,12 +113,9 @@
       </div>
     </section>
 
-    <!-- ========================================== -->
     <!-- 1. 메인 플레이 화면 -->
-    <!-- ========================================== -->
     <div id="gameScreen" class="hidden w-full flex-1 flex flex-col justify-between px-3.5 pt-safe-top pb-1 overflow-y-auto no-scrollbar">
       
-      <!-- 최상단 헤더 -->
       <header class="w-full flex justify-between items-center py-2 border-b border-gray-800/80 shrink-0">
         <button onclick="goToWelcomeScreen()" class="cursor-pointer active:scale-95 transition-transform text-left flex items-center gap-2 py-1 pr-2 rounded-xl hover:bg-gray-800/50">
           <span class="px-2 py-1 bg-gray-800 border border-gray-700 rounded-lg text-xs font-bold text-[#FFB703]">🏠 홈</span>
@@ -155,7 +148,6 @@
         </div>
       </header>
 
-      <!-- 5대 개별 게임 바로가기 칩바 -->
       <div id="soloChipsArea" class="w-full mt-2 mb-1 shrink-0">
         <div class="flex items-center justify-between px-1 mb-1">
           <span class="text-xs font-extrabold text-gray-400">🕹️ 5대 개별 집중 코스</span>
@@ -182,7 +174,6 @@
         </div>
       </div>
 
-      <!-- 메인 티어 선택 탭 -->
       <div id="tierNav" class="w-full grid grid-cols-3 gap-1.5 my-1 bg-gray-900 p-1 rounded-xl text-center shrink-0">
         <button id="btnTierBeg" onclick="selectTier('BEGINNER')" class="py-2 text-xs sm:text-sm font-bold rounded-lg bg-[#FFB703] text-black active:scale-95 transition-all">
           초급 (4선다)
@@ -195,18 +186,15 @@
         </button>
       </div>
 
-      <!-- 초급 해금 안내 바 -->
       <div id="unlockGuideBar" class="w-full text-center py-1 bg-gray-900/60 rounded-lg text-xs text-gray-300 shrink-0">
         💡 <span id="t-unlock-guide">중급 해금 조건: 10 콤보 달성</span> (<span id="unlockProgress" class="font-bold text-[#FFB703]">0</span>/10)
       </div>
 
-      <!-- 시험 진행 헤더 -->
       <div id="examStatusHeader" class="hidden w-full py-1.5 px-3 bg-purple-950/60 border border-purple-800/80 rounded-xl my-1 flex justify-between items-center text-xs shrink-0">
         <span class="font-bold text-purple-300">🎓 실전 시험: <strong id="examCurrentQ" class="text-[#FFB703]">1</strong> / 20</span>
         <span class="font-bold text-gray-200">정답: <strong id="examScore" class="text-[#06D6A0]">0</strong>개</span>
       </div>
 
-      <!-- 타이머 바 영역 -->
       <div id="timerContainer" class="w-full mt-1 mb-1 shrink-0">
         <div class="flex justify-between items-center text-xs text-gray-400 mb-1 px-1">
           <span id="timerLabel" class="font-bold">TIME ATTACK</span>
@@ -217,7 +205,6 @@
         </div>
       </div>
 
-      <!-- 문제 카드 -->
       <main class="w-full flex-1 flex flex-col justify-center my-1 min-h-0">
         <div id="cardBox" class="p-4 sm:p-5 rounded-2xl bg-gray-900/90 border-2 border-gray-800 flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden backdrop-blur-sm">
           <div class="flex items-center gap-2 mb-2">
@@ -233,14 +220,12 @@
             Loading...
           </p>
 
-          <!-- 중급 2-Step 디스플레이 -->
           <div id="inputPreviewBox" class="hidden w-full py-2 px-3 bg-gray-950 rounded-xl border border-gray-800 my-1.5 flex justify-between items-center">
             <span id="t-preview-label" class="text-gray-400 text-xs font-bold">선택한 코드:</span>
             <span id="previewText" class="font-black text-[#FFB703] text-lg tracking-wide">-</span>
             <button onclick="clearCurrentInput()" id="t-preview-clear" class="text-xs font-bold text-gray-400 hover:text-red-400 px-2 py-1 bg-gray-900 rounded-lg">⌫ 지우기</button>
           </div>
 
-          <!-- 오답 피드백 박스 -->
           <div id="feedbackBox" class="hidden w-full mt-2 p-3.5 bg-gray-950 rounded-xl border-2 border-[#EF476F]/60 text-center flex flex-col gap-2.5 shadow-xl">
             <div id="feedbackStatus" class="text-xs font-black text-[#EF476F] tracking-wide uppercase"></div>
             
@@ -260,13 +245,10 @@
         </div>
       </main>
 
-      <!-- 하단 입력 패드 영역 -->
       <section id="inputPadArea" class="w-full my-1 shrink-0"></section>
     </div>
 
-    <!-- ========================================== -->
-    <!-- 2. 라이선스 시험 성적표 화면 & 오답 노트 -->
-    <!-- ========================================== -->
+    <!-- 2. 라이선스 시험 성적표 화면 -->
     <section id="examResultScreen" class="hidden w-full flex-1 flex flex-col justify-start items-center text-center p-4 pt-safe-top my-auto max-h-[82vh] overflow-y-auto no-scrollbar">
       <div class="bg-gray-900 border-2 border-purple-500/50 rounded-3xl p-5 w-full shadow-2xl">
         <div id="examResultIcon" class="text-4xl mb-2">🏆</div>
@@ -288,7 +270,6 @@
           </div>
         </div>
 
-        <!-- 오답 노트 영역 -->
         <div id="examReviewSection" class="hidden text-left mb-4 bg-gray-950/80 border border-gray-800 rounded-2xl p-3">
           <h4 class="text-xs font-bold text-red-400 mb-2 flex items-center gap-1">
             <span>📝</span> <span>틀린 문항 오답 노트</span>
@@ -303,11 +284,8 @@
       </div>
     </section>
 
-    <!-- ========================================== -->
-    <!-- 3. 상시 노출 2단 배너 + 큼직한 하단 탭바 -->
-    <!-- ========================================== -->
+    <!-- 3. 상시 노출 배너 & 하단 탭바 -->
     <div class="w-full bg-gray-950 border-t border-gray-800 shrink-0 z-40">
-      <!-- 상시 노출: 화성학 1~14강 & 커피 한 잔 후원 퀵 배너 -->
       <div class="grid grid-cols-2 gap-2 px-3 pt-2 pb-1.5">
         <a href="https://youtube.com/playlist?list=PLUhKlj-gxAgqQxhGNKJkvZF2ihiY0wQUC" target="_blank" class="flex items-center justify-center gap-2 py-2 px-2.5 bg-gray-900 hover:bg-gray-800 active:scale-95 border border-red-500/40 rounded-xl shadow-sm transition-all">
           <span class="text-base">📺</span>
@@ -326,7 +304,6 @@
         </button>
       </div>
 
-      <!-- 네이티브 앱 하단 고정 탭바 -->
       <nav class="w-full px-2 pt-1.5 pb-safe flex justify-around items-center border-t border-gray-900">
         <button onclick="switchTab('HOME')" id="tabHome" class="flex flex-col items-center gap-1 text-[#FFB703] active:scale-90 transition-transform py-1 px-3">
           <span class="text-xl leading-none">🏠</span>
@@ -350,9 +327,7 @@
       </nav>
     </div>
 
-    <!-- ========================================== -->
-    <!-- 4. 네이티브 바텀 시트: 커피 후원 모달 -->
-    <!-- ========================================== -->
+    <!-- 4. 후원 모달 -->
     <div id="supportSheet" class="hidden fixed inset-0 bg-black/75 backdrop-blur-sm flex justify-center items-end z-50 transition-opacity">
       <div class="w-full max-w-[480px] bg-gray-900 border-t border-gray-800 rounded-t-[32px] p-6 pb-safe animate-slide-up shadow-2xl flex flex-col items-center text-center">
         <div class="w-12 h-1.5 bg-gray-700 rounded-full mb-4"></div>
@@ -381,9 +356,7 @@
       </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- 5. 네이티브 바텀 시트: VIP 멤버십 안내 모달 -->
-    <!-- ========================================== -->
+    <!-- 5. VIP 모달 -->
     <div id="vipModal" class="hidden fixed inset-0 bg-black/75 backdrop-blur-sm flex justify-center items-end z-50 transition-opacity">
       <div class="w-full max-w-[480px] bg-gray-900 border-t border-[#FFB703]/40 rounded-t-[32px] p-6 pb-safe animate-slide-up shadow-2xl flex flex-col items-center text-center">
         <div class="w-12 h-1.5 bg-gray-700 rounded-full mb-4"></div>
@@ -401,10 +374,10 @@
 
         <div class="w-full bg-gray-950/80 border border-gray-800 rounded-2xl p-3.5 mb-4 text-left space-y-1.5 text-xs sm:text-sm text-gray-300">
           <p class="leading-relaxed">
-            🎯 <strong>Drop 2 & Drop 3 실전 배치</strong>: 재즈와 세션 연주자들이 지판을 한눈에 보는 핵심 시야를 훈련합니다.
+            🎯 <strong>Drop 2 & Drop 3 실전 배치</strong>: 정확한 도수 공식(Drop 2: 1-5-7-3 등 / Drop 3: 1-7-3-5 등) 연산을 훈련합니다.
           </p>
           <p class="leading-relaxed text-gray-400">
-            ✨ <strong>준킴 유튜브 멤버십 회원</strong>에게 전체 화성학 마스터 강의와 함께 영구 무제한으로 제공되는 스페셜 코스입니다.
+            ✨ <strong>준킴 유튜브 멤버십 회원</strong>에게 영구 무제한으로 제공되는 스페셜 코스입니다.
           </p>
         </div>
 
@@ -444,10 +417,9 @@
       </div>
     </div>
 
-  </div> <!-- /스마트폰 프레임 끝 -->
+  </div>
 
   <script>
-    // --- Web Audio 사운드 & 음소거 제어 ---
     let audioCtx = null;
     let isMuted = localStorage.getItem('hb_muted') === 'true';
 
@@ -513,7 +485,6 @@
       return copy;
     }
 
-    // --- 다국어(i18n) ---
     let currentLang = localStorage.getItem('hb_lang') || 'KO';
     const I18N = {
       KO: {
@@ -631,7 +602,6 @@
       setLanguage(currentLang === 'KO' ? 'EN' : 'KO');
     }
 
-    // --- 상태 저장 ---
     const YOUTUBE_URL = "https://youtube.com/playlist?list=PLUhKlj-gxAgqQxhGNKJkvZF2ihiY0wQUC";
     let userProgress = { intermediateUnlocked: false, advancedUnlocked: false, examPassed: false, isVip: false, bestCombo: 0 };
     try {
@@ -647,23 +617,18 @@
     let currentQuestion = null;
     let selectedRoot = '';
 
-    // 시험 모드
     let isExamMode = false;
     let examTotalCount = 20;
     let examCurrentIndex = 0;
     let examCorrectCount = 0;
     let examWrongAnswers = [];
 
-    // 타이머 & 일시정지 제어
     let timerInterval = null;
     let maxTime = 10;
     let timeLeft = 10;
     let isQuestionActive = false;
     let isTimerPaused = false;
 
-    // =========================================================================
-    // 정밀 음악 이론 연산 엔진
-    // =========================================================================
     const INTERVAL_EXACT_MAP = {
       'C':  { 'm3': 'Eb', 'M3': 'E',  'P4': 'F',  'P5': 'G',  'M6': 'A',  'm7': 'Bb' },
       'G':  { 'm3': 'Bb', 'M3': 'B',  'P4': 'C',  'P5': 'D',  'M6': 'E',  'm7': 'F' },
@@ -727,19 +692,82 @@
       { triad: 'D', base: 'F#', inv: '1st' }, { triad: 'A', base: 'C#', inv: '1st' }
     ];
 
-    // [수정 완료]: 화성학 정석에 맞는 올바른 Drop 2 보이싱 구성음 데이터베이스
-    const DROP2_VOICINGS_DB = [
-      { chord: 'Cmaj7', top: '7 (B)', voicing: 'C - G - E - B', type: 'Drop 2 (Top 7)' },
-      { chord: 'Cmaj7', top: '3 (E)', voicing: 'G - B - C - E', type: 'Drop 2 (Top 3)' },
-      { chord: 'Cmaj7', top: '5 (G)', voicing: 'B - E - G - C', type: 'Drop 2 (Top 5)' },
-      { chord: 'Cmaj7', top: '1 (C)', voicing: 'E - C - G - B', type: 'Drop 2 (Top 1)' },
-      { chord: 'Dm7', top: '7 (C)', voicing: 'D - A - F - C', type: 'Drop 2 (Top 7)' },
-      { chord: 'Dm7', top: '3 (F)', voicing: 'A - C - D - F', type: 'Drop 2 (Top 3)' },
-      { chord: 'G7', top: '7 (F)', voicing: 'G - D - B - F', type: 'Drop 2 (Top 7)' },
-      { chord: 'G7', top: '3 (B)', voicing: 'D - F - G - B', type: 'Drop 2 (Top 3)' },
-      { chord: 'Fmaj7', top: '7 (E)', voicing: 'F - C - A - E', type: 'Drop 2 (Top 7)' },
-      { chord: 'Am7', top: '7 (G)', voicing: 'A - E - C - G', type: 'Drop 2 (Top 7)' }
-    ];
+    function getNoteByInterval(root, semitones) {
+      const chromaticSharp = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+      const chromaticFlat = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+      const isFlatKey = root.includes('b') || ['F', 'Bb', 'Eb', 'Ab', 'Db'].includes(root);
+      const scale = isFlatKey ? chromaticFlat : chromaticSharp;
+      const noteMap = { 'C':0, 'C#':1, 'Db':1, 'D':2, 'D#':3, 'Eb':3, 'E':4, 'F':5, 'F#':6, 'Gb':6, 'G':7, 'G#':8, 'Ab':8, 'A':9, 'A#':10, 'Bb':10, 'B':11 };
+      const baseIdx = noteMap[root] || 0;
+      return scale[(baseIdx + semitones) % 12];
+    }
+
+    // [완벽 구현]: Drop 2(1-5-7-3 계열) 및 Drop 3(1-7-3-5 계열) 공식 자동 생성 엔진
+    function generateProVoicingProblem() {
+      const rootList = ['C', 'F', 'G', 'Bb', 'Eb', 'D', 'A'];
+      const root = rootList[Math.floor(Math.random() * rootList.length)];
+      const chordType = Math.random() > 0.5 ? 'maj7' : '7';
+      const chordName = `${root}${chordType}`;
+
+      const t3 = chordType === 'maj7' ? 4 : 3;
+      const t5 = 7;
+      const t7 = chordType === 'maj7' ? 11 : 10;
+
+      const n1 = root;
+      const n3 = getNoteByInterval(root, t3);
+      const n5 = getNoteByInterval(root, t5);
+      const n7 = getNoteByInterval(root, t7);
+
+      const isDrop3 = Math.random() > 0.5;
+
+      if (!isDrop3) {
+        // Drop 2 공식: 1-5-7-3, 3-7-1-5, 5-1-3-7, 7-3-5-1
+        const patterns = [
+          { topNote: `3 (${n3})`, voicing: `${n1} - ${n5} - ${n7} - ${n3}` },
+          { topNote: `7 (${n7})`, voicing: `${n3} - ${n7} - ${n1} - ${n5}` },
+          { topNote: `1 (${n1})`, voicing: `${n5} - ${n1} - ${n3} - ${n7}` },
+          { topNote: `5 (${n5})`, voicing: `${n7} - ${n3} - ${n5} - ${n1}` }
+        ];
+        const selected = patterns[Math.floor(Math.random() * patterns.length)];
+        const ans = selected.voicing;
+        const wrongOpts = shuffleArray(patterns.filter(p => p.voicing !== ans)).map(p => p.voicing);
+
+        return {
+          gameTag: 'GAME 5. PRO VOICING (DROP 2)',
+          type: 'MCQ',
+          catKO: 'Drop 2 실전 구성음 연산',
+          catEN: 'Advanced Drop 2 Voicing',
+          qKO: `[ ${chordName} ] 코드의 탑노트가 [ ${selected.topNote} ] 인 Drop 2 보이싱 구성음은?`,
+          qEN: `Drop 2 voicing notes for [ ${chordName} ] with top note [ ${selected.topNote} ]?`,
+          ans: ans,
+          opts: shuffleArray([ans, ...wrongOpts]),
+          url: YOUTUBE_URL + '&index=12'
+        };
+      } else {
+        // Drop 3 공식: 1-7-3-5, 3-1-5-7, 5-3-7-1, 7-5-1-3
+        const patterns = [
+          { topNote: `5 (${n5})`, voicing: `${n1} - ${n7} - ${n3} - ${n5}` },
+          { topNote: `7 (${n7})`, voicing: `${n3} - ${n1} - ${n5} - ${n7}` },
+          { topNote: `1 (${n1})`, voicing: `${n5} - ${n3} - ${n7} - ${n1}` },
+          { topNote: `3 (${n3})`, voicing: `${n7} - ${n5} - ${n1} - ${n3}` }
+        ];
+        const selected = patterns[Math.floor(Math.random() * patterns.length)];
+        const ans = selected.voicing;
+        const wrongOpts = shuffleArray(patterns.filter(p => p.voicing !== ans)).map(p => p.voicing);
+
+        return {
+          gameTag: 'GAME 5. PRO VOICING (DROP 3)',
+          type: 'MCQ',
+          catKO: 'Drop 3 실전 구성음 연산',
+          catEN: 'Advanced Drop 3 Voicing',
+          qKO: `[ ${chordName} ] 코드의 탑노트가 [ ${selected.topNote} ] 인 Drop 3 보이싱 구성음은?`,
+          qEN: `Drop 3 voicing notes for [ ${chordName} ] with top note [ ${selected.topNote} ]?`,
+          ans: ans,
+          opts: shuffleArray([ans, ...wrongOpts]),
+          url: YOUTUBE_URL + '&index=12'
+        };
+      }
+    }
 
     function genGame1() {
       const root = ROOTS_POOL[Math.floor(Math.random() * ROOTS_POOL.length)];
@@ -753,7 +781,6 @@
       ];
       const iv = ivDefs[Math.floor(Math.random() * ivDefs.length)];
       const ans = INTERVAL_EXACT_MAP[root][iv.key];
-
       const allPossibleNotes = ['C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
       const wrongOpts = shuffleArray(allPossibleNotes.filter(n => n !== ans)).slice(0, 3);
 
@@ -772,11 +799,9 @@
 
     function genGame2() {
       const isScaleQ = Math.random() > 0.5;
-
       if (isScaleQ) {
         const roots = Object.keys(SCALES_DATABASE);
         const root = roots[Math.floor(Math.random() * roots.length)];
-        
         const ans = SCALES_DATABASE[root]['Major'];
         const otherTypes = Object.keys(SCALES_DATABASE[root]).filter(t => t !== 'Major');
         const wrongOpts = otherTypes.map(t => SCALES_DATABASE[root][t]);
@@ -823,17 +848,14 @@
 
     function genGame3() {
       const rand = Math.random();
-
       if (rand < 0.25) {
         const roots = Object.keys(SCALES_DATABASE);
         const root = roots[Math.floor(Math.random() * roots.length)];
         const scaleChoices = ['Major', 'Natural Minor'];
         const targetType = scaleChoices[Math.floor(Math.random() * scaleChoices.length)];
-
         const ans = SCALES_DATABASE[root][targetType];
         const allTypes = Object.keys(SCALES_DATABASE[root]);
         const wrongOpts = allTypes.filter(t => t !== targetType).map(t => SCALES_DATABASE[root][t]);
-
         const labelKO = targetType === 'Major' ? '메이저 스케일' : '내추럴 마이너 스케일';
         return {
           gameTag: 'GAME 3. SCALE SPELLING',
@@ -846,16 +868,13 @@
           opts: shuffleArray([ans, ...wrongOpts]),
           url: YOUTUBE_URL + '&index=7'
         };
-      } 
-      else if (rand < 0.6) {
+      } else if (rand < 0.6) {
         const roots = Object.keys(CHORD_TONES_DATABASE);
         const root = roots[Math.floor(Math.random() * roots.length)];
         const qualities = Object.keys(CHORD_TONES_DATABASE[root]);
         const targetQ = qualities[Math.floor(Math.random() * qualities.length)];
-
         const ans = CHORD_TONES_DATABASE[root][targetQ];
         const wrongOpts = shuffleArray(qualities.filter(q => q !== targetQ)).slice(0, 3).map(q => CHORD_TONES_DATABASE[root][q]);
-
         return {
           gameTag: 'GAME 3. CHORD TONES (MCQ)',
           type: 'MCQ',
@@ -867,8 +886,7 @@
           opts: shuffleArray([ans, ...wrongOpts]),
           url: YOUTUBE_URL + '&index=12'
         };
-      } 
-      else {
+      } else {
         const roots = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
         const root = roots[Math.floor(Math.random() * roots.length)];
         const formula = CHORD_FORMULAS[Math.floor(Math.random() * CHORD_FORMULAS.length)];
@@ -901,42 +919,7 @@
     }
 
     function genGame5() {
-      const subType = Math.random();
-
-      if (subType < 0.5) {
-        const target = DROP2_VOICINGS_DB[Math.floor(Math.random() * DROP2_VOICINGS_DB.length)];
-        const ans = target.voicing;
-        const wrongOpts = shuffleArray(DROP2_VOICINGS_DB.filter(d => d.voicing !== ans)).slice(0, 3).map(d => d.voicing);
-
-        return {
-          gameTag: 'GAME 5. PRO VOICING BUSTER',
-          type: 'MCQ',
-          catKO: 'Drop 2 실전 구성음 연산',
-          catEN: 'Advanced Drop 2 Voicing',
-          qKO: `[ ${target.chord} ] 코드에서 탑노트가 [ ${target.top} ] 인 Drop 2 보이싱 구성음은?`,
-          qEN: `Drop 2 voicing notes for [ ${target.chord} ] with top note [ ${target.top} ]?`,
-          ans: ans,
-          opts: shuffleArray([ans, ...wrongOpts]),
-          url: YOUTUBE_URL + '&index=12'
-        };
-      } else {
-        return {
-          gameTag: 'GAME 5. VOICING DETECTIVE',
-          type: 'MCQ',
-          catKO: 'Drop 2 보이싱 구조 판독',
-          catEN: 'Identify Non-Drop 2 Voicing',
-          qKO: `다음 중 [ Cmaj7 ] 의 올바른 Drop 2 보이싱이 아닌 것은?`,
-          qEN: `Which is NOT a valid Drop 2 voicing for Cmaj7?`,
-          ans: 'C - E - G - B (Closed)',
-          opts: shuffleArray([
-            'C - E - G - B (Closed)',
-            'C - G - E - B',
-            'G - B - C - E',
-            'E - C - G - B'
-          ]),
-          url: YOUTUBE_URL + '&index=12'
-        };
-      }
+      return generateProVoicingProblem();
     }
 
     function generateQuestion() {
