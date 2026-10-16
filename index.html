@@ -24,16 +24,16 @@
     }
   </style>
 </head>
-<body class="min-h-screen text-[#EDEDED] flex flex-col items-center justify-between p-4 font-sans max-w-md mx-auto">
+<body class="h-[100dvh] w-full text-[#EDEDED] flex flex-col items-center justify-between p-2.5 font-sans max-w-md mx-auto overflow-hidden">
 
   <!-- ========================================== -->
   <!-- 0. 오프닝 웰컴 화면 -->
   <!-- ========================================== -->
-  <section id="welcomeScreen" class="w-full flex-1 flex flex-col justify-between items-center text-center px-2 py-4 my-auto">
-    <header class="w-full flex justify-between items-center py-2 border-b border-gray-800/80 mb-4">
+  <section id="welcomeScreen" class="w-full flex-1 flex flex-col justify-between items-center text-center px-1 py-1 my-auto overflow-y-auto no-scrollbar">
+    <header class="w-full flex justify-between items-center py-1.5 border-b border-gray-800/80 mb-2 shrink-0">
       <div class="text-left">
-        <h2 class="text-base font-black tracking-wider text-[#FFB703]">HARMONY BUSTER</h2>
-        <p id="t-welcome-sub" class="text-[10px] text-gray-400">화성학 두뇌 연산 자동화 트레이너</p>
+        <h2 class="text-sm font-black tracking-wider text-[#FFB703]">HARMONY BUSTER</h2>
+        <p id="t-welcome-sub" class="text-[9px] text-gray-400">화성학 두뇌 연산 자동화 트레이너</p>
       </div>
 
       <div class="flex items-center gap-2">
@@ -42,62 +42,62 @@
         </button>
 
         <div class="flex items-center gap-1">
-          <span class="text-[11px] text-gray-500 font-medium">by</span>
-          <a href="https://youtube.com/@junkimmusic" target="_blank" rel="noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-600/15 hover:bg-red-600/25 active:scale-95 border border-red-500/40 rounded-full transition-all shadow-sm">
-            <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
-            <span class="text-[11px] font-black text-red-400 tracking-tight">Jun Kim ▶</span>
+          <span class="text-[10px] text-gray-500 font-medium">by</span>
+          <a href="https://youtube.com/@junkimmusic" target="_blank" rel="noreferrer" class="inline-flex items-center gap-1 px-2 py-0.5 bg-red-600/15 hover:bg-red-600/25 active:scale-95 border border-red-500/40 rounded-full transition-all shadow-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></span>
+            <span class="text-[10px] font-black text-red-400 tracking-tight">Jun Kim ▶</span>
           </a>
         </div>
       </div>
     </header>
 
-    <div class="my-auto w-full flex flex-col items-center">
-      <div id="t-welcome-badge" class="inline-block px-3 py-1 bg-[#FFB703]/10 border border-[#FFB703]/30 rounded-full text-xs font-bold text-[#FFB703] mb-4">
+    <div class="my-auto w-full flex flex-col items-center py-2">
+      <div id="t-welcome-badge" class="inline-block px-2.5 py-0.5 bg-[#FFB703]/10 border border-[#FFB703]/30 rounded-full text-[11px] font-bold text-[#FFB703] mb-3">
         🧠 두뇌 화성 연산 자동화 트레이너
       </div>
       
-      <h1 class="text-3xl font-black tracking-wider text-white mb-2 leading-tight">
+      <h1 class="text-2xl sm:text-3xl font-black tracking-wider text-white mb-1 leading-tight">
         HARMONY <span class="text-[#FFB703]">BUSTER</span>
       </h1>
-      <p id="t-welcome-headline" class="text-sm font-bold text-gray-300 mb-6 leading-relaxed">
+      <p id="t-welcome-headline" class="text-xs font-bold text-gray-300 mb-4 leading-relaxed">
         "악보를 보고 생각하는 3초는 늦습니다.<br />
         악기를 잡기 전 머릿속 연산을 0.1초 만에 자동화하세요!"
       </p>
 
-      <div class="w-full bg-gray-900/90 border border-gray-800 rounded-2xl p-4 mb-6 text-left space-y-3 shadow-xl text-xs text-gray-300">
-        <div class="flex items-start gap-2.5">
-          <span class="text-base leading-none">🎯</span>
+      <div class="w-full bg-gray-900/90 border border-gray-800 rounded-xl p-3 mb-4 text-left space-y-2 text-[11px] text-gray-300 shadow-xl">
+        <div class="flex items-start gap-2">
+          <span class="text-sm leading-none">🎯</span>
           <div class="leading-relaxed">
             <strong class="text-white">메인 챌린지</strong>: 초급 → 중급 → 20문항 승급시험 → 고급 단계별 성장
           </div>
         </div>
-        <div class="flex items-start gap-2.5">
-          <span class="text-base leading-none">🕹️</span>
+        <div class="flex items-start gap-2">
+          <span class="text-sm leading-none">🕹️</span>
           <div class="leading-relaxed">
             <strong class="text-white">5대 개별 트레이닝</strong>: 음정 · 조표 · 코드톤 · 전위 · 보이싱 자유 선택 무한 반복
           </div>
         </div>
       </div>
 
-      <button onclick="startGame()" class="w-full py-4 bg-[#FFB703] hover:bg-yellow-400 active:scale-95 text-black font-black text-base rounded-2xl shadow-lg shadow-[#FFB703]/20 transition-all mb-3">
+      <button onclick="startGame()" class="w-full py-3.5 bg-[#FFB703] hover:bg-yellow-400 active:scale-95 text-black font-black text-sm rounded-xl shadow-lg shadow-[#FFB703]/20 transition-all mb-2">
         <span id="t-welcome-start-btn">지금 바로 두뇌 연산 시작하기 🔥</span>
       </button>
-      <p id="t-welcome-sound-hint" class="text-[11px] text-gray-500">※ 소리를 켜시면 리얼 타임 코드 피드백 사운드가 재생됩니다.</p>
+      <p id="t-welcome-sound-hint" class="text-[10px] text-gray-500">※ 소리를 켜시면 리얼 타임 코드 피드백 사운드가 재생됩니다.</p>
     </div>
   </section>
 
   <!-- ========================================== -->
-  <!-- 1. 메인 플레이 화면 -->
+  <!-- 1. 메인 플레이 화면 (한 화면 최적화) -->
   <!-- ========================================== -->
-  <div id="gameScreen" class="hidden w-full flex-1 flex flex-col justify-between">
+  <div id="gameScreen" class="hidden w-full flex-1 flex flex-col justify-between overflow-hidden">
     
-    <!-- 최상단 헤더 (HARMONY BUSTER 클릭 시 홈 화면으로 복귀) -->
-    <header class="w-full flex justify-between items-center py-2 border-b border-gray-800">
+    <!-- 최상단 헤더 -->
+    <header class="w-full flex justify-between items-center pb-1.5 border-b border-gray-800 shrink-0">
       <div onclick="goToWelcomeScreen()" class="cursor-pointer active:scale-95 transition-transform text-left group">
-        <h2 class="text-lg font-black tracking-wider text-[#FFB703] leading-none group-hover:text-yellow-400 flex items-center gap-1">
+        <h2 class="text-base font-black tracking-wider text-[#FFB703] leading-none group-hover:text-yellow-400 flex items-center gap-1">
           HARMONY BUSTER <span class="text-[10px] text-gray-500 font-normal">🏠</span>
         </h2>
-        <p id="t-game-sub" class="text-[10px] text-gray-400 mt-0.5">화성학 두뇌 연산 자동화 트레이너</p>
+        <p id="t-game-sub" class="text-[9px] text-gray-400 mt-0.5">화성학 두뇌 연산 자동화 트레이너</p>
       </div>
       
       <div class="flex items-center gap-2">
@@ -106,127 +106,130 @@
         </button>
 
         <div class="flex items-center gap-1">
-          <span class="text-[11px] text-gray-500 font-medium">by</span>
-          <a href="https://youtube.com/@junkimmusic" target="_blank" rel="noreferrer" class="inline-flex items-center gap-1 px-2 py-0.5 bg-red-600/15 hover:bg-red-600/25 active:scale-95 border border-red-500/40 rounded-full transition-all">
-            <span class="text-[10px] font-black text-red-400 tracking-tight">Jun Kim ▶</span>
+          <span class="text-[10px] text-gray-500 font-medium">by</span>
+          <a href="https://youtube.com/@junkimmusic" target="_blank" rel="noreferrer" class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-red-600/15 hover:bg-red-600/25 active:scale-95 border border-red-500/40 rounded-full transition-all">
+            <span class="text-[9px] font-black text-red-400 tracking-tight">Jun Kim ▶</span>
           </a>
         </div>
 
-        <div id="comboBadge" class="hidden text-xs font-bold bg-[#EF476F]/20 text-[#EF476F] px-2 py-0.5 rounded-full animate-pulse">
+        <div id="comboBadge" class="hidden text-[10px] font-bold bg-[#EF476F]/20 text-[#EF476F] px-2 py-0.5 rounded-full animate-pulse">
           🔥 <span id="comboCount">0</span>
         </div>
       </div>
     </header>
 
     <!-- 5대 개별 게임 바로가기 메뉴바 -->
-    <div class="w-full mt-2 mb-1">
-      <div class="flex items-center justify-between px-1 mb-1">
-        <span class="text-[10px] font-extrabold text-gray-400">🕹️ 개별 훈련 코스</span>
-        <button onclick="selectPlayMode('TIER')" id="btnBackToMain" class="text-[11px] font-bold text-[#FFB703] hover:underline hidden">
+    <div class="w-full mt-1.5 mb-1 shrink-0">
+      <div class="flex items-center justify-between px-1 mb-0.5">
+        <span class="text-[9px] font-extrabold text-gray-400">🕹️ 개별 훈련 코스</span>
+        <button onclick="selectPlayMode('TIER')" id="btnBackToMain" class="text-[10px] font-bold text-[#FFB703] hover:underline hidden">
           ← 메인 챌린지로 복귀
         </button>
       </div>
       <div class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-        <button onclick="selectSoloGame(1)" id="btnG1" class="whitespace-nowrap px-2.5 py-1.5 bg-gray-900 border border-gray-800 rounded-lg text-xs font-bold text-gray-300 hover:border-[#FFB703] transition-all">
+        <button onclick="selectSoloGame(1)" id="btnG1" class="whitespace-nowrap px-2 py-1 bg-gray-900 border border-gray-800 rounded-lg text-[11px] font-bold text-gray-300 hover:border-[#FFB703] transition-all">
           1. 음정
         </button>
-        <button onclick="selectSoloGame(2)" id="btnG2" class="whitespace-nowrap px-2.5 py-1.5 bg-gray-900 border border-gray-800 rounded-lg text-xs font-bold text-gray-300 hover:border-[#FFB703] transition-all">
+        <button onclick="selectSoloGame(2)" id="btnG2" class="whitespace-nowrap px-2 py-1 bg-gray-900 border border-gray-800 rounded-lg text-[11px] font-bold text-gray-300 hover:border-[#FFB703] transition-all">
           2. 조표
         </button>
-        <button onclick="selectSoloGame(3)" id="btnG3" class="whitespace-nowrap px-2.5 py-1.5 bg-gray-900 border border-gray-800 rounded-lg text-xs font-bold text-gray-300 hover:border-[#FFB703] transition-all">
+        <button onclick="selectSoloGame(3)" id="btnG3" class="whitespace-nowrap px-2 py-1 bg-gray-900 border border-gray-800 rounded-lg text-[11px] font-bold text-gray-300 hover:border-[#FFB703] transition-all">
           3. 코드톤
         </button>
-        <button onclick="selectSoloGame(4)" id="btnG4" class="whitespace-nowrap px-2.5 py-1.5 bg-gray-900 border border-gray-800 rounded-lg text-xs font-bold text-gray-300 hover:border-[#FFB703] transition-all">
+        <button onclick="selectSoloGame(4)" id="btnG4" class="whitespace-nowrap px-2 py-1 bg-gray-900 border border-gray-800 rounded-lg text-[11px] font-bold text-gray-300 hover:border-[#FFB703] transition-all">
           4. 전위
         </button>
-        <button onclick="selectSoloGame(5)" id="btnG5" class="whitespace-nowrap px-2.5 py-1.5 bg-gray-900 border border-purple-500/50 rounded-lg text-xs font-bold text-purple-300 hover:border-purple-400 transition-all flex items-center gap-1">
+        <button onclick="selectSoloGame(5)" id="btnG5" class="whitespace-nowrap px-2 py-1 bg-gray-900 border border-purple-500/50 rounded-lg text-[11px] font-bold text-purple-300 hover:border-purple-400 transition-all flex items-center gap-1">
           <span id="g5LockIcon">🔒</span> 5. 보이싱
         </button>
       </div>
     </div>
 
-    <!-- 개별 훈련 중 상태 표시 바 -->
-    <div id="soloModeBanner" class="hidden w-full py-1 px-3 bg-amber-500/10 border border-amber-500/30 rounded-lg text-center text-xs font-bold text-amber-300 my-1">
+    <!-- 개별 훈련 중 배너 -->
+    <div id="soloModeBanner" class="hidden w-full py-0.5 px-2 bg-amber-500/10 border border-amber-500/30 rounded-lg text-center text-[10px] font-bold text-amber-300 my-0.5 shrink-0">
       🎯 <span id="soloModeTitle">개별 집중 훈련</span> 진행 중
     </div>
 
     <!-- 메인 티어 선택 탭 -->
-    <div id="tierNav" class="w-full grid grid-cols-3 gap-2 my-1 bg-gray-900 p-1 rounded-xl text-center">
-      <button id="btnTierBeg" onclick="selectTier('BEGINNER')" class="py-2 text-xs font-bold rounded-lg bg-[#FFB703] text-black transition-all">
+    <div id="tierNav" class="w-full grid grid-cols-3 gap-1.5 my-0.5 bg-gray-900 p-1 rounded-xl text-center shrink-0">
+      <button id="btnTierBeg" onclick="selectTier('BEGINNER')" class="py-1.5 text-[11px] font-bold rounded-lg bg-[#FFB703] text-black transition-all">
         초급 (4선다)
       </button>
-      <button id="btnTierInt" onclick="selectTier('INTERMEDIATE')" class="py-2 text-xs font-bold rounded-lg text-gray-600 cursor-not-allowed transition-all">
+      <button id="btnTierInt" onclick="selectTier('INTERMEDIATE')" class="py-1.5 text-[11px] font-bold rounded-lg text-gray-600 cursor-not-allowed transition-all">
         🔒 중급
       </button>
-      <button id="btnTierAdv" onclick="selectTier('ADVANCED')" class="py-2 text-xs font-bold rounded-lg text-gray-600 cursor-not-allowed transition-all">
+      <button id="btnTierAdv" onclick="selectTier('ADVANCED')" class="py-1.5 text-[11px] font-bold rounded-lg text-gray-600 cursor-not-allowed transition-all">
         🔒 고급
       </button>
     </div>
 
     <!-- 초급 해금 안내 바 -->
-    <div id="unlockGuideBar" class="w-full text-center py-1 bg-gray-900/60 rounded-lg text-[11px] text-gray-400">
+    <div id="unlockGuideBar" class="w-full text-center py-0.5 bg-gray-900/60 rounded-lg text-[10px] text-gray-400 shrink-0">
       💡 <span id="t-unlock-guide">중급 해금 조건: 10 콤보 달성</span> (<span id="unlockProgress">0</span>/10)
     </div>
 
-    <!-- 중급 전용: 고급 승급 라이선스 시험 배너 -->
-    <div id="examBanner" class="hidden w-full my-1">
-      <button onclick="startExamMode()" class="w-full py-2 bg-gradient-to-r from-indigo-900 to-purple-900 hover:from-indigo-800 hover:to-purple-800 border border-purple-500/40 rounded-xl text-xs font-black text-purple-200 shadow-md flex items-center justify-center gap-1.5 transition-all active:scale-98">
+    <!-- 중급 전용: 라이선스 시험 버튼 -->
+    <div id="examBanner" class="hidden w-full my-0.5 shrink-0">
+      <button onclick="startExamMode()" class="w-full py-1.5 bg-gradient-to-r from-indigo-900 to-purple-900 hover:from-indigo-800 hover:to-purple-800 border border-purple-500/40 rounded-xl text-[11px] font-black text-purple-200 shadow-md flex items-center justify-center gap-1.5 transition-all active:scale-98">
         <span>🎓</span>
         <span>고급 승급 라이선스 시험 도전 (20문항 / 85점 컷)</span>
       </button>
     </div>
 
     <!-- 시험 진행 헤더 -->
-    <div id="examStatusHeader" class="hidden w-full py-1.5 px-3 bg-purple-950/60 border border-purple-800/80 rounded-xl my-1 flex justify-between items-center text-xs">
+    <div id="examStatusHeader" class="hidden w-full py-1 px-3 bg-purple-950/60 border border-purple-800/80 rounded-xl my-0.5 flex justify-between items-center text-[11px] shrink-0">
       <span class="font-bold text-purple-300">🎓 실전 시험: <strong id="examCurrentQ" class="text-[#FFB703]">1</strong> / 20</span>
       <span class="font-bold text-gray-300">정답: <strong id="examScore" class="text-[#06D6A0]">0</strong>개</span>
     </div>
 
     <!-- 타이머 게이지 바 영역 -->
-    <div id="timerContainer" class="w-full mt-1">
-      <div class="flex justify-between items-center text-[11px] text-gray-400 mb-1 px-1">
+    <div id="timerContainer" class="w-full mt-0.5 mb-1 shrink-0">
+      <div class="flex justify-between items-center text-[10px] text-gray-400 mb-0.5 px-1">
         <span id="timerLabel">TIME ATTACK</span>
         <span id="timerText" class="font-bold text-[#FFB703]">10.0s</span>
       </div>
-      <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+      <div class="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden">
         <div id="timerBar" class="h-full bg-[#06D6A0] transition-all duration-100 ease-linear" style="width: 100%;"></div>
       </div>
     </div>
 
-    <!-- 문제 카드 -->
-    <main class="w-full flex-1 flex flex-col justify-center my-3">
-      <div id="cardBox" class="p-6 rounded-2xl bg-gray-900 border-2 border-gray-800 flex flex-col items-center text-center shadow-2xl transition-all">
-        <span id="qGameTag" class="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-[#FFB703]/20 text-[#FFB703] border border-[#FFB703]/40 mb-2">
-          GAME
-        </span>
-        <span id="qCategory" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-gray-800 text-gray-300 mb-3">
-          Category
-        </span>
-        <p id="qText" class="text-xl font-extrabold text-white leading-relaxed mb-4">
+    <!-- 문제 카드 영역 (여백 압축) -->
+    <main class="w-full flex-1 flex flex-col justify-center my-0.5 min-h-0">
+      <div id="cardBox" class="p-3.5 sm:p-4 rounded-2xl bg-gray-900 border border-gray-800 flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden">
+        <div class="flex items-center gap-1.5 mb-1.5">
+          <span id="qGameTag" class="text-[9px] font-black px-2 py-0.5 rounded-full bg-[#FFB703]/20 text-[#FFB703] border border-[#FFB703]/40">
+            GAME
+          </span>
+          <span id="qCategory" class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-gray-800 text-gray-300">
+            Category
+          </span>
+        </div>
+
+        <p id="qText" class="text-base sm:text-lg font-black text-white leading-snug my-1">
           Loading...
         </p>
 
         <!-- 중급 패드 디스플레이 -->
-        <div id="inputPreviewBox" class="hidden w-full py-2 px-3 bg-gray-950 rounded-lg border border-gray-800 mb-2 flex justify-between items-center text-sm">
-          <span id="t-preview-label" class="text-gray-400 text-xs">선택한 코드:</span>
-          <span id="previewText" class="font-bold text-[#FFB703] text-base tracking-wide">-</span>
-          <button onclick="clearCurrentInput()" id="t-preview-clear" class="text-xs text-gray-500 hover:text-red-400">⌫ 지우기</button>
+        <div id="inputPreviewBox" class="hidden w-full py-1.5 px-3 bg-gray-950 rounded-lg border border-gray-800 my-1 flex justify-between items-center text-xs">
+          <span id="t-preview-label" class="text-gray-400 text-[10px]">선택한 코드:</span>
+          <span id="previewText" class="font-bold text-[#FFB703] text-sm tracking-wide">-</span>
+          <button onclick="clearCurrentInput()" id="t-preview-clear" class="text-[10px] text-gray-500 hover:text-red-400">⌫ 지우기</button>
         </div>
 
         <!-- 피드백 박스 -->
-        <div id="feedbackBox" class="hidden w-full mt-2 p-4 bg-gray-950 rounded-2xl border-2 border-[#EF476F]/60 text-center flex flex-col gap-3 shadow-xl">
-          <div id="feedbackStatus" class="text-xs font-extrabold text-[#EF476F] tracking-wide uppercase"></div>
+        <div id="feedbackBox" class="hidden w-full mt-1.5 p-3 bg-gray-950 rounded-xl border-2 border-[#EF476F]/60 text-center flex flex-col gap-2 shadow-xl">
+          <div id="feedbackStatus" class="text-[11px] font-black text-[#EF476F] tracking-wide uppercase"></div>
           
-          <div class="bg-gray-900/90 border border-gray-700/80 rounded-xl p-3 py-3.5 shadow-inner">
-            <span id="t-feedback-correct-label" class="text-[11px] font-bold text-gray-400 block mb-1">정답</span>
-            <span id="feedbackAnsValue" class="text-2xl font-black text-[#FFB703] tracking-wider block drop-shadow-sm"></span>
+          <div class="bg-gray-900/90 border border-gray-700/80 rounded-lg p-2 shadow-inner">
+            <span id="t-feedback-correct-label" class="text-[10px] font-bold text-gray-400 block">정답</span>
+            <span id="feedbackAnsValue" class="text-xl font-black text-[#FFB703] tracking-wider block drop-shadow-sm"></span>
           </div>
 
-          <a id="feedbackUrl" href="#" target="_blank" class="text-xs text-[#FFB703] hover:underline bg-[#FFB703]/10 p-2.5 rounded-xl border border-[#FFB703]/30 block text-center font-bold transition-all">
+          <a id="feedbackUrl" href="#" target="_blank" class="text-[10px] text-[#FFB703] hover:underline bg-[#FFB703]/10 p-2 rounded-lg border border-[#FFB703]/30 block text-center font-bold transition-all">
             ▶ <span id="t-feedback-link">관련 무료 화성학 강의 바로보기 ↗</span>
           </a>
 
-          <button onclick="nextQuestion()" class="w-full py-3.5 bg-[#EF476F] hover:bg-red-500 text-white font-black text-sm rounded-xl shadow-lg shadow-red-500/20 transition-transform active:scale-95">
+          <button onclick="nextQuestion()" class="w-full py-2.5 bg-[#EF476F] hover:bg-red-500 text-white font-black text-xs rounded-lg shadow-lg shadow-red-500/20 transition-transform active:scale-95">
             <span id="t-feedback-next-btn">확인 (다음 문제 풀기) ></span>
           </button>
         </div>
@@ -234,66 +237,66 @@
     </main>
 
     <!-- 하단 입력 패드 영역 -->
-    <section id="inputPadArea" class="w-full mb-3"></section>
+    <section id="inputPadArea" class="w-full my-1 shrink-0"></section>
   </div>
 
   <!-- ========================================== -->
   <!-- 2. 라이선스 시험 성적표 화면 & 오답 노트 -->
   <!-- ========================================== -->
   <section id="examResultScreen" class="hidden w-full flex-1 flex flex-col justify-start items-center text-center p-2 my-auto max-h-[85vh] overflow-y-auto no-scrollbar">
-    <div class="bg-gray-900 border-2 border-purple-500/50 rounded-3xl p-5 w-full shadow-2xl">
-      <div id="examResultIcon" class="text-4xl mb-2">🏆</div>
-      <h3 id="examResultTitle" class="text-lg font-black text-white mb-1">시험 결과</h3>
-      <p id="examResultDesc" class="text-xs text-gray-400 mb-4 leading-relaxed"></p>
+    <div class="bg-gray-900 border-2 border-purple-500/50 rounded-3xl p-4 w-full shadow-2xl">
+      <div id="examResultIcon" class="text-3xl mb-1">🏆</div>
+      <h3 id="examResultTitle" class="text-base font-black text-white mb-1">시험 결과</h3>
+      <p id="examResultDesc" class="text-[11px] text-gray-400 mb-3 leading-relaxed"></p>
 
-      <div class="bg-gray-950 border border-gray-800 rounded-2xl p-3 mb-4 flex justify-around">
+      <div class="bg-gray-950 border border-gray-800 rounded-2xl p-2.5 mb-3 flex justify-around">
         <div>
-          <span class="text-[10px] text-gray-500 block">총 문항</span>
-          <span class="text-base font-black text-white">20</span>
+          <span class="text-[9px] text-gray-500 block">총 문항</span>
+          <span class="text-sm font-black text-white">20</span>
         </div>
         <div>
-          <span class="text-[10px] text-gray-500 block">취득 점수</span>
-          <span id="examFinalScore" class="text-2xl font-black text-[#FFB703]">0점</span>
+          <span class="text-[9px] text-gray-500 block">취득 점수</span>
+          <span id="examFinalScore" class="text-xl font-black text-[#FFB703]">0점</span>
         </div>
         <div>
-          <span class="text-[10px] text-gray-500 block">합격선</span>
-          <span class="text-base font-black text-gray-400">85점 (17개)</span>
+          <span class="text-[9px] text-gray-500 block">합격선</span>
+          <span class="text-sm font-black text-gray-400">85점 (17개)</span>
         </div>
       </div>
 
       <!-- 오답 노트 영역 -->
-      <div id="examReviewSection" class="hidden text-left mb-4 bg-gray-950/80 border border-gray-800 rounded-2xl p-3">
-        <h4 class="text-xs font-bold text-red-400 mb-2 flex items-center gap-1">
+      <div id="examReviewSection" class="hidden text-left mb-3 bg-gray-950/80 border border-gray-800 rounded-2xl p-2.5">
+        <h4 class="text-[11px] font-bold text-red-400 mb-1.5 flex items-center gap-1">
           <span>📝</span> <span>틀린 문항 오답 노트</span>
         </h4>
-        <div id="examReviewList" class="space-y-2 text-xs text-gray-300 max-h-48 overflow-y-auto pr-1"></div>
+        <div id="examReviewList" class="space-y-1.5 text-xs text-gray-300 max-h-36 overflow-y-auto pr-1"></div>
       </div>
 
-      <div class="flex flex-col gap-2">
-        <button id="examActionBtn" onclick="finishExamAction()" class="w-full py-3.5 bg-[#FFB703] hover:bg-yellow-400 text-black font-black text-sm rounded-xl transition-all shadow-lg active:scale-95"></button>
-        <button onclick="backToTraining()" class="w-full py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold text-xs rounded-xl active:scale-95">일반 훈련으로 돌아가기</button>
+      <div class="flex flex-col gap-1.5">
+        <button id="examActionBtn" onclick="finishExamAction()" class="w-full py-3 bg-[#FFB703] hover:bg-yellow-400 text-black font-black text-xs rounded-xl transition-all shadow-lg active:scale-95"></button>
+        <button onclick="backToTraining()" class="w-full py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold text-[11px] rounded-xl active:scale-95">일반 훈련으로 돌아가기</button>
       </div>
     </div>
   </section>
 
   <!-- ========================================== -->
-  <!-- 3. 하단 배너 (재생목록 & 커피 후원 모달 트리거) -->
+  <!-- 3. 하단 배너 (상시 노출되도록 고정) -->
   <!-- ========================================== -->
-  <footer class="w-full pt-3 pb-1 border-t border-gray-800/80 mt-auto">
+  <footer class="w-full pt-1.5 pb-0.5 border-t border-gray-800/80 shrink-0">
     <div class="grid grid-cols-2 gap-2">
-      <a href="https://youtube.com/playlist?list=PLUhKlj-gxAgqQxhGNKJkvZF2ihiY0wQUC" target="_blank" class="flex items-center justify-center gap-1.5 py-3 px-2 bg-gray-900 hover:bg-gray-800 active:scale-95 border border-red-500/40 rounded-xl shadow-md transition-all text-center">
-        <span class="text-base">📺</span>
+      <a href="https://youtube.com/playlist?list=PLUhKlj-gxAgqQxhGNKJkvZF2ihiY0wQUC" target="_blank" class="flex items-center justify-center gap-1.5 py-2 px-2 bg-gray-900 hover:bg-gray-800 active:scale-95 border border-red-500/40 rounded-xl shadow-md transition-all text-center">
+        <span class="text-sm">📺</span>
         <div class="text-left">
-          <p class="text-[9px] text-gray-400 font-bold leading-none">Jun Kim YouTube</p>
-          <p id="t-footer-yt" class="text-xs text-red-400 font-black tracking-tight leading-tight mt-0.5">화성학 1~14강</p>
+          <p class="text-[8px] text-gray-400 font-bold leading-none">Jun Kim YouTube</p>
+          <p id="t-footer-yt" class="text-[11px] text-red-400 font-black tracking-tight leading-tight mt-0.5">화성학 1~14강</p>
         </div>
       </a>
 
-      <button onclick="openDonateModal()" class="flex items-center justify-center gap-1.5 py-3 px-2 bg-gray-900 hover:bg-gray-800 active:scale-95 border border-[#FFB703]/40 rounded-xl shadow-md transition-all text-center">
-        <span class="text-base">☕</span>
+      <button onclick="openDonateModal()" class="flex items-center justify-center gap-1.5 py-2 px-2 bg-gray-900 hover:bg-gray-800 active:scale-95 border border-[#FFB703]/40 rounded-xl shadow-md transition-all text-center">
+        <span class="text-sm">☕</span>
         <div class="text-left">
-          <p id="t-footer-coffee-sub" class="text-[9px] text-gray-400 font-bold leading-none">앱이 유익했다면</p>
-          <p id="t-footer-coffee-main" class="text-xs text-[#FFB703] font-black tracking-tight leading-tight mt-0.5">커피 한 잔 후원</p>
+          <p id="t-footer-coffee-sub" class="text-[8px] text-gray-400 font-bold leading-none">앱이 유익했다면</p>
+          <p id="t-footer-coffee-main" class="text-[11px] text-[#FFB703] font-black tracking-tight leading-tight mt-0.5">커피 한 잔 후원</p>
         </div>
       </button>
     </div>
@@ -301,20 +304,20 @@
 
   <!-- 후원 모달 -->
   <div id="donateModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl max-w-sm w-full text-center shadow-2xl">
-      <div class="text-3xl mb-2">☕</div>
-      <h3 id="t-modal-donate-title" class="text-lg font-black text-white mb-1">준킴에게 커피 한 잔 선물하기</h3>
-      <p id="t-modal-donate-desc" class="text-xs text-gray-400 mb-5 leading-relaxed">
+    <div class="bg-gray-900 border border-gray-800 p-5 rounded-2xl max-w-sm w-full text-center shadow-2xl">
+      <div class="text-3xl mb-1">☕</div>
+      <h3 id="t-modal-donate-title" class="text-base font-black text-white mb-1">준킴에게 커피 한 잔 선물하기</h3>
+      <p id="t-modal-donate-desc" class="text-xs text-gray-400 mb-4 leading-relaxed">
         보내주신 따뜻한 후원은 더 좋은 화성학 교육 콘텐츠와 앱 개발에 큰 힘이 됩니다!
       </p>
 
-      <div class="flex flex-col gap-2.5 mb-4">
-        <a href="https://qr.kakaopay.com/FMnnbr8OU" target="_blank" rel="noreferrer" class="flex items-center justify-center gap-2 py-3 px-4 bg-[#FEE500] hover:bg-yellow-400 active:scale-95 text-[#191919] font-black text-xs rounded-xl shadow-md transition-all">
+      <div class="flex flex-col gap-2 mb-3">
+        <a href="https://qr.kakaopay.com/FMnnbr8OU" target="_blank" rel="noreferrer" class="flex items-center justify-center gap-2 py-2.5 px-3 bg-[#FEE500] hover:bg-yellow-400 active:scale-95 text-[#191919] font-black text-xs rounded-xl shadow-md transition-all">
           <span>💬</span>
           <span id="t-modal-donate-kakao">카카오페이로 송금 (국내 모바일)</span>
         </a>
 
-        <a href="https://ko-fi.com/junkimmusic" target="_blank" rel="noreferrer" class="flex items-center justify-center gap-2 py-3 px-4 bg-[#FF5E5B] hover:bg-red-500 active:scale-95 text-white font-black text-xs rounded-xl shadow-md transition-all">
+        <a href="https://ko-fi.com/junkimmusic" target="_blank" rel="noreferrer" class="flex items-center justify-center gap-2 py-2.5 px-3 bg-[#FF5E5B] hover:bg-red-500 active:scale-95 text-white font-black text-xs rounded-xl shadow-md transition-all">
           <span>🌍</span>
           <span id="t-modal-donate-kofi">Ko-fi 후원 (카드 / PayPal / 해외)</span>
         </a>
@@ -328,19 +331,19 @@
 
   <!-- VIP 멤버십 안내 모달 -->
   <div id="vipModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-    <div class="bg-gray-900 border border-[#FFB703]/40 p-6 rounded-3xl max-w-sm w-full text-center shadow-2xl relative overflow-hidden">
-      <div class="inline-block px-3 py-1 bg-[#FFB703]/10 border border-[#FFB703]/30 rounded-full text-[10px] font-black text-[#FFB703] tracking-wider mb-3">
+    <div class="bg-gray-900 border border-[#FFB703]/40 p-5 rounded-3xl max-w-sm w-full text-center shadow-2xl relative overflow-hidden">
+      <div class="inline-block px-2.5 py-0.5 bg-[#FFB703]/10 border border-[#FFB703]/30 rounded-full text-[9px] font-black text-[#FFB703] tracking-wider mb-2">
         PRO LEVEL VOICING
       </div>
 
-      <div class="text-4xl mb-2">🎸🎹</div>
+      <div class="text-3xl mb-1">🎸🎹</div>
       
-      <h3 class="text-lg font-black text-white mb-2 leading-snug">
+      <h3 class="text-base font-black text-white mb-2 leading-snug">
         지판과 건반 위 보이싱,<br />
         이제 <span class="text-[#FFB703]">0.1초 본능</span>이 됩니다
       </h3>
 
-      <div class="bg-gray-950/80 border border-gray-800 rounded-2xl p-3.5 mb-4 text-left space-y-1.5 text-xs text-gray-300">
+      <div class="bg-gray-950/80 border border-gray-800 rounded-xl p-3 mb-3 text-left space-y-1 text-xs text-gray-300">
         <p class="leading-relaxed">
           🎯 <strong>Drop 2 & Drop 3 실전 배치</strong>: 재즈와 세션 연주자들이 지판을 한눈에 보는 핵심 시야를 훈련합니다.
         </p>
@@ -353,13 +356,13 @@
         href="https://youtube.com/@junkimmusic/join" 
         target="_blank" 
         rel="noreferrer"
-        class="block w-full py-3.5 bg-gradient-to-r from-[#FFB703] to-yellow-400 hover:from-yellow-400 hover:to-yellow-300 active:scale-95 text-black font-black text-sm rounded-xl mb-4 shadow-lg shadow-[#FFB703]/20 transition-all"
+        class="block w-full py-3 bg-gradient-to-r from-[#FFB703] to-yellow-400 hover:from-yellow-400 hover:to-yellow-300 active:scale-95 text-black font-black text-xs rounded-xl mb-3 shadow-lg shadow-[#FFB703]/20 transition-all"
       >
         👉 멤버십 가입하고 시크릿 코드 받기 ↗
       </a>
 
-      <div class="pt-3 border-t border-gray-800/80 text-left">
-        <p class="text-[11px] text-gray-400 font-semibold mb-2">
+      <div class="pt-2 border-t border-gray-800/80 text-left">
+        <p class="text-[10px] text-gray-400 font-semibold mb-1.5">
           이미 멤버십 회원이신가요? <br />
           <span class="text-gray-500 font-normal">유튜브 커뮤니티 전용 시크릿 코드를 입력하세요:</span>
         </p>
@@ -368,18 +371,18 @@
             id="secretInput" 
             type="text" 
             placeholder="시크릿 코드 입력" 
-            class="flex-1 bg-gray-950 border border-gray-700 px-3 py-2 text-xs rounded-xl text-white uppercase placeholder-gray-600 focus:outline-none focus:border-[#FFB703]" 
+            class="flex-1 bg-gray-950 border border-gray-700 px-3 py-1.5 text-xs rounded-xl text-white uppercase placeholder-gray-600 focus:outline-none focus:border-[#FFB703]" 
           />
           <button 
             onclick="verifyVipCode()" 
-            class="bg-gray-800 hover:bg-gray-700 active:scale-95 px-4 py-2 text-xs font-bold text-white rounded-xl border border-gray-700"
+            class="bg-gray-800 hover:bg-gray-700 active:scale-95 px-3 py-1.5 text-xs font-bold text-white rounded-xl border border-gray-700"
           >
             해금
           </button>
         </div>
       </div>
 
-      <button onclick="closeVipModal()" class="mt-4 text-xs text-gray-500 hover:text-gray-300">
+      <button onclick="closeVipModal()" class="mt-3 text-xs text-gray-500 hover:text-gray-300">
         나중에 둘러보기
       </button>
     </div>
@@ -680,7 +683,7 @@
       };
     }
 
-    // 초급 2번 게임: 오직 Major Scale만 출제 (마이너 스케일 완전 배제)
+    // 초급 2번 게임: 오직 Major Scale만 출제
     function genGame2() {
       const isScaleQ = Math.random() > 0.5;
 
@@ -736,7 +739,6 @@
     function genGame3() {
       const rand = Math.random();
 
-      // 중급: 메이저 & 내추럴 마이너 스케일 동시 출제
       if (rand < 0.25) {
         const roots = Object.keys(SCALES_DATABASE);
         const root = roots[Math.floor(Math.random() * roots.length)];
@@ -884,7 +886,6 @@
       } catch(e) {}
     }
 
-    // [로고 클릭 시 첫 웰컴 화면으로 복귀하는 함수]
     function goToWelcomeScreen() {
       if (isExamMode) {
         if (!confirm('시험 진행 중입니다. 메인 홈 화면으로 나가시겠습니까? (현재 기록은 초기화됩니다)')) return;
@@ -925,9 +926,9 @@
       for (let i = 1; i <= 5; i++) {
         const btn = document.getElementById(`btnG${i}`);
         if (i === num) {
-          btn.className = "whitespace-nowrap px-2.5 py-1.5 bg-[#FFB703] border border-[#FFB703] rounded-lg text-xs font-black text-black shadow-md transition-all";
+          btn.className = "whitespace-nowrap px-2 py-1 bg-[#FFB703] border border-[#FFB703] rounded-lg text-[11px] font-black text-black shadow-md transition-all";
         } else {
-          btn.className = "whitespace-nowrap px-2.5 py-1.5 bg-gray-900 border border-gray-800 rounded-lg text-xs font-bold text-gray-300 hover:border-[#FFB703] transition-all";
+          btn.className = "whitespace-nowrap px-2 py-1 bg-gray-900 border border-gray-800 rounded-lg text-[11px] font-bold text-gray-300 hover:border-[#FFB703] transition-all";
         }
       }
 
@@ -942,7 +943,7 @@
 
       for (let i = 1; i <= 5; i++) {
         const btn = document.getElementById(`btnG${i}`);
-        btn.className = "whitespace-nowrap px-2.5 py-1.5 bg-gray-900 border border-gray-800 rounded-lg text-xs font-bold text-gray-300 hover:border-[#FFB703] transition-all";
+        btn.className = "whitespace-nowrap px-2 py-1 bg-gray-900 border border-gray-800 rounded-lg text-[11px] font-bold text-gray-300 hover:border-[#FFB703] transition-all";
       }
 
       updateTabsUI();
@@ -956,24 +957,24 @@
       const btnAdv = document.getElementById('btnTierAdv');
 
       btnBeg.innerText = dict.tierBeg;
-      btnBeg.className = `py-2 text-xs font-bold rounded-lg transition-all ${currentTier === 'BEGINNER' && playMode === 'TIER' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-400'}`;
+      btnBeg.className = `py-1.5 text-[11px] font-bold rounded-lg transition-all ${currentTier === 'BEGINNER' && playMode === 'TIER' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-400'}`;
 
       if (userProgress.intermediateUnlocked) {
         btnInt.innerText = dict.tierInt;
-        btnInt.className = `py-2 text-xs font-bold rounded-lg transition-all ${currentTier === 'INTERMEDIATE' && playMode === 'TIER' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-300'}`;
+        btnInt.className = `py-1.5 text-[11px] font-bold rounded-lg transition-all ${currentTier === 'INTERMEDIATE' && playMode === 'TIER' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-300'}`;
         if (!isExamMode && playMode === 'TIER') document.getElementById('examBanner').classList.remove('hidden');
       } else {
         btnInt.innerText = dict.tierIntLocked;
-        btnInt.className = 'py-2 text-xs font-bold rounded-lg text-gray-600 cursor-not-allowed';
+        btnInt.className = 'py-1.5 text-[11px] font-bold rounded-lg text-gray-600 cursor-not-allowed';
         document.getElementById('examBanner').classList.add('hidden');
       }
 
       if (userProgress.advancedUnlocked || userProgress.examPassed || userProgress.isVip) {
         btnAdv.innerText = dict.tierAdv;
-        btnAdv.className = `py-2 text-xs font-bold rounded-lg transition-all ${currentTier === 'ADVANCED' && playMode === 'TIER' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-300'}`;
+        btnAdv.className = `py-1.5 text-[11px] font-bold rounded-lg transition-all ${currentTier === 'ADVANCED' && playMode === 'TIER' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-300'}`;
       } else {
         btnAdv.innerText = dict.tierAdvLocked;
-        btnAdv.className = 'py-2 text-xs font-bold rounded-lg text-gray-600 cursor-not-allowed';
+        btnAdv.className = 'py-1.5 text-[11px] font-bold rounded-lg text-gray-600 cursor-not-allowed';
       }
 
       if (userProgress.isVip) {
@@ -1059,9 +1060,9 @@
       if (examWrongAnswers.length > 0) {
         reviewSection.classList.remove('hidden');
         reviewList.innerHTML = examWrongAnswers.map((w, idx) => `
-          <div class="p-2 bg-gray-900 border border-gray-800 rounded-lg">
-            <p class="font-bold text-white text-[11px] mb-1">${idx + 1}. ${w.q}</p>
-            <p class="text-[10px] text-gray-400">내 답: <span class="text-red-400 font-bold">${w.chosen}</span> | 정답: <span class="text-[#06D6A0] font-black">${w.ans}</span></p>
+          <div class="p-1.5 bg-gray-900 border border-gray-800 rounded-lg">
+            <p class="font-bold text-white text-[10px] mb-0.5">${idx + 1}. ${w.q}</p>
+            <p class="text-[9px] text-gray-400">내 답: <span class="text-red-400 font-bold">${w.chosen}</span> | 정답: <span class="text-[#06D6A0] font-black">${w.ans}</span></p>
           </div>
         `).join('');
       } else {
@@ -1075,17 +1076,17 @@
 
         icon.innerText = '🎉';
         title.innerText = '축하합니다! 라이선스 합격!';
-        title.className = 'text-lg font-black text-[#06D6A0] mb-1';
+        title.className = 'text-base font-black text-[#06D6A0] mb-1';
         desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong>를 맞혔습니다.<br />이제 모든 <strong>[고급 모드]</strong>가 영구 해금되었습니다!`;
         actionBtn.innerText = '고급 모드 바로 시작하기 🚀';
-        actionBtn.className = 'w-full py-3.5 bg-[#06D6A0] hover:bg-emerald-400 text-black font-black text-sm rounded-xl transition-all shadow-lg active:scale-95';
+        actionBtn.className = 'w-full py-3 bg-[#06D6A0] hover:bg-emerald-400 text-black font-black text-xs rounded-xl transition-all shadow-lg active:scale-95';
       } else {
         icon.innerText = '💡';
         title.innerText = '아쉽습니다! 재도전 필요';
-        title.className = 'text-lg font-black text-[#EF476F] mb-1';
+        title.className = 'text-base font-black text-[#EF476F] mb-1';
         desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong> 정답 (기준: 17문제 이상).<br />오답 노트를 확인하고 다시 도전해 보세요!`;
         actionBtn.innerText = '시험 다시 치르기 🔄';
-        actionBtn.className = 'w-full py-3.5 bg-[#FFB703] hover:bg-yellow-400 text-black font-black text-sm rounded-xl transition-all shadow-lg active:scale-95';
+        actionBtn.className = 'w-full py-3 bg-[#FFB703] hover:bg-yellow-400 text-black font-black text-xs rounded-xl transition-all shadow-lg active:scale-95';
       }
     }
 
@@ -1164,7 +1165,7 @@
       }
 
       const card = document.getElementById('cardBox');
-      card.className = "p-6 rounded-2xl bg-[#EF476F]/10 border-2 border-[#EF476F] flex flex-col items-center text-center shadow-2xl transition-all";
+      card.className = "p-3.5 sm:p-4 rounded-2xl bg-[#EF476F]/10 border-2 border-[#EF476F] flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden";
 
       document.getElementById('feedbackStatus').innerText = dict.timeoutMsg;
       document.getElementById('feedbackAnsValue').innerText = currentQuestion.ans;
@@ -1201,7 +1202,7 @@
       renderCurrentQuestionText();
 
       const card = document.getElementById('cardBox');
-      card.className = "p-6 rounded-2xl bg-gray-900 border-2 border-gray-800 flex flex-col items-center text-center shadow-2xl transition-all";
+      card.className = "p-3.5 sm:p-4 rounded-2xl bg-gray-900 border border-gray-800 flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden";
 
       renderPad();
       startTimer();
@@ -1214,12 +1215,12 @@
 
       if (currentQuestion.type === 'MCQ' || currentQuestion.type === 'INVERSION') {
         const grid = document.createElement('div');
-        grid.className = currentQuestion.opts.length === 3 ? 'grid grid-cols-3 gap-2' : 'grid grid-cols-2 gap-2.5';
+        grid.className = currentQuestion.opts.length === 3 ? 'grid grid-cols-3 gap-1.5' : 'grid grid-cols-2 gap-2';
 
         currentQuestion.opts.forEach(opt => {
           const btn = document.createElement('button');
           btn.innerText = opt;
-          btn.className = 'py-3.5 px-2 text-xs sm:text-sm font-bold bg-gray-800 hover:bg-gray-700 active:scale-95 rounded-xl border border-gray-700 shadow-md transition-transform leading-snug';
+          btn.className = 'py-2.5 px-1.5 text-xs font-bold bg-gray-800 hover:bg-gray-700 active:scale-95 rounded-xl border border-gray-700 shadow-md transition-transform leading-snug';
           btn.onclick = () => submitAnswer(opt);
           grid.appendChild(btn);
         });
@@ -1228,27 +1229,27 @@
         document.getElementById('inputPreviewBox').classList.remove('hidden');
 
         const wrapper = document.createElement('div');
-        wrapper.className = 'flex flex-col gap-2.5 bg-gray-900/90 p-3 rounded-2xl border border-gray-800';
+        wrapper.className = 'flex flex-col gap-1.5 bg-gray-900/90 p-2.5 rounded-2xl border border-gray-800';
 
         const rootSection = document.createElement('div');
-        rootSection.innerHTML = `<div class="text-[10px] text-gray-400 font-bold mb-1">${dict.rootStepLabel}</div>`;
+        rootSection.innerHTML = `<div class="text-[9px] text-gray-400 font-bold mb-0.5">${dict.rootStepLabel}</div>`;
         
         const noteRow = document.createElement('div');
-        noteRow.className = 'grid grid-cols-7 gap-1 mb-1';
+        noteRow.className = 'grid grid-cols-7 gap-1 mb-0.5';
         ['C', 'D', 'E', 'F', 'G', 'A', 'B'].forEach(n => {
           const btn = document.createElement('button');
           btn.innerText = n;
-          btn.className = `py-2 text-xs font-extrabold rounded-lg ${selectedRoot.startsWith(n) ? 'bg-[#FFB703] text-black' : 'bg-gray-800 text-gray-200'}`;
+          btn.className = `py-1.5 text-xs font-extrabold rounded-lg ${selectedRoot.startsWith(n) ? 'bg-[#FFB703] text-black' : 'bg-gray-800 text-gray-200'}`;
           btn.onclick = () => { selectedRoot = n; updatePreview(); renderPad(); };
           noteRow.appendChild(btn);
         });
 
         const accRow = document.createElement('div');
-        accRow.className = 'grid grid-cols-2 gap-2';
+        accRow.className = 'grid grid-cols-2 gap-1.5';
         ['#', 'b'].forEach(acc => {
           const btn = document.createElement('button');
           btn.innerText = acc;
-          btn.className = 'py-1.5 text-xs font-bold bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-300';
+          btn.className = 'py-1 text-[11px] font-bold bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-300';
           btn.onclick = () => {
             if (selectedRoot && !selectedRoot.includes('#') && !selectedRoot.includes('b')) {
               selectedRoot += acc;
@@ -1263,9 +1264,9 @@
         rootSection.appendChild(accRow);
 
         const qualitySection = document.createElement('div');
-        qualitySection.innerHTML = `<div class="text-[10px] text-gray-400 font-bold mb-1">${dict.qualityStepLabel}</div>`;
+        qualitySection.innerHTML = `<div class="text-[9px] text-gray-400 font-bold mb-0.5">${dict.qualityStepLabel}</div>`;
         const qGrid = document.createElement('div');
-        qGrid.className = 'grid grid-cols-4 gap-1.5';
+        qGrid.className = 'grid grid-cols-4 gap-1';
         
         const qualities = [
           { label: 'Maj', val: '' },
@@ -1281,7 +1282,7 @@
         qualities.forEach(q => {
           const btn = document.createElement('button');
           btn.innerText = q.label;
-          btn.className = 'py-2.5 text-xs font-black bg-gray-800 hover:bg-gray-700 active:bg-[#FFB703] active:text-black rounded-lg border border-gray-700';
+          btn.className = 'py-2 text-[11px] font-black bg-gray-800 hover:bg-gray-700 active:bg-[#FFB703] active:text-black rounded-lg border border-gray-700';
           btn.onclick = () => {
             if (!selectedRoot) {
               alert(dict.needRootAlert);
@@ -1323,7 +1324,7 @@
         combo++;
         if (isExamMode) examCorrectCount++;
 
-        card.className = "p-6 rounded-2xl bg-[#06D6A0]/10 border-2 border-[#06D6A0] flex flex-col items-center text-center shadow-2xl scale-102 transition-all";
+        card.className = "p-3.5 sm:p-4 rounded-2xl bg-[#06D6A0]/10 border border-[#06D6A0] flex flex-col items-center text-center shadow-xl scale-102 transition-all relative overflow-hidden";
         
         if (playMode === 'TIER' && currentTier === 'BEGINNER' && combo >= 10 && !userProgress.intermediateUnlocked) {
           userProgress.intermediateUnlocked = true;
@@ -1351,14 +1352,14 @@
             chosen: chosen,
             ans: currentQuestion.ans
           });
-          card.className = "p-6 rounded-2xl bg-[#EF476F]/10 border-2 border-[#EF476F] flex flex-col items-center text-center shadow-2xl transition-all";
+          card.className = "p-3.5 sm:p-4 rounded-2xl bg-[#EF476F]/10 border border-[#EF476F] flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden";
           setTimeout(() => {
             nextQuestion();
           }, 400);
           return;
         }
 
-        card.className = "p-6 rounded-2xl bg-[#EF476F]/10 border-2 border-[#EF476F] flex flex-col items-center text-center shadow-2xl transition-all";
+        card.className = "p-3.5 sm:p-4 rounded-2xl bg-[#EF476F]/10 border-2 border-[#EF476F] flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden";
         
         document.getElementById('feedbackStatus').innerText = dict.wrongMsg;
         document.getElementById('feedbackAnsValue').innerText = currentQuestion.ans;
