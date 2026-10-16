@@ -629,7 +629,7 @@
     let isQuestionActive = false;
     let isTimerPaused = false;
 
-    // --- 정밀 화성학 연산 데이터 및 엔진 ---
+    // --- 음악 이론 연산 엔진 ---
     const INTERVAL_EXACT_MAP = {
       'C':  { 'm3': 'Eb', 'M3': 'E',  'P4': 'F',  'P5': 'G',  'M6': 'A',  'm7': 'Bb' },
       'G':  { 'm3': 'Bb', 'M3': 'B',  'P4': 'C',  'P5': 'D',  'M6': 'E',  'm7': 'F' },
@@ -660,56 +660,82 @@
       'B': { 'maj7': 'B D# F# A#', '7': 'B D# F# A', 'm7': 'B D F# A', 'm(maj7)': 'B D F# A#', 'm7b5': 'B D F A' }
     };
 
-    const SCALES_DATABASE = {
-      'C': { 'Harmonic Minor': 'C D Eb F G Ab B', 'Melodic Minor': 'C D Eb F G A B' },
-      'G': { 'Harmonic Minor': 'G A Bb C D Eb F#', 'Melodic Minor': 'G A Bb C D E F#' },
-      'D': { 'Harmonic Minor': 'D E F G A Bb C#', 'Melodic Minor': 'D E F G A B C#' },
-      'A': { 'Harmonic Minor': 'A B C D E F G#', 'Melodic Minor': 'A B C D E F# G#' },
-      'E': { 'Harmonic Minor': 'E F# G A B C D#', 'Melodic Minor': 'E F# G A B C# D#' },
-      'F': { 'Harmonic Minor': 'F G Ab Bb C Db E', 'Melodic Minor': 'F G Ab Bb C D E' },
-      'Bb': { 'Harmonic Minor': 'Bb C Db Eb F Gb D', 'Melodic Minor': 'Bb C Db Eb F G A' }
-    };
+    function getNoteByInterval(root, semitones) {
+      const chromaticSharp = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+      const chromaticFlat = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+      const isFlatKey = root.includes('b') || ['F', 'Bb', 'Eb', 'Ab', 'Db'].includes(root);
+      const scale = isFlatKey ? chromaticFlat : chromaticSharp;
+      const noteMap = { 'C':0, 'C#':1, 'Db':1, 'D':2, 'D#':3, 'Eb':3, 'E':4, 'F':5, 'F#':6, 'Gb':6, 'G':7, 'G#':8, 'Ab':8, 'A':9, 'A#':10, 'Bb':10, 'B':11 };
+      const baseIdx = noteMap[root] !== undefined ? noteMap[root] : 0;
+      return scale[(baseIdx + semitones) % 12];
+    }
 
-    // [요청하신 3가지 드롭 보이싱 문제 유형 생성 엔진]
+    function getScaleNotes(root, scaleType) {
+      const intervals = {
+        'Major': [0, 2, 4, 5, 7, 9, 11],
+        'Natural Minor': [0, 2, 3, 5, 7, 8, 10],
+        'Harmonic Minor': [0, 2, 3, 5, 7, 8, 11],
+        'Melodic Minor': [0, 2, 3, 5, 7, 9, 11]
+      };
+      return intervals[scaleType].map(sem => getNoteByInterval(root, sem)).join(' ');
+    }
+
+    // [요청하신 3가지 보이싱 문제 유형 정밀 생성기]
     function generateDropVoicingProblem(isDrop3 = false) {
-      const typeNum = Math.floor(Math.random() * 3) + 1;
       const voicingName = isDrop3 ? 'Drop 3' : 'Drop 2';
+      const rootList = ['C', 'F', 'G', 'Bb', 'Eb', 'D', 'A', 'E'];
+      const root = rootList[Math.floor(Math.random() * rootList.length)];
+      const chordTypesList = ['maj7', '7', 'm7', 'm7b5'];
+      const chordType = chordTypesList[Math.floor(Math.random() * chordTypesList.length)];
+      const chordName = `${root}${chordType}`;
+
+      const t3 = (chordType === 'maj7' || chordType === '7') ? 4 : 3;
+      const t5 = chordType === 'm7b5' ? 6 : 7;
+      const t7 = (chordType === 'maj7') ? 11 : 10;
+
+      const n1 = root;
+      const n3 = getNoteByInterval(root, t3);
+      const n5 = getNoteByInterval(root, t5);
+      const n7 = getNoteByInterval(root, t7);
+
+      const typeNum = Math.floor(Math.random() * 3) + 1;
 
       if (typeNum === 1) {
-        // 유형 1: 구성음이 아닌 것 찾기 (예: C7의 드롭2 보이싱 구성이 아닌 것은?)
+        // 유형 1: 구성음이 아닌 것 (오답 색출)
+        const validVoicing = isDrop3 ? `${n1} - ${n7} - ${n3} - ${n5}` : `${n1} - ${n5} - ${n7} - ${n3}`;
+        const invalidVoicing = `${n3} - ${n1} - ${n5} - ${n7}`; // 무작위 구조
+        const alt1 = isDrop3 ? `${n3} - ${n1} - ${n5} - ${n7}` : `${n3} - ${n7} - ${n1} - ${n5}`;
+        const alt2 = isDrop3 ? `${n5} - ${n3} - ${n7} - ${n1}` : `${n5} - ${n1} - ${n3} - ${n7}`;
+        const alt3 = isDrop3 ? `${n7} - ${n5} - ${n1} - ${n3}` : `${n7} - ${n3} - ${n5} - ${n1}`;
+
         return {
           gameTag: `GAME 5. ${voicingName.toUpperCase()} BUSTER`,
           type: 'MCQ',
           catKO: `${voicingName} 구성음 판독 훈련`,
           catEN: `${voicingName} Voicing Identification`,
-          qKO: `[ C7 ] 의 ${voicingName} 보이싱 구성이 아닌 것은?`,
-          qEN: `Which is NOT a valid ${voicingName} voicing structure for C7?`,
-          ans: isDrop3 ? 'C - E - G - Bb' : 'E - G - C - Bb',
-          opts: shuffleArray([
-            isDrop3 ? 'C - E - G - Bb' : 'E - G - C - Bb',
-            isDrop3 ? 'C - Bb - E - G' : 'E - Bb - C - G',
-            isDrop3 ? 'E - C - G - Bb' : 'G - C - E - Bb',
-            isDrop3 ? 'G - E - Bb - C' : 'Bb - E - G - C'
-          ]),
+          qKO: `[ ${chordName} ] 의 ${voicingName} 보이싱 구성이 아닌 것은?`,
+          qEN: `Which is NOT a valid ${voicingName} voicing structure for ${chordName}?`,
+          ans: invalidVoicing,
+          opts: shuffleArray([invalidVoicing, alt1, alt2, alt3]),
           url: YOUTUBE_URL + '&index=12'
         };
       } else if (typeNum === 2) {
-        // 유형 2: 슬래시 코드 탑노트 찾기 (예: C7/E 드롭2 보이싱의 탑노트는?)
+        // 유형 2: 슬래시 코드 탑노트 찾기
         return {
           gameTag: `GAME 5. ${voicingName.toUpperCase()} BUSTER`,
           type: 'MCQ',
           catKO: `${voicingName} 탑노트 판독 훈련`,
           catEN: `${voicingName} Top Note Training`,
-          qKO: `[ C7/E ] ${voicingName} 보이싱의 탑노트(최고음)는?`,
-          qEN: `What is the top note of [ C7/E ] ${voicingName} voicing?`,
-          ans: 'G',
-          opts: shuffleArray(['E', 'G', 'Bb', 'C']),
+          qKO: `[ ${chordName}/${n3} ] ${voicingName} 보이싱의 탑노트(최고음)는?`,
+          qEN: `What is the top note of [ ${chordName}/${n3} ] ${voicingName} voicing?`,
+          ans: n5,
+          opts: shuffleArray([n1, n3, n5, n7]),
           url: YOUTUBE_URL + '&index=12'
         };
       } else {
-        // 유형 3: 숫자 구성이 아닌 것 찾기 (드롭2: 1573, 3715, 5137 / 드롭3: 1735, 3157, 5371, 7513 중 오답 찾기)
-        const wrongAns = isDrop3 ? '7 - 3 - 5 - 1' : '7 - 5 - 1 - 3';
-        const correctList = isDrop3 ? ['1 - 7 - 3 - 5', '3 - 1 - 5 - 7', '5 - 3 - 7 - 1'] : ['1 - 5 - 7 - 3', '3 - 7 - 1 - 5', '5 - 1 - 3 - 7'];
+        // 유형 3: 숫자 구성이 아닌 것 찾기 (드롭2: 1573, 3715, 5137 / 드롭3: 1735, 3157, 5371, 7513)
+        const wrongAns = isDrop3 ? '1 - 5 - 7 - 3' : '7 - 5 - 1 - 3';
+        const correctList = isDrop3 ? ['1 - 7 - 3 - 5', '3 - 1 - 5 - 7', '5 - 3 - 7 - 1', '7 - 5 - 1 - 3'] : ['1 - 5 - 7 - 3', '3 - 7 - 1 - 5', '5 - 1 - 3 - 7', '7 - 3 - 5 - 1'];
         
         return {
           gameTag: `GAME 5. ${voicingName.toUpperCase()} BUSTER`,
@@ -719,28 +745,30 @@
           qKO: `다음 중 [ ${voicingName} ] 보이싱의 올바른 숫자(도수) 구성이 아닌 것은?`,
           qEN: `Which is NOT a valid degree sequence for ${voicingName}?`,
           ans: wrongAns,
-          opts: shuffleArray([...correctList, wrongAns]),
+          opts: shuffleArray(correctList.filter(item => item !== wrongAns).concat([wrongAns])),
           url: YOUTUBE_URL + '&index=12'
         };
       }
     }
 
-    // 고급 모드(Advanced) 복합 출제 엔진 (요청하신 비율 반영)
+    // [고급 모드 비율 적용]: 드롭2 20%, 드롭3 20%, 하모닉마이너 20%, 멜로딕마이너 20%, 특수코드 10%, 음정 10%
     function genAdvancedProblem() {
       const rand = Math.random();
       
       if (rand < 0.20) {
-        // 드롭 2 (20%)
-        return generateDropVoicingProblem(false);
+        return generateDropVoicingProblem(false); // Drop 2 (20%)
       } else if (rand < 0.40) {
-        // 드롭 3 (20%)
-        return generateDropVoicingProblem(true);
+        return generateDropVoicingProblem(true);  // Drop 3 (20%)
       } else if (rand < 0.60) {
-        // 하모닉 마이너 스케일 (20%)
-        const roots = Object.keys(SCALES_DATABASE);
-        const root = roots[Math.floor(Math.random() * roots.length)];
-        const ans = SCALES_DATABASE[root]['Harmonic Minor'];
-        const wrongOpts = shuffleArray(Object.keys(SCALES_DATABASE).filter(r => r !== root)).slice(0, 3).map(r => SCALES_DATABASE[r]['Harmonic Minor']);
+        // 하모닉 마이너 스케일 (동일 루트 4지선다 - 20%)
+        const root = ROOTS_POOL[Math.floor(Math.random() * ROOTS_POOL.length)];
+        const ans = getScaleNotes(root, 'Harmonic Minor');
+        const opts = shuffleArray([
+          ans,
+          getScaleNotes(root, 'Melodic Minor'),
+          getScaleNotes(root, 'Natural Minor'),
+          getScaleNotes(root, 'Major')
+        ]);
         return {
           gameTag: 'GAME 5. ADVANCED HARMONIC MINOR',
           type: 'MCQ',
@@ -749,15 +777,19 @@
           qKO: `[ ${root} Harmonic Minor Scale ] 의 올바른 구성음은?`,
           qEN: `Correct notes of [ ${root} Harmonic Minor Scale ]?`,
           ans: ans,
-          opts: shuffleArray([ans, ...wrongOpts]),
+          opts: opts,
           url: YOUTUBE_URL + '&index=7'
         };
       } else if (rand < 0.80) {
-        // 멜로딕 마이너 스케일 (20%)
-        const roots = Object.keys(SCALES_DATABASE);
-        const root = roots[Math.floor(Math.random() * roots.length)];
-        const ans = SCALES_DATABASE[root]['Melodic Minor'];
-        const wrongOpts = shuffleArray(Object.keys(SCALES_DATABASE).filter(r => r !== root)).slice(0, 3).map(r => SCALES_DATABASE[r]['Melodic Minor']);
+        // 멜로딕 마이너 스케일 (동일 루트 4지선다 - 20%)
+        const root = ROOTS_POOL[Math.floor(Math.random() * ROOTS_POOL.length)];
+        const ans = getScaleNotes(root, 'Melodic Minor');
+        const opts = shuffleArray([
+          ans,
+          getScaleNotes(root, 'Harmonic Minor'),
+          getScaleNotes(root, 'Natural Minor'),
+          getScaleNotes(root, 'Major')
+        ]);
         return {
           gameTag: 'GAME 5. ADVANCED MELODIC MINOR',
           type: 'MCQ',
@@ -766,11 +798,11 @@
           qKO: `[ ${root} Melodic Minor Scale ] 의 올바른 구성음은?`,
           qEN: `Correct notes of [ ${root} Melodic Minor Scale ]?`,
           ans: ans,
-          opts: shuffleArray([ans, ...wrongOpts]),
+          opts: opts,
           url: YOUTUBE_URL + '&index=8'
         };
       } else if (rand < 0.90) {
-        // 특수 코드 (aug7, dim7, mM7 - 10%)
+        // 특수 재즈 코드 (aug7, dim7, mM7 - 10%)
         const root = ROOTS_POOL[Math.floor(Math.random() * ROOTS_POOL.length)];
         const specialChords = [
           { q: 'aug7', name: 'Augmented Dominant 7th', tones: `${root} - E - G# - B` },
@@ -790,16 +822,16 @@
           url: YOUTUBE_URL + '&index=12'
         };
       } else {
-        // 증, 감, 겹증, 겹감 음정 (10%)
+        // 고난도 음정 (겹감 5도 등 정확한 계산 - 10%)
         return {
           gameTag: 'GAME 5. PRO INTERVAL BUSTER',
           type: 'MCQ',
-          catKO: '고난도 음정 (증/감/겹증/겹감)',
+          catKO: '고난도 음정 (겹감 5도 등)',
           catEN: 'Advanced Intervals',
           qKO: `C 에서 겹감 5도(Double Diminished 5th) 위의 음은?`,
           qEN: `Double diminished 5th above C?`,
-          ans: 'Gb',
-          opts: shuffleArray(['Gb', 'Gbb', 'F#', 'G']),
+          ans: 'Gbb',
+          opts: shuffleArray(['Gbb', 'Gb', 'F#', 'G']),
           url: YOUTUBE_URL + '&index=2'
         };
       }
@@ -836,9 +868,6 @@
     function genGame2() {
       const isScaleQ = Math.random() > 0.5;
       if (isScaleQ) {
-        const roots = Object.keys(SCALES_DATABASE);
-        const root = roots[Math.floor(Math.random() * roots.length)];
-        const ans = 'C D E F G A B'; // 기본 메이저 예시
         return {
           gameTag: 'GAME 2. SCALE SPELLING',
           type: 'MCQ',
@@ -846,8 +875,8 @@
           catEN: 'Major Scale Spelling (Ep. 5-8)',
           qKO: `[ C Major Scale ] 의 올바른 구성음은?`,
           qEN: `Correct notes of [ C Major Scale ]?`,
-          ans: ans,
-          opts: shuffleArray([ans, 'C D Eb F G A Bb', 'C D E F G Ab B', 'C D Eb F G Ab Bb']),
+          ans: 'C D E F G A B',
+          opts: shuffleArray(['C D E F G A B', 'C D Eb F G A Bb', 'C D E F G Ab B', 'C D Eb F G Ab Bb']),
           url: YOUTUBE_URL + '&index=5'
         };
       } else {
@@ -901,12 +930,9 @@
       };
     }
 
+    // [요청 반영]: 개별훈련 보이싱 파트에서는 드롭2와 드롭3 문제만 50% 확률로 출제
     function genGame5() {
-      if (Math.random() > 0.5) {
-        return generateDropVoicingProblem(false); // Drop 2
-      } else {
-        return generateDropVoicingProblem(true);  // Drop 3
-      }
+      return generateDropVoicingProblem(Math.random() > 0.5);
     }
 
     function generateQuestion() {
@@ -915,7 +941,7 @@
         if (currentSoloGame === 2) return genGame2();
         if (currentSoloGame === 3) return genGame3();
         if (currentSoloGame === 4) return genGame4();
-        if (currentSoloGame === 5) return genAdvancedProblem();
+        if (currentSoloGame === 5) return genGame5(); // 드롭2, 3 전용
       }
 
       if (currentTier === 'BEGINNER') {
@@ -925,7 +951,7 @@
         return Math.random() > 0.4 ? genGame3() : genGame4();
       }
       if (currentTier === 'ADVANCED') {
-        return genAdvancedProblem();
+        return genAdvancedProblem(); // 고급 모드 복합 비율 출제
       }
     }
 
