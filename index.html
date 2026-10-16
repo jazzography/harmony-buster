@@ -91,9 +91,12 @@
   <!-- ========================================== -->
   <div id="gameScreen" class="hidden w-full flex-1 flex flex-col justify-between">
     
+    <!-- 최상단 헤더 (HARMONY BUSTER 클릭 시 홈 화면으로 복귀) -->
     <header class="w-full flex justify-between items-center py-2 border-b border-gray-800">
-      <div>
-        <h2 class="text-lg font-black tracking-wider text-[#FFB703] leading-none">HARMONY BUSTER</h2>
+      <div onclick="goToWelcomeScreen()" class="cursor-pointer active:scale-95 transition-transform text-left group">
+        <h2 class="text-lg font-black tracking-wider text-[#FFB703] leading-none group-hover:text-yellow-400 flex items-center gap-1">
+          HARMONY BUSTER <span class="text-[10px] text-gray-500 font-normal">🏠</span>
+        </h2>
         <p id="t-game-sub" class="text-[10px] text-gray-400 mt-0.5">화성학 두뇌 연산 자동화 트레이너</p>
       </div>
       
@@ -602,7 +605,6 @@
 
     const ROOTS_POOL = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'F', 'Bb', 'Eb', 'Ab'];
 
-    // 12키 코드톤 라이브러리
     const CHORD_TONES_DATABASE = {
       'C': { 'maj7': 'C E G B', '7': 'C E G Bb', 'm7': 'C Eb G Bb', 'm(maj7)': 'C Eb G B', 'm7b5': 'C Eb Gb Bb' },
       'F': { 'maj7': 'F A C E', '7': 'F A C Eb', 'm7': 'F Ab C Eb', 'm(maj7)': 'F Ab C E', 'm7b5': 'F Ab Cb Eb' },
@@ -616,56 +618,15 @@
       'B': { 'maj7': 'B D# F# A#', '7': 'B D# F# A', 'm7': 'B D F# A', 'm(maj7)': 'B D F# A#', 'm7b5': 'B D F A' }
     };
 
-    // 12키 스케일 라이브러리
     const SCALES_DATABASE = {
-      'C': {
-        'Major': 'C D E F G A B',
-        'Natural Minor': 'C D Eb F G Ab Bb',
-        'Mixolydian': 'C D E F G A Bb',
-        'Dorian': 'C D Eb F G A Bb'
-      },
-      'G': {
-        'Major': 'G A B C D E F#',
-        'Natural Minor': 'G A Bb C D Eb F',
-        'Mixolydian': 'G A B C D E F',
-        'Dorian': 'G A Bb C D E F'
-      },
-      'D': {
-        'Major': 'D E F# G A B C#',
-        'Natural Minor': 'D E F G A Bb C',
-        'Mixolydian': 'D E F# G A B C',
-        'Dorian': 'D E F G A B C'
-      },
-      'A': {
-        'Major': 'A B C# D E F# G#',
-        'Natural Minor': 'A B C D E F G',
-        'Mixolydian': 'A B C# D E F# G',
-        'Dorian': 'A B C D E F# G'
-      },
-      'E': {
-        'Major': 'E F# G# A B C# D#',
-        'Natural Minor': 'E F# G A B C D',
-        'Mixolydian': 'E F# G# A B C# D',
-        'Dorian': 'E F# G A B C# D'
-      },
-      'F': {
-        'Major': 'F G A Bb C D E',
-        'Natural Minor': 'F G Ab Bb C Db Eb',
-        'Mixolydian': 'F G A Bb C D Eb',
-        'Dorian': 'F G Ab Bb C D Eb'
-      },
-      'Bb': {
-        'Major': 'Bb C D Eb F G A',
-        'Natural Minor': 'Bb C Db Eb F Gb Ab',
-        'Mixolydian': 'Bb C D Eb F G Ab',
-        'Dorian': 'Bb C Db Eb F G Ab'
-      },
-      'Eb': {
-        'Major': 'Eb F G Ab Bb C D',
-        'Natural Minor': 'Eb F Gb Ab Bb Cb Db',
-        'Mixolydian': 'Eb F G Ab Bb C Db',
-        'Dorian': 'Eb F Gb Ab Bb C Db'
-      }
+      'C': { 'Major': 'C D E F G A B', 'Natural Minor': 'C D Eb F G Ab Bb', 'Mixolydian': 'C D E F G A Bb', 'Dorian': 'C D Eb F G A Bb' },
+      'G': { 'Major': 'G A B C D E F#', 'Natural Minor': 'G A Bb C D Eb F', 'Mixolydian': 'G A B C D E F', 'Dorian': 'G A Bb C D E F' },
+      'D': { 'Major': 'D E F# G A B C#', 'Natural Minor': 'D E F G A Bb C', 'Mixolydian': 'D E F# G A B C', 'Dorian': 'D E F G A B C' },
+      'A': { 'Major': 'A B C# D E F# G#', 'Natural Minor': 'A B C D E F G', 'Mixolydian': 'A B C# D E F# G', 'Dorian': 'A B C D E F# G' },
+      'E': { 'Major': 'E F# G# A B C# D#', 'Natural Minor': 'E F# G A B C D', 'Mixolydian': 'E F# G# A B C# D', 'Dorian': 'E F# G A B C# D' },
+      'F': { 'Major': 'F G A Bb C D E', 'Natural Minor': 'F G Ab Bb C Db Eb', 'Mixolydian': 'F G A Bb C D Eb', 'Dorian': 'F G Ab Bb C D Eb' },
+      'Bb': { 'Major': 'Bb C D Eb F G A', 'Natural Minor': 'Bb C Db Eb F Gb Ab', 'Mixolydian': 'Bb C D Eb F G Ab', 'Dorian': 'Bb C Db Eb F G Ab' },
+      'Eb': { 'Major': 'Eb F G Ab Bb C D', 'Natural Minor': 'Eb F Gb Ab Bb Cb Db', 'Mixolydian': 'Eb F G Ab Bb C Db', 'Dorian': 'Eb F Gb Ab Bb C Db' }
     };
 
     const CHORD_FORMULAS = [
@@ -719,6 +680,7 @@
       };
     }
 
+    // 초급 2번 게임: 오직 Major Scale만 출제 (마이너 스케일 완전 배제)
     function genGame2() {
       const isScaleQ = Math.random() > 0.5;
 
@@ -726,9 +688,7 @@
         const roots = Object.keys(SCALES_DATABASE);
         const root = roots[Math.floor(Math.random() * roots.length)];
         
-        const targetType = 'Major';
         const ans = SCALES_DATABASE[root]['Major'];
-        
         const otherTypes = Object.keys(SCALES_DATABASE[root]).filter(t => t !== 'Major');
         const wrongOpts = otherTypes.map(t => SCALES_DATABASE[root][t]);
 
@@ -772,9 +732,11 @@
       }
     }
 
+    // 중급 3번 게임: 메이저/마이너 스케일 동시 출제 및 코드톤 판독
     function genGame3() {
       const rand = Math.random();
 
+      // 중급: 메이저 & 내추럴 마이너 스케일 동시 출제
       if (rand < 0.25) {
         const roots = Object.keys(SCALES_DATABASE);
         const root = roots[Math.floor(Math.random() * roots.length)];
@@ -797,7 +759,8 @@
           opts: shuffleArray([ans, ...wrongOpts]),
           url: YOUTUBE_URL + '&index=7'
         };
-      } else if (rand < 0.6) {
+      } 
+      else if (rand < 0.6) {
         const roots = Object.keys(CHORD_TONES_DATABASE);
         const root = roots[Math.floor(Math.random() * roots.length)];
         const qualities = Object.keys(CHORD_TONES_DATABASE[root]);
@@ -817,7 +780,8 @@
           opts: shuffleArray([ans, ...wrongOpts]),
           url: YOUTUBE_URL + '&index=12'
         };
-      } else {
+      } 
+      else {
         const roots = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
         const root = roots[Math.floor(Math.random() * roots.length)];
         const formula = CHORD_FORMULAS[Math.floor(Math.random() * CHORD_FORMULAS.length)];
@@ -918,6 +882,18 @@
       try {
         localStorage.setItem('harmony_buster_save', JSON.stringify(userProgress));
       } catch(e) {}
+    }
+
+    // [로고 클릭 시 첫 웰컴 화면으로 복귀하는 함수]
+    function goToWelcomeScreen() {
+      if (isExamMode) {
+        if (!confirm('시험 진행 중입니다. 메인 홈 화면으로 나가시겠습니까? (현재 기록은 초기화됩니다)')) return;
+        exitExamMode();
+      }
+      stopTimer();
+      document.getElementById('gameScreen').classList.add('hidden');
+      document.getElementById('examResultScreen').classList.add('hidden');
+      document.getElementById('welcomeScreen').classList.remove('hidden');
     }
 
     function startGame() {
