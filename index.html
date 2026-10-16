@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="HarmonyBuster">
-  <meta name="theme-color" content="#0F1012">
+  <meta name="theme-color" content="#121316">
   <link rel="apple-touch-icon" href="https://via.placeholder.com/192/FFB703/000000?text=HB">
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -30,8 +30,13 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
+    /* 상단 노치/상태바 가림 방지 안전 여백 */
+    .pt-safe-top {
+      padding-top: max(env(safe-area-inset-top, 16px), 16px);
+    }
+    /* 하단 홈 인디케이터 안전 여백 */
     .pb-safe {
-      padding-bottom: env(safe-area-inset-bottom, 8px);
+      padding-bottom: max(env(safe-area-inset-bottom, 12px), 12px);
     }
     @keyframes slideUp {
       from { transform: translateY(100%); }
@@ -50,208 +55,209 @@
     <!-- ========================================== -->
     <!-- 0. 오프닝 웰컴 화면 -->
     <!-- ========================================== -->
-    <section id="welcomeScreen" class="w-full flex-1 flex flex-col justify-between items-center text-center px-3 py-2 my-auto overflow-y-auto no-scrollbar">
-      <header class="w-full flex justify-between items-center py-1.5 border-b border-gray-800/80 mb-1 shrink-0">
+    <section id="welcomeScreen" class="w-full flex-1 flex flex-col justify-between items-center text-center px-4 pt-safe-top pb-3 my-auto overflow-y-auto no-scrollbar">
+      <header class="w-full flex justify-between items-center py-2.5 border-b border-gray-800/80 mb-2 shrink-0">
         <div class="text-left">
-          <h2 class="text-sm font-black tracking-wider text-[#FFB703]">HARMONY BUSTER</h2>
-          <p id="t-welcome-sub" class="text-[9px] text-gray-400">화성학 두뇌 연산 자동화 트레이너</p>
+          <h2 class="text-lg font-black tracking-wider text-[#FFB703]">HARMONY BUSTER</h2>
+          <p id="t-welcome-sub" class="text-xs text-gray-400">화성학 두뇌 연산 자동화 트레이너</p>
         </div>
 
-        <div class="flex items-center gap-1.5">
-          <button onclick="toggleMute()" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 active:scale-95 border border-gray-700 rounded-lg text-[10px] font-bold text-gray-300">
+        <div class="flex items-center gap-2">
+          <button onclick="toggleMute()" class="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 active:scale-95 border border-gray-700 rounded-lg text-xs font-bold text-gray-200">
             <span id="muteLabelWelcome">🔊</span>
           </button>
 
-          <button onclick="toggleLanguage()" class="px-2 py-0.5 bg-gray-800 hover:bg-gray-700 active:scale-95 border border-gray-700 rounded-lg text-[10px] font-bold text-gray-300">
+          <button onclick="toggleLanguage()" class="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 active:scale-95 border border-gray-700 rounded-lg text-xs font-bold text-gray-200">
             <span id="langLabelWelcome">EN</span>
           </button>
 
-          <a href="https://youtube.com/@junkimmusic" target="_blank" rel="noreferrer" class="inline-flex items-center gap-1 px-2 py-0.5 bg-red-600/15 hover:bg-red-600/25 active:scale-95 border border-red-500/40 rounded-full transition-all">
-            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></span>
-            <span class="text-[10px] font-black text-red-400 tracking-tight">Jun Kim ▶</span>
+          <a href="https://youtube.com/@junkimmusic" target="_blank" rel="noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-600/15 hover:bg-red-600/25 active:scale-95 border border-red-500/40 rounded-full transition-all">
+            <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+            <span class="text-xs font-black text-red-400 tracking-tight">Jun Kim ▶</span>
           </a>
         </div>
       </header>
 
-      <div class="my-auto w-full flex flex-col items-center py-1">
-        <div id="t-welcome-badge" class="inline-block px-2.5 py-0.5 bg-[#FFB703]/10 border border-[#FFB703]/30 rounded-full text-[11px] font-bold text-[#FFB703] mb-2">
+      <div class="my-auto w-full flex flex-col items-center py-2">
+        <div id="t-welcome-badge" class="inline-block px-3.5 py-1 bg-[#FFB703]/10 border border-[#FFB703]/30 rounded-full text-xs font-bold text-[#FFB703] mb-3">
           🧠 두뇌 화성 연산 자동화 트레이너
         </div>
         
-        <h1 class="text-2xl sm:text-3xl font-black tracking-wider text-white mb-1 leading-tight">
+        <h1 class="text-3xl sm:text-4xl font-black tracking-wider text-white mb-2 leading-tight">
           HARMONY <span class="text-[#FFB703]">BUSTER</span>
         </h1>
-        <p id="t-welcome-headline" class="text-xs font-bold text-gray-300 mb-4 leading-relaxed px-1">
+        <p id="t-welcome-headline" class="text-sm font-bold text-gray-300 mb-5 leading-relaxed px-1">
           "악보를 보고 생각하는 3초는 늦습니다.<br />
           악기를 잡기 전 머릿속 연산을 0.1초 만에 자동화하세요!"
         </p>
 
-        <div class="w-full bg-gray-900/90 border border-gray-800 rounded-2xl p-3.5 mb-4 text-left space-y-2.5 text-[11px] text-gray-300 shadow-xl">
-          <div class="flex items-start gap-2">
-            <span class="text-sm leading-none">🎯</span>
+        <div class="w-full bg-gray-900/90 border border-gray-800 rounded-2xl p-4 mb-5 text-left space-y-3 text-xs sm:text-sm text-gray-300 shadow-xl">
+          <div class="flex items-start gap-2.5">
+            <span class="text-base leading-none">🎯</span>
             <div class="leading-relaxed">
               <strong class="text-white">메인 챌린지</strong>: 초급 → 중급 → 20문항 승급시험 → 고급 단계별 성장
             </div>
           </div>
-          <div class="flex items-start gap-2">
-            <span class="text-sm leading-none">🕹️</span>
+          <div class="flex items-start gap-2.5">
+            <span class="text-base leading-none">🕹️</span>
             <div class="leading-relaxed">
               <strong class="text-white">5대 개별 트레이닝</strong>: 음정 · 조표 · 코드톤 · 전위 · 보이싱 자유 선택 무한 반복
             </div>
           </div>
-          <div class="flex items-start gap-2">
-            <span class="text-sm leading-none">⚡</span>
+          <div class="flex items-start gap-2.5">
+            <span class="text-base leading-none">⚡</span>
             <div class="leading-relaxed text-gray-400">
               <strong class="text-white">순발력 속도 측정</strong>: 매 문제마다 두뇌 반응 속도(초)와 최고 콤보가 자동 기록됩니다.
             </div>
           </div>
         </div>
 
-        <button onclick="startGame()" class="w-full py-3.5 bg-[#FFB703] hover:bg-yellow-400 active:scale-95 text-black font-black text-sm rounded-2xl shadow-lg shadow-[#FFB703]/20 transition-all mb-1.5">
+        <button onclick="startGame()" class="w-full py-4 bg-[#FFB703] hover:bg-yellow-400 active:scale-95 text-black font-black text-base rounded-2xl shadow-lg shadow-[#FFB703]/20 transition-all mb-2">
           <span id="t-welcome-start-btn">지금 바로 두뇌 연산 시작하기 🔥</span>
         </button>
-        <p id="t-welcome-sound-hint" class="text-[10px] text-gray-500">※ PC에서는 숫자키(1~4)로도 빠른 정답 선택이 가능합니다.</p>
+        <p id="t-welcome-sound-hint" class="text-xs text-gray-500">※ PC에서는 숫자키(1~4)로도 빠른 정답 선택이 가능합니다.</p>
       </div>
     </section>
 
     <!-- ========================================== -->
-    <!-- 1. 메인 플레이 화면 -->
+    <!-- 1. 메인 플레이 화면 (큼직한 폰트 & 상단 여백 확보) -->
     <!-- ========================================== -->
-    <div id="gameScreen" class="hidden w-full flex-1 flex flex-col justify-between px-3 pt-2 pb-1 overflow-hidden">
+    <div id="gameScreen" class="hidden w-full flex-1 flex flex-col justify-between px-3.5 pt-safe-top pb-1 overflow-y-auto no-scrollbar">
       
-      <!-- 최상단 헤더 -->
-      <header class="w-full flex justify-between items-center pb-1.5 border-b border-gray-800/80 shrink-0">
-        <div onclick="goToWelcomeScreen()" class="cursor-pointer active:scale-95 transition-transform text-left group">
-          <h2 class="text-sm sm:text-base font-black tracking-wider text-[#FFB703] leading-none group-hover:text-yellow-400 flex items-center gap-1">
-            HARMONY BUSTER <span class="text-[10px] text-gray-500 font-normal">🏠</span>
-          </h2>
-          <div class="flex items-center gap-2 mt-0.5">
-            <p id="t-game-sub" class="text-[9px] text-gray-400">두뇌 연산 트레이너</p>
-            <span class="text-[9px] text-gray-500">|</span>
-            <span class="text-[9px] font-bold text-amber-400/90">🏆 BEST <strong id="bestComboText">0</strong></span>
+      <!-- 최상단 헤더 (넉넉한 터치 영역 확보) -->
+      <header class="w-full flex justify-between items-center py-2 border-b border-gray-800/80 shrink-0">
+        <button onclick="goToWelcomeScreen()" class="cursor-pointer active:scale-95 transition-transform text-left flex items-center gap-2 py-1 pr-2 rounded-xl hover:bg-gray-800/50">
+          <span class="px-2 py-1 bg-gray-800 border border-gray-700 rounded-lg text-xs font-bold text-[#FFB703]">🏠 홈</span>
+          <div>
+            <h2 class="text-base sm:text-lg font-black tracking-wider text-[#FFB703] leading-none">
+              HARMONY BUSTER
+            </h2>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-[11px] font-bold text-amber-400">🏆 최고 콤보 <strong id="bestComboText">0</strong></span>
+            </div>
           </div>
-        </div>
+        </button>
         
         <div class="flex items-center gap-1.5">
           <!-- 반응속도 배지 -->
-          <div id="speedBadge" class="hidden text-[10px] font-extrabold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded-md">
+          <div id="speedBadge" class="hidden text-xs font-extrabold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded-lg">
             ⚡ <span id="speedValue">0.8s</span>
           </div>
 
           <!-- 콤보 배지 -->
-          <div id="comboBadge" class="hidden text-[10px] font-black bg-[#EF476F]/20 text-[#EF476F] border border-[#EF476F]/40 px-2 py-0.5 rounded-full animate-pulse">
+          <div id="comboBadge" class="hidden text-xs font-black bg-[#EF476F]/20 text-[#EF476F] border border-[#EF476F]/40 px-2.5 py-1 rounded-full animate-pulse">
             🔥 <span id="comboCount">0</span>
           </div>
 
-          <button onclick="toggleMute()" class="px-1.5 py-0.5 bg-gray-800 hover:bg-gray-700 active:scale-95 border border-gray-700 rounded-lg text-[10px] font-bold text-gray-300">
+          <button onclick="toggleMute()" class="px-2.5 py-1.5 bg-gray-800 hover:bg-gray-700 active:scale-95 border border-gray-700 rounded-lg text-xs font-bold text-gray-200">
             <span id="muteLabelGame">🔊</span>
           </button>
 
-          <button onclick="toggleLanguage()" class="px-1.5 py-0.5 bg-gray-800 hover:bg-gray-700 active:scale-95 border border-gray-700 rounded-lg text-[10px] font-bold text-gray-300">
+          <button onclick="toggleLanguage()" class="px-2.5 py-1.5 bg-gray-800 hover:bg-gray-700 active:scale-95 border border-gray-700 rounded-lg text-xs font-bold text-gray-200">
             <span id="langLabelGame">EN</span>
           </button>
         </div>
       </header>
 
-      <!-- 5대 개별 게임 바로가기 칩바 -->
-      <div id="soloChipsArea" class="w-full mt-1 mb-0.5 shrink-0">
-        <div class="flex items-center justify-between px-0.5 mb-0.5">
-          <span class="text-[9px] font-extrabold text-gray-400">🕹️ 5대 개별 집중 코스</span>
-          <button onclick="selectPlayMode('TIER')" id="btnBackToMain" class="text-[10px] font-bold text-[#FFB703] hover:underline hidden">
+      <!-- 5대 개별 게임 바로가기 칩바 (글씨 및 터치영역 확대) -->
+      <div id="soloChipsArea" class="w-full mt-2 mb-1 shrink-0">
+        <div class="flex items-center justify-between px-1 mb-1">
+          <span class="text-xs font-extrabold text-gray-400">🕹️ 5대 개별 집중 코스</span>
+          <button onclick="selectPlayMode('TIER')" id="btnBackToMain" class="text-xs font-bold text-[#FFB703] hover:underline hidden">
             ← 메인 챌린지 복귀
           </button>
         </div>
-        <div class="flex gap-1 overflow-x-auto no-scrollbar py-0.5">
-          <button onclick="selectSoloGame(1)" id="btnG1" class="whitespace-nowrap px-2 py-1 bg-gray-900 border border-gray-800 rounded-lg text-[11px] font-bold text-gray-300 hover:border-[#FFB703] active:scale-95 transition-all">
+        <div class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+          <button onclick="selectSoloGame(1)" id="btnG1" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] active:scale-95 transition-all">
             1. 음정
           </button>
-          <button onclick="selectSoloGame(2)" id="btnG2" class="whitespace-nowrap px-2 py-1 bg-gray-900 border border-gray-800 rounded-lg text-[11px] font-bold text-gray-300 hover:border-[#FFB703] active:scale-95 transition-all">
+          <button onclick="selectSoloGame(2)" id="btnG2" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] active:scale-95 transition-all">
             2. 조표·스케일
           </button>
-          <button onclick="selectSoloGame(3)" id="btnG3" class="whitespace-nowrap px-2 py-1 bg-gray-900 border border-gray-800 rounded-lg text-[11px] font-bold text-gray-300 hover:border-[#FFB703] active:scale-95 transition-all">
+          <button onclick="selectSoloGame(3)" id="btnG3" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] active:scale-95 transition-all">
             3. 코드톤
           </button>
-          <button onclick="selectSoloGame(4)" id="btnG4" class="whitespace-nowrap px-2 py-1 bg-gray-900 border border-gray-800 rounded-lg text-[11px] font-bold text-gray-300 hover:border-[#FFB703] active:scale-95 transition-all">
+          <button onclick="selectSoloGame(4)" id="btnG4" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] active:scale-95 transition-all">
             4. 전위
           </button>
-          <button onclick="selectSoloGame(5)" id="btnG5" class="whitespace-nowrap px-2 py-1 bg-gray-900 border border-purple-500/50 rounded-lg text-[11px] font-bold text-purple-300 hover:border-purple-400 active:scale-95 transition-all flex items-center gap-1">
+          <button onclick="selectSoloGame(5)" id="btnG5" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-purple-500/50 rounded-xl text-xs font-bold text-purple-300 hover:border-purple-400 active:scale-95 transition-all flex items-center gap-1">
             <span id="g5LockIcon">🔒</span> 5. 보이싱
           </button>
         </div>
       </div>
 
       <!-- 메인 티어 선택 탭 -->
-      <div id="tierNav" class="w-full grid grid-cols-3 gap-1.5 my-0.5 bg-gray-900 p-1 rounded-xl text-center shrink-0">
-        <button id="btnTierBeg" onclick="selectTier('BEGINNER')" class="py-1 text-[11px] font-bold rounded-lg bg-[#FFB703] text-black active:scale-95 transition-all">
+      <div id="tierNav" class="w-full grid grid-cols-3 gap-1.5 my-1 bg-gray-900 p-1 rounded-xl text-center shrink-0">
+        <button id="btnTierBeg" onclick="selectTier('BEGINNER')" class="py-2 text-xs sm:text-sm font-bold rounded-lg bg-[#FFB703] text-black active:scale-95 transition-all">
           초급 (4선다)
         </button>
-        <button id="btnTierInt" onclick="selectTier('INTERMEDIATE')" class="py-1 text-[11px] font-bold rounded-lg text-gray-600 cursor-not-allowed transition-all">
+        <button id="btnTierInt" onclick="selectTier('INTERMEDIATE')" class="py-2 text-xs sm:text-sm font-bold rounded-lg text-gray-600 cursor-not-allowed transition-all">
           🔒 중급
         </button>
-        <button id="btnTierAdv" onclick="selectTier('ADVANCED')" class="py-1 text-[11px] font-bold rounded-lg text-gray-600 cursor-not-allowed transition-all">
+        <button id="btnTierAdv" onclick="selectTier('ADVANCED')" class="py-2 text-xs sm:text-sm font-bold rounded-lg text-gray-600 cursor-not-allowed transition-all">
           🔒 고급
         </button>
       </div>
 
       <!-- 초급 해금 안내 바 -->
-      <div id="unlockGuideBar" class="w-full text-center py-0.5 bg-gray-900/60 rounded-lg text-[9px] text-gray-400 shrink-0">
-        💡 <span id="t-unlock-guide">중급 해금 조건: 10 콤보 달성</span> (<span id="unlockProgress">0</span>/10)
+      <div id="unlockGuideBar" class="w-full text-center py-1 bg-gray-900/60 rounded-lg text-xs text-gray-300 shrink-0">
+        💡 <span id="t-unlock-guide">중급 해금 조건: 10 콤보 달성</span> (<span id="unlockProgress" class="font-bold text-[#FFB703]">0</span>/10)
       </div>
 
       <!-- 시험 진행 헤더 -->
-      <div id="examStatusHeader" class="hidden w-full py-1 px-3 bg-purple-950/60 border border-purple-800/80 rounded-xl my-0.5 flex justify-between items-center text-[11px] shrink-0">
+      <div id="examStatusHeader" class="hidden w-full py-1.5 px-3 bg-purple-950/60 border border-purple-800/80 rounded-xl my-1 flex justify-between items-center text-xs shrink-0">
         <span class="font-bold text-purple-300">🎓 실전 시험: <strong id="examCurrentQ" class="text-[#FFB703]">1</strong> / 20</span>
-        <span class="font-bold text-gray-300">정답: <strong id="examScore" class="text-[#06D6A0]">0</strong>개</span>
+        <span class="font-bold text-gray-200">정답: <strong id="examScore" class="text-[#06D6A0]">0</strong>개</span>
       </div>
 
       <!-- 타이머 바 영역 -->
-      <div id="timerContainer" class="w-full mt-0.5 mb-0.5 shrink-0">
-        <div class="flex justify-between items-center text-[9px] text-gray-400 mb-0.5 px-1">
-          <span id="timerLabel">TIME ATTACK</span>
-          <span id="timerText" class="font-bold text-[#FFB703]">10.0s</span>
+      <div id="timerContainer" class="w-full mt-1 mb-1 shrink-0">
+        <div class="flex justify-between items-center text-xs text-gray-400 mb-1 px-1">
+          <span id="timerLabel" class="font-bold">TIME ATTACK</span>
+          <span id="timerText" class="font-black text-sm text-[#FFB703]">10.0s</span>
         </div>
-        <div class="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden">
+        <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
           <div id="timerBar" class="h-full bg-[#06D6A0] transition-all duration-100 ease-linear" style="width: 100%;"></div>
         </div>
       </div>
 
-      <!-- 문제 카드 -->
-      <main class="w-full flex-1 flex flex-col justify-center my-0.5 min-h-0">
-        <div id="cardBox" class="p-3 sm:p-4 rounded-2xl bg-gray-900/90 border border-gray-800 flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden backdrop-blur-sm">
-          <div class="flex items-center gap-1.5 mb-1">
-            <span id="qGameTag" class="text-[9px] font-black px-2 py-0.5 rounded-full bg-[#FFB703]/20 text-[#FFB703] border border-[#FFB703]/40">
+      <!-- 문제 카드 (폰트 크기 대폭 확대) -->
+      <main class="w-full flex-1 flex flex-col justify-center my-1 min-h-0">
+        <div id="cardBox" class="p-4 sm:p-5 rounded-2xl bg-gray-900/90 border-2 border-gray-800 flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden backdrop-blur-sm">
+          <div class="flex items-center gap-2 mb-2">
+            <span id="qGameTag" class="text-xs font-black px-2.5 py-0.5 rounded-full bg-[#FFB703]/20 text-[#FFB703] border border-[#FFB703]/40">
               GAME
             </span>
-            <span id="qCategory" class="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-gray-800 text-gray-300">
+            <span id="qCategory" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-gray-800 text-gray-300">
               Category
             </span>
           </div>
 
-          <p id="qText" class="text-sm sm:text-base font-black text-white leading-snug my-1">
+          <p id="qText" class="text-lg sm:text-xl font-black text-white leading-snug my-2">
             Loading...
           </p>
 
           <!-- 중급 2-Step 디스플레이 -->
-          <div id="inputPreviewBox" class="hidden w-full py-1 px-2.5 bg-gray-950 rounded-lg border border-gray-800 my-1 flex justify-between items-center text-xs">
-            <span id="t-preview-label" class="text-gray-400 text-[10px]">선택한 코드:</span>
-            <span id="previewText" class="font-bold text-[#FFB703] text-sm tracking-wide">-</span>
-            <button onclick="clearCurrentInput()" id="t-preview-clear" class="text-[10px] text-gray-500 hover:text-red-400">⌫ 지우기</button>
+          <div id="inputPreviewBox" class="hidden w-full py-2 px-3 bg-gray-950 rounded-xl border border-gray-800 my-1.5 flex justify-between items-center">
+            <span id="t-preview-label" class="text-gray-400 text-xs font-bold">선택한 코드:</span>
+            <span id="previewText" class="font-black text-[#FFB703] text-lg tracking-wide">-</span>
+            <button onclick="clearCurrentInput()" id="t-preview-clear" class="text-xs font-bold text-gray-400 hover:text-red-400 px-2 py-1 bg-gray-900 rounded-lg">⌫ 지우기</button>
           </div>
 
           <!-- 오답 피드백 박스 -->
-          <div id="feedbackBox" class="hidden w-full mt-1 p-2.5 bg-gray-950 rounded-xl border-2 border-[#EF476F]/60 text-center flex flex-col gap-1.5 shadow-xl">
-            <div id="feedbackStatus" class="text-[10px] font-black text-[#EF476F] tracking-wide uppercase"></div>
+          <div id="feedbackBox" class="hidden w-full mt-2 p-3.5 bg-gray-950 rounded-xl border-2 border-[#EF476F]/60 text-center flex flex-col gap-2.5 shadow-xl">
+            <div id="feedbackStatus" class="text-xs font-black text-[#EF476F] tracking-wide uppercase"></div>
             
-            <div class="bg-gray-900/90 border border-gray-700/80 rounded-lg p-1.5 shadow-inner">
-              <span id="t-feedback-correct-label" class="text-[9px] font-bold text-gray-400 block">정답</span>
-              <span id="feedbackAnsValue" class="text-lg font-black text-[#FFB703] tracking-wider block drop-shadow-sm"></span>
+            <div class="bg-gray-900/90 border border-gray-700/80 rounded-xl p-2.5 shadow-inner">
+              <span id="t-feedback-correct-label" class="text-xs font-bold text-gray-400 block mb-0.5">정답</span>
+              <span id="feedbackAnsValue" class="text-2xl font-black text-[#FFB703] tracking-wider block drop-shadow-sm"></span>
             </div>
 
-            <a id="feedbackUrl" href="#" target="_blank" class="text-[10px] text-[#FFB703] hover:underline bg-[#FFB703]/10 p-1.5 rounded-lg border border-[#FFB703]/30 block text-center font-bold transition-all">
+            <a id="feedbackUrl" href="#" target="_blank" class="text-xs text-[#FFB703] hover:underline bg-[#FFB703]/10 p-2 rounded-xl border border-[#FFB703]/30 block text-center font-bold transition-all">
               ▶ <span id="t-feedback-link">관련 무료 화성학 강의 바로보기 ↗</span>
             </a>
 
-            <button onclick="nextQuestion()" class="w-full py-2 bg-[#EF476F] hover:bg-red-500 active:scale-95 text-white font-black text-xs rounded-lg shadow-md transition-transform">
+            <button onclick="nextQuestion()" class="w-full py-3 bg-[#EF476F] hover:bg-red-500 active:scale-95 text-white font-black text-sm rounded-xl shadow-md transition-transform">
               <span id="t-feedback-next-btn">확인 (다음 문제 풀기) ></span>
             </button>
           </div>
@@ -259,91 +265,91 @@
       </main>
 
       <!-- 하단 입력 패드 영역 -->
-      <section id="inputPadArea" class="w-full my-0.5 shrink-0"></section>
+      <section id="inputPadArea" class="w-full my-1 shrink-0"></section>
     </div>
 
     <!-- ========================================== -->
     <!-- 2. 라이선스 시험 성적표 화면 & 오답 노트 -->
     <!-- ========================================== -->
-    <section id="examResultScreen" class="hidden w-full flex-1 flex flex-col justify-start items-center text-center p-3 my-auto max-h-[80vh] overflow-y-auto no-scrollbar">
-      <div class="bg-gray-900 border-2 border-purple-500/50 rounded-3xl p-4 w-full shadow-2xl">
-        <div id="examResultIcon" class="text-3xl mb-1">🏆</div>
-        <h3 id="examResultTitle" class="text-base font-black text-white mb-1">시험 결과</h3>
-        <p id="examResultDesc" class="text-[11px] text-gray-400 mb-3 leading-relaxed"></p>
+    <section id="examResultScreen" class="hidden w-full flex-1 flex flex-col justify-start items-center text-center p-4 pt-safe-top my-auto max-h-[82vh] overflow-y-auto no-scrollbar">
+      <div class="bg-gray-900 border-2 border-purple-500/50 rounded-3xl p-5 w-full shadow-2xl">
+        <div id="examResultIcon" class="text-4xl mb-2">🏆</div>
+        <h3 id="examResultTitle" class="text-lg font-black text-white mb-1">시험 결과</h3>
+        <p id="examResultDesc" class="text-xs text-gray-300 mb-4 leading-relaxed"></p>
 
-        <div class="bg-gray-950 border border-gray-800 rounded-2xl p-2.5 mb-3 flex justify-around">
+        <div class="bg-gray-950 border border-gray-800 rounded-2xl p-3 mb-4 flex justify-around">
           <div>
-            <span class="text-[9px] text-gray-500 block">총 문항</span>
-            <span class="text-sm font-black text-white">20</span>
+            <span class="text-xs text-gray-400 block">총 문항</span>
+            <span class="text-base font-black text-white">20</span>
           </div>
           <div>
-            <span class="text-[9px] text-gray-500 block">취득 점수</span>
-            <span id="examFinalScore" class="text-xl font-black text-[#FFB703]">0점</span>
+            <span class="text-xs text-gray-400 block">취득 점수</span>
+            <span id="examFinalScore" class="text-2xl font-black text-[#FFB703]">0점</span>
           </div>
           <div>
-            <span class="text-[9px] text-gray-500 block">합격선</span>
-            <span class="text-sm font-black text-gray-400">85점 (17개)</span>
+            <span class="text-xs text-gray-400 block">합격선</span>
+            <span class="text-base font-black text-gray-300">85점 (17개)</span>
           </div>
         </div>
 
         <!-- 오답 노트 영역 -->
-        <div id="examReviewSection" class="hidden text-left mb-3 bg-gray-950/80 border border-gray-800 rounded-2xl p-2.5">
-          <h4 class="text-[11px] font-bold text-red-400 mb-1.5 flex items-center gap-1">
+        <div id="examReviewSection" class="hidden text-left mb-4 bg-gray-950/80 border border-gray-800 rounded-2xl p-3">
+          <h4 class="text-xs font-bold text-red-400 mb-2 flex items-center gap-1">
             <span>📝</span> <span>틀린 문항 오답 노트</span>
           </h4>
-          <div id="examReviewList" class="space-y-1.5 text-xs text-gray-300 max-h-36 overflow-y-auto pr-1"></div>
+          <div id="examReviewList" class="space-y-2 text-xs text-gray-300 max-h-40 overflow-y-auto pr-1"></div>
         </div>
 
-        <div class="flex flex-col gap-1.5">
-          <button id="examActionBtn" onclick="finishExamAction()" class="w-full py-2.5 bg-[#FFB703] hover:bg-yellow-400 text-black font-black text-xs rounded-xl transition-all shadow-lg active:scale-95"></button>
-          <button onclick="backToTraining()" class="w-full py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold text-[11px] rounded-xl active:scale-95">일반 훈련으로 돌아가기</button>
+        <div class="flex flex-col gap-2">
+          <button id="examActionBtn" onclick="finishExamAction()" class="w-full py-3.5 bg-[#FFB703] hover:bg-yellow-400 text-black font-black text-sm rounded-xl transition-all shadow-lg active:scale-95"></button>
+          <button onclick="backToTraining()" class="w-full py-3 bg-gray-800 hover:bg-gray-700 text-gray-200 font-bold text-xs rounded-xl active:scale-95">일반 훈련으로 돌아가기</button>
         </div>
       </div>
     </section>
 
     <!-- ========================================== -->
-    <!-- 3. 상시 노출 2단 미니 배너 + 네이티브 하단 탭바 -->
+    <!-- 3. 상시 노출 2단 배너 + 큼직한 하단 탭바 -->
     <!-- ========================================== -->
-    <div class="w-full bg-gray-950 border-t border-gray-800/90 shrink-0 z-40">
+    <div class="w-full bg-gray-950 border-t border-gray-800 shrink-0 z-40">
       <!-- 상시 노출: 화성학 1~14강 & 커피 한 잔 후원 퀵 배너 -->
-      <div class="grid grid-cols-2 gap-1.5 px-2.5 pt-1.5 pb-1">
-        <a href="https://youtube.com/playlist?list=PLUhKlj-gxAgqQxhGNKJkvZF2ihiY0wQUC" target="_blank" class="flex items-center justify-center gap-1.5 py-1.5 px-2 bg-gray-900 hover:bg-gray-800 active:scale-95 border border-red-500/40 rounded-xl shadow-sm transition-all">
-          <span class="text-xs">📺</span>
-          <div class="text-left leading-none">
-            <p class="text-[8px] text-gray-400 font-bold">Jun Kim YouTube</p>
-            <p id="t-footer-yt" class="text-[10px] text-red-400 font-black mt-0.5">화성학 1~14강</p>
+      <div class="grid grid-cols-2 gap-2 px-3 pt-2 pb-1.5">
+        <a href="https://youtube.com/playlist?list=PLUhKlj-gxAgqQxhGNKJkvZF2ihiY0wQUC" target="_blank" class="flex items-center justify-center gap-2 py-2 px-2.5 bg-gray-900 hover:bg-gray-800 active:scale-95 border border-red-500/40 rounded-xl shadow-sm transition-all">
+          <span class="text-base">📺</span>
+          <div class="text-left leading-tight">
+            <p class="text-[10px] text-gray-400 font-bold">Jun Kim YouTube</p>
+            <p id="t-footer-yt" class="text-xs text-red-400 font-black">화성학 1~14강</p>
           </div>
         </a>
 
-        <button onclick="openSupportSheet()" class="flex items-center justify-center gap-1.5 py-1.5 px-2 bg-gray-900 hover:bg-gray-800 active:scale-95 border border-[#FFB703]/40 rounded-xl shadow-sm transition-all">
-          <span class="text-xs">☕</span>
-          <div class="text-left leading-none">
-            <p id="t-footer-coffee-sub" class="text-[8px] text-gray-400 font-bold">앱이 유익했다면</p>
-            <p id="t-footer-coffee-main" class="text-[10px] text-[#FFB703] font-black mt-0.5">커피 한 잔 후원</p>
+        <button onclick="openSupportSheet()" class="flex items-center justify-center gap-2 py-2 px-2.5 bg-gray-900 hover:bg-gray-800 active:scale-95 border border-[#FFB703]/40 rounded-xl shadow-sm transition-all">
+          <span class="text-base">☕</span>
+          <div class="text-left leading-tight">
+            <p id="t-footer-coffee-sub" class="text-[10px] text-gray-400 font-bold">앱이 유익했다면</p>
+            <p id="t-footer-coffee-main" class="text-xs text-[#FFB703] font-black">커피 한 잔 후원</p>
           </div>
         </button>
       </div>
 
-      <!-- 네이티브 앱 하단 고정 탭바 -->
-      <nav class="w-full px-2 py-1 pb-safe flex justify-around items-center border-t border-gray-900">
-        <button onclick="switchTab('HOME')" id="tabHome" class="flex flex-col items-center gap-0.5 text-[#FFB703] active:scale-90 transition-transform py-0.5 px-3">
-          <span class="text-sm leading-none">🏠</span>
-          <span class="text-[9px] font-bold">메인챌린지</span>
+      <!-- 네이티브 앱 하단 고정 탭바 (아이콘 및 글씨 크기 대폭 확대) -->
+      <nav class="w-full px-2 pt-1.5 pb-safe flex justify-around items-center border-t border-gray-900">
+        <button onclick="switchTab('HOME')" id="tabHome" class="flex flex-col items-center gap-1 text-[#FFB703] active:scale-90 transition-transform py-1 px-3">
+          <span class="text-xl leading-none">🏠</span>
+          <span class="text-xs font-extrabold">메인챌린지</span>
         </button>
 
-        <button onclick="switchTab('SOLO')" id="tabSolo" class="flex flex-col items-center gap-0.5 text-gray-500 hover:text-gray-300 active:scale-90 transition-transform py-0.5 px-3">
-          <span class="text-sm leading-none">🕹️</span>
-          <span class="text-[9px] font-bold">개별훈련</span>
+        <button onclick="switchTab('SOLO')" id="tabSolo" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-200 active:scale-90 transition-transform py-1 px-3">
+          <span class="text-xl leading-none">🕹️</span>
+          <span class="text-xs font-extrabold">개별훈련</span>
         </button>
 
-        <button onclick="switchTab('EXAM')" id="tabExam" class="flex flex-col items-center gap-0.5 text-gray-500 hover:text-gray-300 active:scale-90 transition-transform py-0.5 px-3">
-          <span class="text-sm leading-none">🎓</span>
-          <span class="text-[9px] font-bold">승급시험</span>
+        <button onclick="switchTab('EXAM')" id="tabExam" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-200 active:scale-90 transition-transform py-1 px-3">
+          <span class="text-xl leading-none">🎓</span>
+          <span class="text-xs font-extrabold">승급시험</span>
         </button>
 
-        <button onclick="openVipSheetFromTab()" id="tabVip" class="flex flex-col items-center gap-0.5 text-gray-500 hover:text-gray-300 active:scale-90 transition-transform py-0.5 px-3">
-          <span class="text-sm leading-none">👑</span>
-          <span class="text-[9px] font-bold">멤버십코드</span>
+        <button onclick="openVipSheetFromTab()" id="tabVip" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-200 active:scale-90 transition-transform py-1 px-3">
+          <span class="text-xl leading-none">👑</span>
+          <span class="text-xs font-extrabold">멤버십코드</span>
         </button>
       </nav>
     </div>
@@ -352,28 +358,28 @@
     <!-- 4. 네이티브 바텀 시트: 커피 후원 모달 -->
     <!-- ========================================== -->
     <div id="supportSheet" class="hidden fixed inset-0 bg-black/75 backdrop-blur-sm flex justify-center items-end z-50 transition-opacity">
-      <div class="w-full max-w-[480px] bg-gray-900 border-t border-gray-800 rounded-t-[32px] p-5 pb-safe animate-slide-up shadow-2xl flex flex-col items-center text-center">
-        <div class="w-10 h-1 bg-gray-700 rounded-full mb-3"></div>
+      <div class="w-full max-w-[480px] bg-gray-900 border-t border-gray-800 rounded-t-[32px] p-6 pb-safe animate-slide-up shadow-2xl flex flex-col items-center text-center">
+        <div class="w-12 h-1.5 bg-gray-700 rounded-full mb-4"></div>
 
-        <div class="text-3xl mb-1">☕</div>
-        <h3 id="t-modal-donate-title" class="text-base font-black text-white mb-1">준킴에게 커피 한 잔 선물하기</h3>
-        <p id="t-modal-donate-desc" class="text-xs text-gray-400 mb-4 leading-relaxed">
+        <div class="text-4xl mb-2">☕</div>
+        <h3 id="t-modal-donate-title" class="text-lg font-black text-white mb-1">준킴에게 커피 한 잔 선물하기</h3>
+        <p id="t-modal-donate-desc" class="text-xs sm:text-sm text-gray-400 mb-5 leading-relaxed">
           보내주신 따뜻한 후원은 더 좋은 화성학 교육 콘텐츠와 앱 개발에 큰 힘이 됩니다!
         </p>
 
-        <div class="w-full flex flex-col gap-2 mb-3">
-          <a href="https://qr.kakaopay.com/FMnnbr8OU" target="_blank" rel="noreferrer" class="flex items-center justify-center gap-2 py-3 bg-[#FEE500] hover:bg-yellow-400 active:scale-98 text-[#191919] font-black text-xs rounded-xl shadow-md transition-all">
+        <div class="w-full flex flex-col gap-2.5 mb-4">
+          <a href="https://qr.kakaopay.com/FMnnbr8OU" target="_blank" rel="noreferrer" class="flex items-center justify-center gap-2 py-3.5 bg-[#FEE500] hover:bg-yellow-400 active:scale-98 text-[#191919] font-black text-sm rounded-xl shadow-md transition-all">
             <span>💬</span>
             <span id="t-modal-donate-kakao">카카오페이로 송금 (국내 모바일)</span>
           </a>
 
-          <a href="https://ko-fi.com/junkimmusic" target="_blank" rel="noreferrer" class="flex items-center justify-center gap-2 py-3 bg-[#FF5E5B] hover:bg-red-500 active:scale-98 text-white font-black text-xs rounded-xl shadow-md transition-all">
+          <a href="https://ko-fi.com/junkimmusic" target="_blank" rel="noreferrer" class="flex items-center justify-center gap-2 py-3.5 bg-[#FF5E5B] hover:bg-red-500 active:scale-98 text-white font-black text-sm rounded-xl shadow-md transition-all">
             <span>🌍</span>
             <span id="t-modal-donate-kofi">Ko-fi 후원 (카드 / PayPal / 해외)</span>
           </a>
         </div>
 
-        <button onclick="closeSupportSheet()" id="t-modal-donate-close" class="w-full py-2 text-xs text-gray-400 hover:text-white font-bold">
+        <button onclick="closeSupportSheet()" id="t-modal-donate-close" class="w-full py-2.5 text-sm text-gray-400 hover:text-white font-bold">
           닫기
         </button>
       </div>
@@ -383,21 +389,21 @@
     <!-- 5. 네이티브 바텀 시트: VIP 멤버십 안내 모달 -->
     <!-- ========================================== -->
     <div id="vipModal" class="hidden fixed inset-0 bg-black/75 backdrop-blur-sm flex justify-center items-end z-50 transition-opacity">
-      <div class="w-full max-w-[480px] bg-gray-900 border-t border-[#FFB703]/40 rounded-t-[32px] p-5 pb-safe animate-slide-up shadow-2xl flex flex-col items-center text-center">
-        <div class="w-10 h-1 bg-gray-700 rounded-full mb-3"></div>
+      <div class="w-full max-w-[480px] bg-gray-900 border-t border-[#FFB703]/40 rounded-t-[32px] p-6 pb-safe animate-slide-up shadow-2xl flex flex-col items-center text-center">
+        <div class="w-12 h-1.5 bg-gray-700 rounded-full mb-4"></div>
 
-        <div class="inline-block px-2.5 py-0.5 bg-[#FFB703]/10 border border-[#FFB703]/30 rounded-full text-[9px] font-black text-[#FFB703] tracking-wider mb-2">
+        <div class="inline-block px-3 py-1 bg-[#FFB703]/10 border border-[#FFB703]/30 rounded-full text-xs font-black text-[#FFB703] tracking-wider mb-2">
           PRO LEVEL VOICING
         </div>
 
-        <div class="text-3xl mb-1">🎸🎹</div>
+        <div class="text-4xl mb-2">🎸🎹</div>
         
-        <h3 class="text-base font-black text-white mb-2 leading-snug">
+        <h3 class="text-lg font-black text-white mb-2 leading-snug">
           지판과 건반 위 보이싱,<br />
           이제 <span class="text-[#FFB703]">0.1초 본능</span>이 됩니다
         </h3>
 
-        <div class="w-full bg-gray-950/80 border border-gray-800 rounded-2xl p-3 mb-3 text-left space-y-1 text-xs text-gray-300">
+        <div class="w-full bg-gray-950/80 border border-gray-800 rounded-2xl p-3.5 mb-4 text-left space-y-1.5 text-xs sm:text-sm text-gray-300">
           <p class="leading-relaxed">
             🎯 <strong>Drop 2 & Drop 3 실전 배치</strong>: 재즈와 세션 연주자들이 지판을 한눈에 보는 핵심 시야를 훈련합니다.
           </p>
@@ -410,33 +416,33 @@
           href="https://youtube.com/@junkimmusic/join" 
           target="_blank" 
           rel="noreferrer"
-          class="block w-full py-3 bg-gradient-to-r from-[#FFB703] to-yellow-400 hover:from-yellow-400 hover:to-yellow-300 active:scale-98 text-black font-black text-xs rounded-xl mb-3 shadow-lg shadow-[#FFB703]/20 transition-all"
+          class="block w-full py-3.5 bg-gradient-to-r from-[#FFB703] to-yellow-400 hover:from-yellow-400 hover:to-yellow-300 active:scale-98 text-black font-black text-sm rounded-xl mb-4 shadow-lg shadow-[#FFB703]/20 transition-all"
         >
           👉 멤버십 가입하고 시크릿 코드 받기 ↗
         </a>
 
-        <div class="w-full pt-2 border-t border-gray-800/80 text-left">
-          <p class="text-[10px] text-gray-400 font-semibold mb-1.5">
+        <div class="w-full pt-3 border-t border-gray-800/80 text-left">
+          <p class="text-xs text-gray-300 font-semibold mb-2">
             이미 멤버십 회원이신가요? <br />
-            <span class="text-gray-500 font-normal">유튜브 커뮤니티 전용 시크릿 코드를 입력하세요:</span>
+            <span class="text-gray-400 font-normal">유튜브 커뮤니티 전용 시크릿 코드를 입력하세요:</span>
           </p>
           <div class="flex gap-2">
             <input 
               id="secretInput" 
               type="text" 
               placeholder="시크릿 코드 입력" 
-              class="flex-1 bg-gray-950 border border-gray-700 px-3 py-2 text-xs rounded-xl text-white uppercase placeholder-gray-600 focus:outline-none focus:border-[#FFB703]" 
+              class="flex-1 bg-gray-950 border border-gray-700 px-3.5 py-2.5 text-sm rounded-xl text-white uppercase placeholder-gray-600 focus:outline-none focus:border-[#FFB703]" 
             />
             <button 
               onclick="verifyVipCode()" 
-              class="bg-gray-800 hover:bg-gray-700 active:scale-95 px-4 py-2 text-xs font-bold text-white rounded-xl border border-gray-700 transition-transform"
+              class="bg-gray-800 hover:bg-gray-700 active:scale-95 px-5 py-2.5 text-sm font-bold text-white rounded-xl border border-gray-700 transition-transform"
             >
               해금
             </button>
           </div>
         </div>
 
-        <button onclick="closeVipModal()" class="mt-3 text-xs text-gray-500 hover:text-gray-300 py-1">
+        <button onclick="closeVipModal()" class="mt-4 text-sm text-gray-400 hover:text-gray-200 py-1 font-bold">
           나중에 둘러보기
         </button>
       </div>
@@ -520,7 +526,6 @@
         welcomeHeadline: '"악보를 보고 생각하는 3초는 늦습니다.<br />악기를 잡기 전 머릿속 연산을 0.1초 만에 자동화하세요!"',
         welcomeStartBtn: "지금 바로 두뇌 연산 시작하기 🔥",
         welcomeSoundHint: "※ PC에서는 숫자키(1~4)로도 빠른 정답 선택이 가능합니다.",
-        gameSub: "두뇌 연산 트레이너",
         tierBeg: "초급 (4선다)",
         tierInt: "중급 (키패드)",
         tierAdv: "고급",
@@ -557,7 +562,6 @@
         welcomeHeadline: '"Thinking for 3 seconds is too late.<br />Automate harmony calculations in 0.1s!"',
         welcomeStartBtn: "Start Brain Training Now 🔥",
         welcomeSoundHint: "※ Use number keys (1-4) on PC for fast answers.",
-        gameSub: "Brain Reflex Trainer",
         tierBeg: "Beginner",
         tierInt: "Intermediate",
         tierAdv: "Advanced",
@@ -603,7 +607,6 @@
       document.getElementById('t-welcome-start-btn').innerText = dict.welcomeStartBtn;
       document.getElementById('t-welcome-sound-hint').innerText = dict.welcomeSoundHint;
 
-      document.getElementById('t-game-sub').innerText = dict.gameSub;
       document.getElementById('t-unlock-guide').innerText = dict.unlockGuide;
       document.getElementById('t-preview-label').innerText = dict.previewLabel;
       document.getElementById('t-preview-clear').innerText = dict.previewClear;
@@ -717,7 +720,6 @@
       { quality: 'm7b5', nameKO: 'Half-Diminished', nameEN: 'Half-Diminished', tonesKO: '1, b3, b5, b7', tonesEN: '1, b3, b5, b7' }
     ];
 
-    // [보완]: Root Position(기본위치) 데이터 추가
     const TRIAD_INVERSIONS = [
       { triad: 'C', base: 'C', inv: 'Root' }, { triad: 'C', base: 'E', inv: '1st' }, { triad: 'C', base: 'G', inv: '2nd' },
       { triad: 'F', base: 'F', inv: 'Root' }, { triad: 'F', base: 'A', inv: '1st' }, { triad: 'F', base: 'C', inv: '2nd' },
@@ -959,7 +961,6 @@
       } catch(e) {}
     }
 
-    // [버그 수정]: 웰컴 화면이나 성적표가 떠 있을 때 하단 탭을 누르면 즉시 게임 화면으로 전환
     function ensureGameScreenVisible() {
       initAudio();
       document.getElementById('welcomeScreen').classList.add('hidden');
@@ -970,27 +971,26 @@
     function switchTab(tab) {
       ['tabHome', 'tabSolo', 'tabExam', 'tabVip'].forEach(t => {
         const el = document.getElementById(t);
-        if (el) el.className = "flex flex-col items-center gap-0.5 text-gray-500 hover:text-gray-300 active:scale-90 transition-transform py-0.5 px-3";
+        if (el) el.className = "flex flex-col items-center gap-1 text-gray-400 hover:text-gray-200 active:scale-90 transition-transform py-1 px-3";
       });
 
       if (tab === 'HOME') {
         ensureGameScreenVisible();
         if (isExamMode) exitExamMode();
-        document.getElementById('tabHome').className = "flex flex-col items-center gap-0.5 text-[#FFB703] active:scale-90 transition-transform py-0.5 px-3";
+        document.getElementById('tabHome').className = "flex flex-col items-center gap-1 text-[#FFB703] active:scale-90 transition-transform py-1 px-3";
         selectPlayMode('TIER');
       } else if (tab === 'SOLO') {
         ensureGameScreenVisible();
         if (isExamMode) exitExamMode();
-        document.getElementById('tabSolo').className = "flex flex-col items-center gap-0.5 text-[#FFB703] active:scale-90 transition-transform py-0.5 px-3";
+        document.getElementById('tabSolo').className = "flex flex-col items-center gap-1 text-[#FFB703] active:scale-90 transition-transform py-1 px-3";
         selectSoloGame(1);
       } else if (tab === 'EXAM') {
         ensureGameScreenVisible();
-        document.getElementById('tabExam').className = "flex flex-col items-center gap-0.5 text-purple-400 active:scale-90 transition-transform py-0.5 px-3";
+        document.getElementById('tabExam').className = "flex flex-col items-center gap-1 text-purple-400 active:scale-90 transition-transform py-1 px-3";
         startExamMode();
       }
     }
 
-    // 모달 열 때 타이머 일시정지
     function openSupportSheet() {
       isTimerPaused = true;
       document.getElementById('supportSheet').classList.remove('hidden');
@@ -1041,9 +1041,9 @@
       for (let i = 1; i <= 5; i++) {
         const btn = document.getElementById(`btnG${i}`);
         if (i === num) {
-          btn.className = "whitespace-nowrap px-2 py-1 bg-[#FFB703] border border-[#FFB703] rounded-lg text-[11px] font-black text-black shadow-md transition-all";
+          btn.className = "whitespace-nowrap px-3 py-1.5 bg-[#FFB703] border border-[#FFB703] rounded-xl text-xs font-black text-black shadow-md transition-all";
         } else {
-          btn.className = "whitespace-nowrap px-2 py-1 bg-gray-900 border border-gray-800 rounded-lg text-[11px] font-bold text-gray-300 hover:border-[#FFB703] transition-all";
+          btn.className = "whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] transition-all";
         }
       }
 
@@ -1057,7 +1057,7 @@
 
       for (let i = 1; i <= 5; i++) {
         const btn = document.getElementById(`btnG${i}`);
-        btn.className = "whitespace-nowrap px-2 py-1 bg-gray-900 border border-gray-800 rounded-lg text-[11px] font-bold text-gray-300 hover:border-[#FFB703] transition-all";
+        btn.className = "whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] transition-all";
       }
 
       updateTabsUI();
@@ -1073,22 +1073,22 @@
       document.getElementById('bestComboText').innerText = userProgress.bestCombo || 0;
 
       btnBeg.innerText = dict.tierBeg;
-      btnBeg.className = `py-1 text-[11px] font-bold rounded-lg transition-all ${currentTier === 'BEGINNER' && playMode === 'TIER' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-400'}`;
+      btnBeg.className = `py-2 text-xs sm:text-sm font-bold rounded-lg transition-all ${currentTier === 'BEGINNER' && playMode === 'TIER' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-400'}`;
 
       if (userProgress.intermediateUnlocked) {
         btnInt.innerText = dict.tierInt;
-        btnInt.className = `py-1 text-[11px] font-bold rounded-lg transition-all ${currentTier === 'INTERMEDIATE' && playMode === 'TIER' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-300'}`;
+        btnInt.className = `py-2 text-xs sm:text-sm font-bold rounded-lg transition-all ${currentTier === 'INTERMEDIATE' && playMode === 'TIER' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-300'}`;
       } else {
         btnInt.innerText = dict.tierIntLocked;
-        btnInt.className = 'py-1 text-[11px] font-bold rounded-lg text-gray-600 cursor-not-allowed';
+        btnInt.className = 'py-2 text-xs sm:text-sm font-bold rounded-lg text-gray-600 cursor-not-allowed';
       }
 
       if (userProgress.advancedUnlocked || userProgress.examPassed || userProgress.isVip) {
         btnAdv.innerText = dict.tierAdv;
-        btnAdv.className = `py-1 text-[11px] font-bold rounded-lg transition-all ${currentTier === 'ADVANCED' && playMode === 'TIER' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-300'}`;
+        btnAdv.className = `py-2 text-xs sm:text-sm font-bold rounded-lg transition-all ${currentTier === 'ADVANCED' && playMode === 'TIER' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-300'}`;
       } else {
         btnAdv.innerText = dict.tierAdvLocked;
-        btnAdv.className = 'py-1 text-[11px] font-bold rounded-lg text-gray-600 cursor-not-allowed';
+        btnAdv.className = 'py-2 text-xs sm:text-sm font-bold rounded-lg text-gray-600 cursor-not-allowed';
       }
 
       if (userProgress.isVip) {
@@ -1178,9 +1178,9 @@
       if (examWrongAnswers.length > 0) {
         reviewSection.classList.remove('hidden');
         reviewList.innerHTML = examWrongAnswers.map((w, idx) => `
-          <div class="p-1.5 bg-gray-900 border border-gray-800 rounded-lg">
-            <p class="font-bold text-white text-[10px] mb-0.5">${idx + 1}. ${w.q}</p>
-            <p class="text-[9px] text-gray-400">내 답: <span class="text-red-400 font-bold">${w.chosen}</span> | 정답: <span class="text-[#06D6A0] font-black">${w.ans}</span></p>
+          <div class="p-2 bg-gray-900 border border-gray-800 rounded-lg">
+            <p class="font-bold text-white text-xs mb-1">${idx + 1}. ${w.q}</p>
+            <p class="text-[11px] text-gray-400">내 답: <span class="text-red-400 font-bold">${w.chosen}</span> | 정답: <span class="text-[#06D6A0] font-black">${w.ans}</span></p>
           </div>
         `).join('');
       } else {
@@ -1194,17 +1194,17 @@
 
         icon.innerText = '🎉';
         title.innerText = '축하합니다! 라이선스 합격!';
-        title.className = 'text-base font-black text-[#06D6A0] mb-1';
+        title.className = 'text-lg font-black text-[#06D6A0] mb-1';
         desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong>를 맞혔습니다.<br />이제 모든 <strong>[고급 모드]</strong>가 영구 해금되었습니다!`;
         actionBtn.innerText = '고급 모드 바로 시작하기 🚀';
-        actionBtn.className = 'w-full py-2.5 bg-[#06D6A0] hover:bg-emerald-400 text-black font-black text-xs rounded-xl transition-all shadow-lg active:scale-95';
+        actionBtn.className = 'w-full py-3.5 bg-[#06D6A0] hover:bg-emerald-400 text-black font-black text-sm rounded-xl transition-all shadow-lg active:scale-95';
       } else {
         icon.innerText = '💡';
         title.innerText = '아쉽습니다! 재도전 필요';
-        title.className = 'text-base font-black text-[#EF476F] mb-1';
+        title.className = 'text-lg font-black text-[#EF476F] mb-1';
         desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong> 정답 (기준: 17문제 이상).<br />오답 노트를 확인하고 다시 도전해 보세요!`;
         actionBtn.innerText = '시험 다시 치르기 🔄';
-        actionBtn.className = 'w-full py-2.5 bg-[#FFB703] hover:bg-yellow-400 text-black font-black text-xs rounded-xl transition-all shadow-lg active:scale-95';
+        actionBtn.className = 'w-full py-3.5 bg-[#FFB703] hover:bg-yellow-400 text-black font-black text-sm rounded-xl transition-all shadow-lg active:scale-95';
       }
     }
 
@@ -1240,7 +1240,7 @@
 
       const step = 100;
       timerInterval = setInterval(() => {
-        if (isTimerPaused) return; // 모달 오픈 시 일시정지
+        if (isTimerPaused) return;
 
         timeLeft -= 0.1;
         if (timeLeft <= 0) {
@@ -1256,9 +1256,9 @@
 
         if (timeLeft <= 3) {
           bar.className = 'h-full bg-[#EF476F] transition-all duration-100 ease-linear';
-          text.className = 'font-bold text-[#EF476F] animate-pulse';
+          text.className = 'font-black text-sm text-[#EF476F] animate-pulse';
         } else {
-          text.className = 'font-bold text-[#FFB703]';
+          text.className = 'font-black text-sm text-[#FFB703]';
         }
       }, step);
     }
@@ -1287,7 +1287,7 @@
       }
 
       const card = document.getElementById('cardBox');
-      card.className = "p-3 sm:p-4 rounded-2xl bg-[#EF476F]/10 border-2 border-[#EF476F] flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden backdrop-blur-sm";
+      card.className = "p-4 sm:p-5 rounded-2xl bg-[#EF476F]/10 border-2 border-[#EF476F] flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden backdrop-blur-sm";
 
       document.getElementById('feedbackStatus').innerText = dict.timeoutMsg;
       document.getElementById('feedbackAnsValue').innerText = currentQuestion.ans;
@@ -1324,7 +1324,7 @@
       renderCurrentQuestionText();
 
       const card = document.getElementById('cardBox');
-      card.className = "p-3 sm:p-4 rounded-2xl bg-gray-900/90 border border-gray-800 flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden backdrop-blur-sm";
+      card.className = "p-4 sm:p-5 rounded-2xl bg-gray-900/90 border-2 border-gray-800 flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden backdrop-blur-sm";
 
       renderPad();
       startTimer();
@@ -1337,12 +1337,12 @@
 
       if (currentQuestion.type === 'MCQ' || currentQuestion.type === 'INVERSION') {
         const grid = document.createElement('div');
-        grid.className = currentQuestion.opts.length === 3 ? 'grid grid-cols-3 gap-1.5' : 'grid grid-cols-2 gap-1.5';
+        grid.className = currentQuestion.opts.length === 3 ? 'grid grid-cols-3 gap-2' : 'grid grid-cols-2 gap-2';
 
         currentQuestion.opts.forEach((opt, idx) => {
           const btn = document.createElement('button');
-          btn.innerHTML = `<span class="text-[9px] text-gray-500 mr-1">${idx + 1}.</span>${opt}`;
-          btn.className = 'py-2.5 px-1.5 text-xs font-bold bg-gray-800 hover:bg-gray-700 active:scale-95 rounded-xl border border-gray-700 shadow-md transition-transform leading-snug';
+          btn.innerHTML = `<span class="text-xs text-gray-500 mr-1">${idx + 1}.</span>${opt}`;
+          btn.className = 'py-3.5 px-2 text-sm sm:text-base font-extrabold bg-gray-800 hover:bg-gray-700 active:scale-95 rounded-xl border border-gray-700 shadow-md transition-transform leading-snug';
           btn.onclick = () => submitAnswer(opt);
           grid.appendChild(btn);
         });
@@ -1351,36 +1351,35 @@
         document.getElementById('inputPreviewBox').classList.remove('hidden');
 
         const wrapper = document.createElement('div');
-        wrapper.className = 'flex flex-col gap-1.5 bg-gray-900/90 p-2 rounded-2xl border border-gray-800';
+        wrapper.className = 'flex flex-col gap-2 bg-gray-900/90 p-3 rounded-2xl border border-gray-800';
 
         const rootSection = document.createElement('div');
-        rootSection.innerHTML = `<div class="text-[9px] text-gray-400 font-bold mb-0.5">${dict.rootStepLabel}</div>`;
+        rootSection.innerHTML = `<div class="text-xs text-gray-400 font-bold mb-1">${dict.rootStepLabel}</div>`;
         
         const noteRow = document.createElement('div');
-        noteRow.className = 'grid grid-cols-7 gap-1 mb-0.5';
+        noteRow.className = 'grid grid-cols-7 gap-1 mb-1';
         ['C', 'D', 'E', 'F', 'G', 'A', 'B'].forEach(n => {
           const btn = document.createElement('button');
           btn.innerText = n;
-          btn.className = `py-1.5 text-xs font-extrabold rounded-lg ${selectedRoot.startsWith(n) ? 'bg-[#FFB703] text-black' : 'bg-gray-800 text-gray-200'} active:scale-95 transition-transform`;
+          btn.className = `py-2 text-sm font-extrabold rounded-lg ${selectedRoot.startsWith(n) ? 'bg-[#FFB703] text-black' : 'bg-gray-800 text-gray-200'} active:scale-95 transition-transform`;
           btn.onclick = () => { selectedRoot = n; updatePreview(); renderPad(); };
           noteRow.appendChild(btn);
         });
 
-        // [UX 개선]: # / b 토글 및 즉시 교체 가능
         const accRow = document.createElement('div');
-        accRow.className = 'grid grid-cols-2 gap-1.5';
+        accRow.className = 'grid grid-cols-2 gap-2';
         ['#', 'b'].forEach(acc => {
           const isSelectedAcc = selectedRoot.endsWith(acc);
           const btn = document.createElement('button');
           btn.innerText = acc;
-          btn.className = `py-1 text-[11px] font-bold rounded-lg active:scale-95 transition-transform ${isSelectedAcc ? 'bg-amber-500/30 border border-[#FFB703] text-[#FFB703]' : 'bg-gray-800 text-gray-300'}`;
+          btn.className = `py-1.5 text-sm font-bold rounded-lg active:scale-95 transition-transform ${isSelectedAcc ? 'bg-amber-500/30 border border-[#FFB703] text-[#FFB703]' : 'bg-gray-800 text-gray-200'}`;
           btn.onclick = () => {
             if (!selectedRoot) return;
             const baseNote = selectedRoot[0];
             if (selectedRoot.endsWith(acc)) {
-              selectedRoot = baseNote; // 다시 누르면 취소
+              selectedRoot = baseNote;
             } else {
-              selectedRoot = baseNote + acc; // 다른 기호면 교체
+              selectedRoot = baseNote + acc;
             }
             updatePreview();
             renderPad();
@@ -1392,9 +1391,9 @@
         rootSection.appendChild(accRow);
 
         const qualitySection = document.createElement('div');
-        qualitySection.innerHTML = `<div class="text-[9px] text-gray-400 font-bold mb-0.5">${dict.qualityStepLabel}</div>`;
+        qualitySection.innerHTML = `<div class="text-xs text-gray-400 font-bold mb-1">${dict.qualityStepLabel}</div>`;
         const qGrid = document.createElement('div');
-        qGrid.className = 'grid grid-cols-4 gap-1';
+        qGrid.className = 'grid grid-cols-4 gap-1.5';
         
         const qualities = [
           { label: 'Maj', val: '' },
@@ -1410,7 +1409,7 @@
         qualities.forEach(q => {
           const btn = document.createElement('button');
           btn.innerText = q.label;
-          btn.className = 'py-1.5 text-[11px] font-black bg-gray-800 hover:bg-gray-700 active:bg-[#FFB703] active:text-black rounded-lg border border-gray-700 active:scale-95 transition-all';
+          btn.className = 'py-2.5 text-xs sm:text-sm font-black bg-gray-800 hover:bg-gray-700 active:bg-[#FFB703] active:text-black rounded-lg border border-gray-700 active:scale-95 transition-all';
           btn.onclick = () => {
             if (!selectedRoot) {
               alert(dict.needRootAlert);
@@ -1457,12 +1456,11 @@
         }
         if (isExamMode) examCorrectCount++;
 
-        // 순발력 반응 속도 표시
         const sBadge = document.getElementById('speedBadge');
         document.getElementById('speedValue').innerText = `${reactionTime}s`;
         sBadge.classList.remove('hidden');
 
-        card.className = "p-3 sm:p-4 rounded-2xl bg-[#06D6A0]/10 border border-[#06D6A0] flex flex-col items-center text-center shadow-xl scale-102 transition-all relative overflow-hidden backdrop-blur-sm";
+        card.className = "p-4 sm:p-5 rounded-2xl bg-[#06D6A0]/10 border-2 border-[#06D6A0] flex flex-col items-center text-center shadow-xl scale-102 transition-all relative overflow-hidden backdrop-blur-sm";
         
         if (playMode === 'TIER' && currentTier === 'BEGINNER' && combo >= 10 && !userProgress.intermediateUnlocked) {
           userProgress.intermediateUnlocked = true;
@@ -1491,14 +1489,14 @@
             chosen: chosen,
             ans: currentQuestion.ans
           });
-          card.className = "p-3 sm:p-4 rounded-2xl bg-[#EF476F]/10 border border-[#EF476F] flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden backdrop-blur-sm";
+          card.className = "p-4 sm:p-5 rounded-2xl bg-[#EF476F]/10 border-2 border-[#EF476F] flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden backdrop-blur-sm";
           setTimeout(() => {
             nextQuestion();
           }, 400);
           return;
         }
 
-        card.className = "p-3 sm:p-4 rounded-2xl bg-[#EF476F]/10 border-2 border-[#EF476F] flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden backdrop-blur-sm";
+        card.className = "p-4 sm:p-5 rounded-2xl bg-[#EF476F]/10 border-2 border-[#EF476F] flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden backdrop-blur-sm";
         
         document.getElementById('feedbackStatus').innerText = dict.wrongMsg;
         document.getElementById('feedbackAnsValue').innerText = currentQuestion.ans;
@@ -1542,10 +1540,8 @@
       document.getElementById('vipModal').classList.add('hidden');
     }
 
-    // 키보드 단축키 지원 (PC/태블릿 유저용)
     window.addEventListener('keydown', (e) => {
       if (isTimerPaused) return;
-      // 오답 피드백 창이 떠 있을 때 스페이스바/엔터로 다음 문제 이동
       const fbBox = document.getElementById('feedbackBox');
       if (!fbBox.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) {
         e.preventDefault();
