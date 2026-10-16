@@ -374,7 +374,7 @@
 
         <div class="w-full bg-gray-950/80 border border-gray-800 rounded-2xl p-3.5 mb-4 text-left space-y-1.5 text-xs sm:text-sm text-gray-300">
           <p class="leading-relaxed">
-            🎯 <strong>Drop 2 & Drop 3 프로 보이싱</strong>: 3가지 엄선된 실전 문제 유형(구성원 오답 색출, 슬래시 탑노트, 도수 숫자)을 마스터합니다.
+            🎯 <strong>Drop 2 & Drop 3 정밀 마스터</strong>: 1-5-7-3, 1-7-3-5 공식에 따른 완벽한 실전 보이싱을 훈련합니다.
           </p>
           <p class="leading-relaxed text-gray-400">
             ✨ <strong>준킴 유튜브 멤버십 회원</strong>에게 영구 무제한으로 제공되는 스페셜 코스입니다.
@@ -680,7 +680,7 @@
       return intervals[scaleType].map(sem => getNoteByInterval(root, sem)).join(' ');
     }
 
-    // [요청하신 3가지 보이싱 문제 유형 정밀 생성기 - Amaj7, Bbmaj7 등 모든 키 완벽 대응]
+    // --- Drop 2 (1573) 및 Drop 3 (1735) 정밀 생성기 ---
     function generateDropVoicingProblem(isDrop3 = false) {
       const voicingName = isDrop3 ? 'Drop 3' : 'Drop 2';
       const rootList = ['C', 'F', 'G', 'Bb', 'Eb', 'D', 'A', 'E'];
@@ -698,15 +698,25 @@
       const n5 = getNoteByInterval(root, t5);
       const n7 = getNoteByInterval(root, t7);
 
+      // 드롭 2 공식: 1-5-7-3, 3-7-1-5, 5-1-3-7, 7-3-5-1
+      // 드롭 3 공식: 1-7-3-5, 3-1-5-7, 5-3-7-1, 7-5-1-3
+      const validVoicings = isDrop3 ? [
+        `${n1} - ${n7} - ${n3} - ${n5}`,
+        `${n3} - ${n1} - ${n5} - ${n7}`,
+        `${n5} - ${n3} - ${n7} - ${n1}`,
+        `${n7} - ${n5} - ${n1} - ${n3}`
+      ] : [
+        `${n1} - ${n5} - ${n7} - ${n3}`,
+        `${n3} - ${n7} - ${n1} - ${n5}`,
+        `${n5} - ${n1} - ${n3} - ${n7}`,
+        `${n7} - ${n3} - ${n5} - ${n1}`
+      ];
+
       const typeNum = Math.floor(Math.random() * 3) + 1;
 
       if (typeNum === 1) {
-        // 유형 1: 구성음이 아닌 것 (오답 색출) - 올바른 보이싱 구조를 기준 삼아 확실한 오답 선지 구성
-        const correct1 = isDrop3 ? `${n1} - ${n7} - ${n3} - ${n5}` : `${n1} - ${n5} - ${n7} - ${n3}`;
-        const correct2 = isDrop3 ? `${n3} - ${n1} - ${n5} - ${n7}` : `${n3} - ${n7} - ${n1} - ${n5}`;
-        const correct3 = isDrop3 ? `${n5} - ${n3} - ${n7} - ${n1}` : `${n5} - ${n1} - ${n3} - ${n7}`;
+        // 유형 1: 구성음이 아닌 것 (오답 색출)
         const invalidVoicing = `${n3} - ${n3} - ${n1} - ${n5}`; // 중복 및 엉킨 가짜 오답
-
         return {
           gameTag: `GAME 5. ${voicingName.toUpperCase()} BUSTER`,
           type: 'MCQ',
@@ -715,11 +725,13 @@
           qKO: `[ ${chordName} ] 의 ${voicingName} 보이싱 구성이 아닌 것은?`,
           qEN: `Which is NOT a valid ${voicingName} voicing structure for ${chordName}?`,
           ans: invalidVoicing,
-          opts: shuffleArray([invalidVoicing, correct1, correct2, correct3]),
+          opts: shuffleArray([invalidVoicing, validVoicings[0], validVoicings[1], validVoicings[2]]),
           url: YOUTUBE_URL + '&index=12'
         };
       } else if (typeNum === 2) {
         // 유형 2: 슬래시 코드 탑노트 찾기
+        const targetVoicing = validVoicings[0]; // 예: 1-5-7-3 또는 1-7-3-5
+        const topNote = targetVoicing.split(' - ')[3]; // 마지막 음이 탑노트
         return {
           gameTag: `GAME 5. ${voicingName.toUpperCase()} BUSTER`,
           type: 'MCQ',
@@ -750,7 +762,7 @@
       }
     }
 
-    // [고급 모드 비율 개편]: 드롭2(25%), 드롭3(25%), 하모닉마이너(25%), 멜로딕마이너(25%)
+    // 고급 모드(Advanced) 복합 출제 (드롭2: 25%, 드롭3: 25%, 하모닉마이너: 25%, 멜로딕마이너: 25%)
     function genAdvancedProblem() {
       const rand = Math.random();
       
@@ -759,7 +771,6 @@
       } else if (rand < 0.50) {
         return generateDropVoicingProblem(true);  // Drop 3 (25%)
       } else if (rand < 0.75) {
-        // 하모닉 마이너 스케일 (동일 루트 4지선다 - 25%)
         const root = ROOTS_POOL[Math.floor(Math.random() * ROOTS_POOL.length)];
         const ans = getScaleNotes(root, 'Harmonic Minor');
         const opts = shuffleArray([
@@ -780,7 +791,6 @@
           url: YOUTUBE_URL + '&index=7'
         };
       } else {
-        // 멜로딕 마이너 스케일 (동일 루트 4지선다 - 25%)
         const root = ROOTS_POOL[Math.floor(Math.random() * ROOTS_POOL.length)];
         const ans = getScaleNotes(root, 'Melodic Minor');
         const opts = shuffleArray([
@@ -896,7 +906,7 @@
       };
     }
 
-    // [요청 반영]: 개별훈련 보이싱 파트(Game 5)에서는 드롭2와 드롭3 문제만 50% 확률로 출제
+    // [요청 반영]: 개별훈련 보이싱 파트에서는 드롭2와 드롭3 문제만 50% 확률로 출제
     function genGame5() {
       return generateDropVoicingProblem(Math.random() > 0.5);
     }
@@ -1467,7 +1477,6 @@
         document.getElementById('feedbackStatus').innerText = dict.wrongMsg;
         document.getElementById('feedbackAnsValue').innerText = currentQuestion.ans;
         document.getElementById('feedbackUrl').href = currentQuestion.url;
-        document.getElementById('feedbackBox').classList.add('hidden'); // Fix typo visibility
         document.getElementById('feedbackBox').classList.remove('hidden');
 
         document.getElementById('inputPadArea').innerHTML = '';
