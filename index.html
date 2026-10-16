@@ -662,7 +662,7 @@
     let isTimerPaused = false;
 
     // =========================================================================
-    // 정밀 음악 이론 연산 엔진 (고급 게임 5 드롭 보이싱 개편 포함)
+    // 정밀 음악 이론 연산 엔진
     // =========================================================================
     const INTERVAL_EXACT_MAP = {
       'C':  { 'm3': 'Eb', 'M3': 'E',  'P4': 'F',  'P5': 'G',  'M6': 'A',  'm7': 'Bb' },
@@ -727,18 +727,18 @@
       { triad: 'D', base: 'F#', inv: '1st' }, { triad: 'A', base: 'C#', inv: '1st' }
     ];
 
-    // [신규 개선]: 전문가용 드롭 보이싱 데이터베이스 (코드별 드롭 2 구성음 실제 음정)
+    // [수정 완료]: 화성학 정석에 맞는 올바른 Drop 2 보이싱 구성음 데이터베이스
     const DROP2_VOICINGS_DB = [
-      { chord: 'Cmaj7', top: '7 (B)', voicing: 'G - B - C - E', type: 'Drop 2 (Top 7)' },
-      { chord: 'Cmaj7', top: '3 (E)', voicing: 'B - E - G - C', type: 'Drop 2 (Top 3)' },
-      { chord: 'Cmaj7', top: '5 (G)', voicing: 'C - G - B - E', type: 'Drop 2 (Top 5)' },
+      { chord: 'Cmaj7', top: '7 (B)', voicing: 'C - G - E - B', type: 'Drop 2 (Top 7)' },
+      { chord: 'Cmaj7', top: '3 (E)', voicing: 'G - B - C - E', type: 'Drop 2 (Top 3)' },
+      { chord: 'Cmaj7', top: '5 (G)', voicing: 'B - E - G - C', type: 'Drop 2 (Top 5)' },
       { chord: 'Cmaj7', top: '1 (C)', voicing: 'E - C - G - B', type: 'Drop 2 (Top 1)' },
-      { chord: 'Dm7', top: '7 (C)', voicing: 'A - C - D - F', type: 'Drop 2 (Top 7)' },
-      { chord: 'Dm7', top: '3 (F)', voicing: 'C - F - A - D', type: 'Drop 2 (Top 3)' },
-      { chord: 'G7', top: '7 (F)', voicing: 'D - F - G - B', type: 'Drop 2 (Top 7)' },
-      { chord: 'G7', top: '3 (B)', voicing: 'F - B - D - G', type: 'Drop 2 (Top 3)' },
-      { chord: 'Fmaj7', top: '7 (E)', voicing: 'C - E - F - A', type: 'Drop 2 (Top 7)' },
-      { chord: 'Am7', top: '7 (G)', voicing: 'E - G - A - C', type: 'Drop 2 (Top 7)' }
+      { chord: 'Dm7', top: '7 (C)', voicing: 'D - A - F - C', type: 'Drop 2 (Top 7)' },
+      { chord: 'Dm7', top: '3 (F)', voicing: 'A - C - D - F', type: 'Drop 2 (Top 3)' },
+      { chord: 'G7', top: '7 (F)', voicing: 'G - D - B - F', type: 'Drop 2 (Top 7)' },
+      { chord: 'G7', top: '3 (B)', voicing: 'D - F - G - B', type: 'Drop 2 (Top 3)' },
+      { chord: 'Fmaj7', top: '7 (E)', voicing: 'F - C - A - E', type: 'Drop 2 (Top 7)' },
+      { chord: 'Am7', top: '7 (G)', voicing: 'A - E - C - G', type: 'Drop 2 (Top 7)' }
     ];
 
     function genGame1() {
@@ -900,12 +900,10 @@
       };
     }
 
-    // [고급 게임 5 개편]: 요청하신 실전 Drop 2 보이싱 조건별 구성음 판독 및 오답 색출형 퀴즈
     function genGame5() {
       const subType = Math.random();
 
       if (subType < 0.5) {
-        // 유형 A: 특정 코드의 탑노트 조건에 따른 Drop 2 보이싱 구성음 맞히기
         const target = DROP2_VOICINGS_DB[Math.floor(Math.random() * DROP2_VOICINGS_DB.length)];
         const ans = target.voicing;
         const wrongOpts = shuffleArray(DROP2_VOICINGS_DB.filter(d => d.voicing !== ans)).slice(0, 3).map(d => d.voicing);
@@ -922,7 +920,6 @@
           url: YOUTUBE_URL + '&index=12'
         };
       } else {
-        // 유형 B: 다음 중 특정 코드의 Drop 2 보이싱이 아닌 것(오답 색출) 찾기
         return {
           gameTag: 'GAME 5. VOICING DETECTIVE',
           type: 'MCQ',
@@ -930,13 +927,12 @@
           catEN: 'Identify Non-Drop 2 Voicing',
           qKO: `다음 중 [ Cmaj7 ] 의 올바른 Drop 2 보이싱이 아닌 것은?`,
           qEN: `Which is NOT a valid Drop 2 voicing for Cmaj7?`,
-          // 정답은 Drop 2가 아닌 구조 (예: Drop 3 또는 일반 구조)
           ans: 'C - E - G - B (Closed)',
           opts: shuffleArray([
             'C - E - G - B (Closed)',
+            'C - G - E - B',
             'G - B - C - E',
-            'B - E - G - C',
-            'C - G - B - E'
+            'E - C - G - B'
           ]),
           url: YOUTUBE_URL + '&index=12'
         };
