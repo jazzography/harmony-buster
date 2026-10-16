@@ -30,11 +30,9 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
-    /* 상단 노치/상태바 가림 방지 안전 여백 */
     .pt-safe-top {
       padding-top: max(env(safe-area-inset-top, 16px), 16px);
     }
-    /* 하단 홈 인디케이터 안전 여백 */
     .pb-safe {
       padding-bottom: max(env(safe-area-inset-bottom, 12px), 12px);
     }
@@ -49,7 +47,7 @@
 </head>
 <body class="min-h-screen w-full flex justify-center items-center font-sans text-[#EDEDED] antialiased">
 
-  <!-- 데스크톱 스마트폰 프레임 래퍼 (모바일에서는 100dvh 꽉 참) -->
+  <!-- 데스크톱 스마트폰 프레임 래퍼 -->
   <div class="w-full max-w-[480px] h-[100dvh] bg-[#121316] sm:border sm:border-gray-800 sm:rounded-[36px] sm:shadow-[0_0_50px_rgba(255,183,3,0.08)] flex flex-col justify-between overflow-hidden relative">
 
     <!-- ========================================== -->
@@ -101,7 +99,7 @@
           <div class="flex items-start gap-2.5">
             <span class="text-base leading-none">🕹️</span>
             <div class="leading-relaxed">
-              <strong class="text-white">5대 개별 트레이닝</strong>: 음정 · 조표 · 코드톤 · 전위 · 보이싱 자유 선택 무한 반복
+              <strong class="text-white">5대 개별 트레이닝</strong>: 음정 · 조표 · 코드톤 · 전위 · 프로 보이싱
             </div>
           </div>
           <div class="flex items-start gap-2.5">
@@ -120,11 +118,11 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- 1. 메인 플레이 화면 (큼직한 폰트 & 상단 여백 확보) -->
+    <!-- 1. 메인 플레이 화면 -->
     <!-- ========================================== -->
     <div id="gameScreen" class="hidden w-full flex-1 flex flex-col justify-between px-3.5 pt-safe-top pb-1 overflow-y-auto no-scrollbar">
       
-      <!-- 최상단 헤더 (넉넉한 터치 영역 확보) -->
+      <!-- 최상단 헤더 -->
       <header class="w-full flex justify-between items-center py-2 border-b border-gray-800/80 shrink-0">
         <button onclick="goToWelcomeScreen()" class="cursor-pointer active:scale-95 transition-transform text-left flex items-center gap-2 py-1 pr-2 rounded-xl hover:bg-gray-800/50">
           <span class="px-2 py-1 bg-gray-800 border border-gray-700 rounded-lg text-xs font-bold text-[#FFB703]">🏠 홈</span>
@@ -139,12 +137,10 @@
         </button>
         
         <div class="flex items-center gap-1.5">
-          <!-- 반응속도 배지 -->
           <div id="speedBadge" class="hidden text-xs font-extrabold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded-lg">
             ⚡ <span id="speedValue">0.8s</span>
           </div>
 
-          <!-- 콤보 배지 -->
           <div id="comboBadge" class="hidden text-xs font-black bg-[#EF476F]/20 text-[#EF476F] border border-[#EF476F]/40 px-2.5 py-1 rounded-full animate-pulse">
             🔥 <span id="comboCount">0</span>
           </div>
@@ -159,7 +155,7 @@
         </div>
       </header>
 
-      <!-- 5대 개별 게임 바로가기 칩바 (글씨 및 터치영역 확대) -->
+      <!-- 5대 개별 게임 바로가기 칩바 -->
       <div id="soloChipsArea" class="w-full mt-2 mb-1 shrink-0">
         <div class="flex items-center justify-between px-1 mb-1">
           <span class="text-xs font-extrabold text-gray-400">🕹️ 5대 개별 집중 코스</span>
@@ -221,7 +217,7 @@
         </div>
       </div>
 
-      <!-- 문제 카드 (폰트 크기 대폭 확대) -->
+      <!-- 문제 카드 -->
       <main class="w-full flex-1 flex flex-col justify-center my-1 min-h-0">
         <div id="cardBox" class="p-4 sm:p-5 rounded-2xl bg-gray-900/90 border-2 border-gray-800 flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden backdrop-blur-sm">
           <div class="flex items-center gap-2 mb-2">
@@ -233,7 +229,7 @@
             </span>
           </div>
 
-          <p id="qText" class="text-lg sm:text-xl font-black text-white leading-snug my-2">
+          <p id="qText" class="text-base sm:text-lg font-black text-white leading-snug my-2">
             Loading...
           </p>
 
@@ -330,7 +326,7 @@
         </button>
       </div>
 
-      <!-- 네이티브 앱 하단 고정 탭바 (아이콘 및 글씨 크기 대폭 확대) -->
+      <!-- 네이티브 앱 하단 고정 탭바 -->
       <nav class="w-full px-2 pt-1.5 pb-safe flex justify-around items-center border-t border-gray-900">
         <button onclick="switchTab('HOME')" id="tabHome" class="flex flex-col items-center gap-1 text-[#FFB703] active:scale-90 transition-transform py-1 px-3">
           <span class="text-xl leading-none">🏠</span>
@@ -666,7 +662,7 @@
     let isTimerPaused = false;
 
     // =========================================================================
-    // 정밀 음악 이론 연산 엔진
+    // 정밀 음악 이론 연산 엔진 (고급 게임 5 드롭 보이싱 개편 포함)
     // =========================================================================
     const INTERVAL_EXACT_MAP = {
       'C':  { 'm3': 'Eb', 'M3': 'E',  'P4': 'F',  'P5': 'G',  'M6': 'A',  'm7': 'Bb' },
@@ -729,6 +725,20 @@
       { triad: 'Em', base: 'E', inv: 'Root' }, { triad: 'Em', base: 'G', inv: '1st' }, { triad: 'Em', base: 'B', inv: '2nd' },
       { triad: 'Bb', base: 'D', inv: '1st' }, { triad: 'Eb', base: 'G', inv: '1st' },
       { triad: 'D', base: 'F#', inv: '1st' }, { triad: 'A', base: 'C#', inv: '1st' }
+    ];
+
+    // [신규 개선]: 전문가용 드롭 보이싱 데이터베이스 (코드별 드롭 2 구성음 실제 음정)
+    const DROP2_VOICINGS_DB = [
+      { chord: 'Cmaj7', top: '7 (B)', voicing: 'G - B - C - E', type: 'Drop 2 (Top 7)' },
+      { chord: 'Cmaj7', top: '3 (E)', voicing: 'B - E - G - C', type: 'Drop 2 (Top 3)' },
+      { chord: 'Cmaj7', top: '5 (G)', voicing: 'C - G - B - E', type: 'Drop 2 (Top 5)' },
+      { chord: 'Cmaj7', top: '1 (C)', voicing: 'E - C - G - B', type: 'Drop 2 (Top 1)' },
+      { chord: 'Dm7', top: '7 (C)', voicing: 'A - C - D - F', type: 'Drop 2 (Top 7)' },
+      { chord: 'Dm7', top: '3 (F)', voicing: 'C - F - A - D', type: 'Drop 2 (Top 3)' },
+      { chord: 'G7', top: '7 (F)', voicing: 'D - F - G - B', type: 'Drop 2 (Top 7)' },
+      { chord: 'G7', top: '3 (B)', voicing: 'F - B - D - G', type: 'Drop 2 (Top 3)' },
+      { chord: 'Fmaj7', top: '7 (E)', voicing: 'C - E - F - A', type: 'Drop 2 (Top 7)' },
+      { chord: 'Am7', top: '7 (G)', voicing: 'E - G - A - C', type: 'Drop 2 (Top 7)' }
     ];
 
     function genGame1() {
@@ -890,46 +900,44 @@
       };
     }
 
+    // [고급 게임 5 개편]: 요청하신 실전 Drop 2 보이싱 조건별 구성음 판독 및 오답 색출형 퀴즈
     function genGame5() {
-      const advType = Math.random();
-      if (advType < 0.5) {
-        const topDegrees = [
-          { top: 'Root (1음)', order: '5-1-3-7' },
-          { top: '3rd (3음)', order: '7-3-5-1' },
-          { top: '5th (5음)', order: '1-5-7-3' },
-          { top: '7th (7음)', order: '3-7-1-5' }
-        ];
-        const item = topDegrees[Math.floor(Math.random() * topDegrees.length)];
-        const wrongOpts = shuffleArray(topDegrees.filter(t => t.order !== item.order)).slice(0, 3).map(t => t.order);
+      const subType = Math.random();
+
+      if (subType < 0.5) {
+        // 유형 A: 특정 코드의 탑노트 조건에 따른 Drop 2 보이싱 구성음 맞히기
+        const target = DROP2_VOICINGS_DB[Math.floor(Math.random() * DROP2_VOICINGS_DB.length)];
+        const ans = target.voicing;
+        const wrongOpts = shuffleArray(DROP2_VOICINGS_DB.filter(d => d.voicing !== ans)).slice(0, 3).map(d => d.voicing);
+
         return {
-          gameTag: 'GAME 5. VOICING BUSTER (DROP 2)',
+          gameTag: 'GAME 5. PRO VOICING BUSTER',
           type: 'MCQ',
-          catKO: 'Drop 2 보이싱 구조',
-          catEN: 'Drop 2 Voicing Degrees',
-          qKO: `Drop 2 보이싱에서 최고음이 [ ${item.top} ] 일 때 저음부터의 도수 배열은?`,
-          qEN: `In Drop 2 with Top Note [ ${item.top} ], what is the order from bass?`,
-          ans: item.order,
-          opts: shuffleArray([item.order, ...wrongOpts]),
+          catKO: 'Drop 2 실전 구성음 연산',
+          catEN: 'Advanced Drop 2 Voicing',
+          qKO: `[ ${target.chord} ] 코드에서 탑노트가 [ ${target.top} ] 인 Drop 2 보이싱 구성음은?`,
+          qEN: `Drop 2 voicing notes for [ ${target.chord} ] with top note [ ${target.top} ]?`,
+          ans: ans,
+          opts: shuffleArray([ans, ...wrongOpts]),
           url: YOUTUBE_URL + '&index=12'
         };
       } else {
-        const drop3List = [
-          { bass: 'Root in Bass', order: '1-7-3-5' },
-          { bass: '3rd in Bass', order: '3-1-5-7' },
-          { bass: '5th in Bass', order: '5-3-7-1' },
-          { bass: '7th in Bass', order: '7-5-1-3' }
-        ];
-        const item = drop3List[Math.floor(Math.random() * drop3List.length)];
-        const wrongOpts = shuffleArray(drop3List.filter(d => d.order !== item.order)).slice(0, 3).map(d => d.order);
+        // 유형 B: 다음 중 특정 코드의 Drop 2 보이싱이 아닌 것(오답 색출) 찾기
         return {
-          gameTag: 'GAME 5. VOICING BUSTER (DROP 3)',
+          gameTag: 'GAME 5. VOICING DETECTIVE',
           type: 'MCQ',
-          catKO: 'Drop 3 보이싱 구조',
-          catEN: 'Drop 3 Voicing Degrees',
-          qKO: `Drop 3 보이싱 [ ${item.bass} ] 일 때 저음부터 4개 성부의 도수 배열은?`,
-          qEN: `In Drop 3 with [ ${item.bass} ], what is the degree order from bass?`,
-          ans: item.order,
-          opts: shuffleArray([item.order, ...wrongOpts]),
+          catKO: 'Drop 2 보이싱 구조 판독',
+          catEN: 'Identify Non-Drop 2 Voicing',
+          qKO: `다음 중 [ Cmaj7 ] 의 올바른 Drop 2 보이싱이 아닌 것은?`,
+          qEN: `Which is NOT a valid Drop 2 voicing for Cmaj7?`,
+          // 정답은 Drop 2가 아닌 구조 (예: Drop 3 또는 일반 구조)
+          ans: 'C - E - G - B (Closed)',
+          opts: shuffleArray([
+            'C - E - G - B (Closed)',
+            'G - B - C - E',
+            'B - E - G - C',
+            'C - G - B - E'
+          ]),
           url: YOUTUBE_URL + '&index=12'
         };
       }
@@ -1531,7 +1539,7 @@
         updateTabsUI();
         selectSoloGame(5);
       } else {
-        alert(dict.vipFailAlert);
+        alert(dict.vipFailAlt || "Invalid code.");
       }
     }
 
