@@ -385,10 +385,10 @@
             2. 조표·스케일
           </button>
           <button onclick="selectSoloGame(3)" id="btnG3" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] active:scale-95 transition-all">
-            3. 코드톤
+            3. 코드 · 코드톤
           </button>
           <button onclick="selectSoloGame(4)" id="btnG4" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] active:scale-95 transition-all">
-            4. 전위
+            4. 전위 · 중급
           </button>
           <button onclick="selectSoloGame(5)" id="btnG5" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-purple-500/50 rounded-xl text-xs font-bold text-purple-300 hover:border-purple-400 active:scale-95 transition-all flex items-center gap-1">
             <span id="g5LockIcon">🔒</span> 5. 보이싱
@@ -540,7 +540,8 @@
     function closeMoreSheet() { closeMenu('moreSheet'); }
     function updateSessionMeta() {
       const en = currentLang === 'EN';
-      const label = isExamMode ? (en ? 'LICENSE EXAM' : '승급시험') : playMode === 'SOLO' ? (en ? 'FOCUSED PRACTICE' : '개별 집중 연습') : (en ? 'DAILY CHALLENGE' : '오늘의 챌린지');
+      const levelName = currentLang === 'EN' ? {BEGINNER:'Beginner',INTERMEDIATE:'Intermediate',ADVANCED:'Advanced'}[currentTier] : {BEGINNER:'초급',INTERMEDIATE:'중급',ADVANCED:'고급'}[currentTier];
+      const label = isExamMode ? (en ? 'LICENSE EXAM' : '승급시험') : playMode === 'SOLO' ? (en ? 'PRACTICE · ' : '개별 연습 · ') + levelName : (en ? 'DAILY CHALLENGE' : '오늘의 챌린지');
       const detail = isExamMode ? examCurrentIndex + ' / 20' : isAdvancedPractice() ? (hasCurrentVip() ? (en ? 'MEMBER · UNLIMITED' : '멤버십 · 무제한') : (en ? 'FREE ' : '무료 체험 ') + advancedUsed() + ' / 10') : (en ? 'One question at a time' : '한 문제씩, 음악의 감각으로');
       document.getElementById('sessionMeta').innerHTML = '<span>'+label+'</span><strong>'+detail+'</strong>';
     }
@@ -761,7 +762,7 @@
     let advancedGateBlocked = false;
     function isAdvancedPractice() {
       return !isExamMode && ((playMode === 'TIER' && currentTier === 'ADVANCED') ||
-        (playMode === 'SOLO' && currentSoloGame === 5));
+        (playMode === 'SOLO' && (currentTier === 'ADVANCED' || currentSoloGame === 5)));
     }
     function allowAdvancedQuestion() {
       if (!isAdvancedPractice()) return true;
@@ -828,6 +829,8 @@
       return SCALE_INTERVALS[type].map((n,i) => getNoteByInterval(root,n,i+1)).join(' ');
     }
     const INTERVALS = [
+      ['P1',0,1,'완전1도'],['P8',12,8,'완전8도'],
+      ['A2',3,2,'증2도'],['A5',8,5,'증5도'],['d7',9,7,'감7도'],
       ['m2',1,2,'단2도'],['M2',2,2,'장2도'],['m3',3,3,'단3도'],['M3',4,3,'장3도'],
       ['P4',5,4,'완전4도'],['A4',6,4,'증4도'],['d5',6,5,'감5도'],['P5',7,5,'완전5도'],
       ['m6',8,6,'단6도'],['M6',9,6,'장6도'],['m7',10,7,'단7도'],['M7',11,7,'장7도']
@@ -845,99 +848,157 @@
     const TRIAD_INVERSIONS = ROOTS_POOL.flatMap(root => Object.entries(TRIADS).flatMap(([quality,iv]) =>
       chordNotes(root,iv).map((base,i) => ({triad:root+quality,base,inv:['Root','1st','2nd'][i]}))));
 
-    // Signatures encode the learning task, not answer order, language, or distractors.
-    const QUESTION_POOLS = {1:[],2:[],3:[],4:[],5:[],advanced:[]};
-    function addQuestion(category, signature, qKO, qEN, ans, candidates, catKO, catEN) {
-      const wrong = [...new Set(candidates)].filter(x => x !== ans);
-      if (wrong.length < 2) throw new Error('Insufficient distractors: '+signature);
-      QUESTION_POOLS[category].push(Object.freeze({signature, qKO,qEN,ans,
+    const BEGINNER_KEYS = ['C','G','D','A','E','B','F','Bb','Eb','Ab','Db','Gb'];
+    const EASY_KEYS = ['C','G','D','A','F','Bb','Eb'];
+    const BASIC_INTERVALS = ['P1','P4','P5','P8','M2','m2','M3','m3','M6','m6','M7','m7'];
+    const LEVELS = {BEGINNER:1,INTERMEDIATE:2,ADVANCED:3};
+    const QUESTION_POOLS = {1:[],2:[],3:[],4:[],5:[]};
+    function addQuestion(category, root, level, family, signature, qKO, qEN, ans, candidates, catKO, catEN) {
+      const wrong=[...new Set(candidates)].filter(x=>x!==ans);
+      if(wrong.length<2) throw new Error('Insufficient options: '+signature);
+      QUESTION_POOLS[category].push(Object.freeze({category,root,level,family,signature,qKO,qEN,ans,
         candidates:Object.freeze(wrong),type:'MCQ',catKO,catEN,
-        gameTag:category === 'advanced' ? 'PRO SCALE LAB' : `${["","INTERVAL","SCALE","CHORD TONES","INVERSIONS","VOICING"][category]}`,url:YOUTUBE_URL}));
+        gameTag:['','INTERVAL','SCALE','CHORD LAB','INVERSIONS','VOICING'][category],url:YOUTUBE_URL}));
     }
-    for (const root of ROOTS_POOL) {
-      for (const [name,sem,degree,ko] of INTERVALS) {
-        const ans = getNoteByInterval(root,sem,degree);
-        addQuestion(1,`interval:${root}:${name}`,`${root}에서 ${ko} (${name}) 위의 음은? (정확한 철자)`,
-          `Spell the ${name} above ${root}.`,ans,
-          [-2,-1,1,2].map(d => getNoteByInterval(root,sem+d,degree)), '음정 · 음이름 표기','Interval spelling');
+    const CHORDS = {...TRIADS,...CHORD_INTERVALS};
+    const BASIC_CHORDS = ['','m','dim','maj7','7','m7','m7b5'];
+    function rotateNotes(notes,n) { return [...notes.slice(n),...notes.slice(0,n)]; }
+    const INV_NAMES=['Root','1st','2nd','3rd'];
+    for(const root of ROOTS_POOL) {
+      for(const [name,sem,degree,ko] of INTERVALS) {
+        addQuestion(1,root,BASIC_INTERVALS.includes(name)?1:2,'interval',`interval:${root}:${name}`,
+          `${root}에서 ${ko} (${name}) 위의 음은? (정확한 철자)`,`Spell the ${name} above ${root}.`,
+          getNoteByInterval(root,sem,degree),[-2,-1,1,2].map(d=>getNoteByInterval(root,sem+d,degree)),
+          BASIC_INTERVALS.includes(name)?'기본 음정':'변화음정 · 증/감',BASIC_INTERVALS.includes(name)?'Basic intervals':'Altered intervals');
       }
-      const scale = getScaleNotes(root,'Major');
-      addQuestion(2,`major:${root}`,`${root} Major 스케일의 올바른 구성음은?`,
-        `Spell the ${root} major scale.`,scale,
-        ['Natural Minor','Harmonic Minor','Melodic Minor'].map(t => getScaleNotes(root,t)), '장음계 구성음','Major scale spelling');
-      const notes = scale.split(' '), sharps = notes.filter(n=>n.includes('#')).length, flats = notes.filter(n=>n.includes('b')).length;
-      const keyKO = sharps ? `샵(#) ${sharps}개` : flats ? `플랫(b) ${flats}개` : '조표 없음';
-      const keyEN = sharps ? `${sharps} sharps` : flats ? `${flats} flats` : 'no sharps or flats';
-      addQuestion(2,`signature:${root}`,`${keyKO}: 해당하는 장조는?`,
-        `Which major key has ${keyEN}?`,root+' Major',ROOTS_POOL.map(r=>r+' Major'),'조표와 장조','Major key signatures');
-      for (const [quality,ans] of Object.entries(CHORD_TONES_DATABASE[root])) {
-        addQuestion(3,`chord:${root}:${quality}`,`${root}${quality}의 올바른 코드톤은?`,
-          `Spell the chord tones of ${root}${quality}.`,ans,Object.values(CHORD_TONES_DATABASE[root]),'7화음 구성음','Seventh chord tones');
+      for(const type of Object.keys(SCALE_INTERVALS)) {
+        const ko={'Major':'메이저','Natural Minor':'내추럴 마이너','Harmonic Minor':'하모닉 마이너','Melodic Minor':'멜로딕 마이너'}[type];
+        addQuestion(2,root,type==='Major'?1:2,type==='Major'?'major':'minor',`scale:${root}:${type}`,
+          `${root} ${ko} 스케일의 상행 구성음은?`,`Spell the ascending ${root} ${type} scale.`,
+          getScaleNotes(root,type),Object.keys(SCALE_INTERVALS).map(t=>getScaleNotes(root,t)),
+          type==='Major'?'메이저 스케일':'마이너 스케일 · 상행',type==='Major'?'Major scales':'Minor scales · ascending');
       }
-      for (const type of ['Harmonic Minor','Melodic Minor']) {
-        addQuestion('advanced',`scale:${root}:${type}`,`${root} ${type}의 상행 구성음은?`,
-          `Spell the ascending ${root} ${type} scale.`,getScaleNotes(root,type),
-          Object.keys(SCALE_INTERVALS).map(t=>getScaleNotes(root,t)),'단음계 (상행)','Minor scales (ascending)');
+      const notes=getScaleNotes(root,'Major').split(' '),sharp=notes.filter(n=>n.includes('#')).length,flat=notes.filter(n=>n.includes('b')).length;
+      const ko=sharp?`샵 ${sharp}개`:flat?`플랫 ${flat}개`:'조표 없음';
+      const en=sharp?`${sharp} sharps`:flat?`${flat} flats`:'no sharps or flats';
+      addQuestion(2,root,1,'signature',`signature:${root}`,`${ko}: 해당하는 장조는?`,`Which major key has ${en}?`,root+' Major',ROOTS_POOL.map(r=>r+' Major'),'장조 조표','Major key signatures');
+      for(const [quality,iv] of Object.entries(CHORDS)) {
+        const tones=chordNotes(root,iv),name=root+quality,level=BASIC_CHORDS.includes(quality)?1:2;
+        const peers=Object.entries(CHORDS).filter(([q,v])=>v.length===iv.length);
+        addQuestion(3,root,level,'rootTones',`tones:${name}`,
+          `${name}의 기본위치 코드톤은?`,`Spell ${name} in root position.`,tones.join(' '),
+          peers.map(([q,v])=>chordNotes(root,v).join(' ')),`${iv.length}화음 · 기본위치`,`${iv.length}-note chord · root position`);
+        addQuestion(3,root,level,'rootName',`name:${name}`,
+          `근음 ${root} · 구성음 ${tones.join(' – ')}
+이 코드의 이름은?`,`Root ${root} · Notes ${tones.join(' – ')}
+Name this chord.`,name,
+          peers.map(([q])=>root+q),'코드 이름 · 기본위치','Chord naming · root position');
+        for(let inversion=1;inversion<tones.length;inversion++) {
+          const ordered=rotateNotes(tones,inversion),slash=name+'/'+ordered[0];
+          addQuestion(4,root,2,'closedTones',`closed:${name}:${inversion}`,
+            `${slash}의 클로즈드 보이싱은?
+낮은 음 → 높은 음 (한 옥타브 이내)`,
+            `Spell ${slash} in close position, low to high (within one octave).`,ordered.join(' – '),
+            tones.map((_,i)=>rotateNotes(tones,i).join(' – ')),`${tones.length}화음 · 클로즈드 전위`,`${tones.length}-note chord · close position`);
+          addQuestion(4,root,2,'inversion',`inversion:${name}:${inversion}`,
+            `${name} · ${ordered.join(' – ')}
+낮은 음부터 배열한 이 코드의 전위는?`,
+            `${name} · ${ordered.join(' – ')} (low to high)
+Which inversion is this?`,INV_NAMES[inversion],INV_NAMES.slice(0,tones.length),'전위 판독','Inversion identification');
+          addQuestion(4,root,2,'closedName',`closedName:${name}:${inversion}`,
+            `근음 ${root} · ${ordered.join(' – ')}
+클로즈드 보이싱의 코드명/베이스는?`,
+            `Root ${root} · ${ordered.join(' – ')} (low to high)
+Name this close-position slash chord.`,slash,
+            peers.map(([q])=>root+q+'/'+ordered[0]),'전위 코드 이름','Inverted chord naming');
+        }
       }
-      for (const quality of ['maj7','7','m7','m7b5']) {
-        const tones = chordNotes(root,CHORD_INTERVALS[quality]);
-        for (const drop of [2,3]) {
-          const forms = drop===2 ? [[0,2,3,1],[1,3,0,2],[2,0,1,3],[3,1,2,0]] : [[0,3,1,2],[1,0,2,3],[2,1,3,0],[3,2,0,1]];
-          forms.forEach((f,i) => {
-            const order = f.map(j=>tones[j]).join(' - ');
-            addQuestion(5,`drop:${root}:${quality}:${drop}:${i}`,
-              `${root}${quality} · Drop ${drop}\n베이스 ${tones[f[0]]}인 보이싱의 탑 노트는?`,
-              `${root}${quality} · Drop ${drop}\nWhat is the top note with ${tones[f[0]]} in the bass?`,
-              tones[f[3]],tones,`드롭 보이싱 · 저음→고음`, 'Drop voicing · low to high');
-          });
+      for(const quality of ['maj7','7','m7','m7b5']) {
+        const tones=chordNotes(root,CHORD_INTERVALS[quality]);
+        for(const drop of [2,3]) {
+          const forms=drop===2?[[0,2,3,1],[1,3,0,2],[2,0,1,3],[3,1,2,0]]:[[0,3,1,2],[1,0,2,3],[2,1,3,0],[3,2,0,1]];
+          forms.forEach((f,i)=>addQuestion(5,root,3,'drop',`drop:${root}:${quality}:${drop}:${i}`,
+            `${root}${quality} · Drop ${drop}
+베이스 ${tones[f[0]]}인 보이싱의 탑 노트는?`,
+            `${root}${quality} · Drop ${drop}
+What is the top note with ${tones[f[0]]} in the bass?`,
+            tones[f[3]],tones,'Drop 보이싱 · 저음→고음','Drop voicing · low to high'));
         }
       }
     }
-    for (const item of TRIAD_INVERSIONS) {
-      addQuestion(4,`inversion:${item.triad}:${item.base}`,`${item.triad} / ${item.base}의 전위 상태는?`,
-        `Which inversion is ${item.triad} / ${item.base}?`,item.inv,['Root','1st','2nd'],'3화음 전위','Triad inversions');
+    function completedPractice() { return Math.max(0,Number(userProgress.curriculumCompleted)||0); }
+    function eligibleQuestion(q,tier) {
+      return q.level<=LEVELS[tier] && (tier!=='BEGINNER'||BEGINNER_KEYS.includes(q.root));
     }
-    // One shared category deck survives tier/solo switches within this page session.
+    // Fisher-Yates queues are shared across tier/solo modes. Changing levels or
+    // crossing 50 completed questions does not discard the remaining cards.
     class QuestionDeck {
-      constructor(pool) {
-        this.pool = [...new Map(pool.map(q=>[q.signature,q])).values()];
-        if (!this.pool.length) throw new Error('Empty question pool');
-        this.cards=[]; this.last=null;
-      }
-      draw() {
-        if (!this.cards.length) {
-          this.cards=shuffleArray(this.pool);
-          const end=this.cards.length-1;
-          if (end>0 && this.cards[end].signature===this.last) {
-            const j=Math.floor(Math.random()*end);
-            [this.cards[j],this.cards[end]]=[this.cards[end],this.cards[j]];
-          }
+      constructor(pool) { this.pool=[...new Map(pool.map(q=>[q.signature,q])).values()]; this.cards=shuffleArray(this.pool);this.last=null; }
+      draw(predicate=()=>true,progressive=false) {
+        let available=this.cards.filter(predicate);
+        if(!available.length) {
+          const eligible=this.pool.filter(predicate);
+          if(!eligible.length) throw new Error('No eligible questions');
+          this.cards=shuffleArray([...this.cards.filter(q=>!predicate(q)),...eligible]);
+          available=this.cards.filter(predicate);
         }
-        const q=this.cards.pop(); this.last=q.signature; return q;
+        let choices=available;
+        if(progressive) {
+          const early=completedPractice()<50;
+          const easy=available.filter(q=>EASY_KEYS.includes(q.root));
+          const hard=available.filter(q=>!EASY_KEYS.includes(q.root));
+          const preferEasy=Math.random()<(early?0.9:0.55);
+          choices=preferEasy?(easy.length?easy:hard):(hard.length?hard:easy);
+        }
+        if(progressive && choices[0]?.category===1) {
+          const basic=choices.filter(q=>q.level===1), altered=choices.filter(q=>q.level===2);
+          const preferBasic=Math.random()<(completedPractice()<50?0.8:0.4);
+          choices=preferBasic?(basic.length?basic:altered):(altered.length?altered:basic);
+        }
+        if(choices.length>1) choices=choices.filter(q=>q.signature!==this.last);
+        else if(choices[0].signature===this.last && available.length>1) choices=available.filter(q=>q.signature!==this.last);
+        // Queue order is already Fisher-Yates shuffled; choose the last eligible card.
+        const q=choices[choices.length-1];this.cards.splice(this.cards.indexOf(q),1);this.last=q.signature;return q;
       }
     }
-    const CATEGORY_DECKS = Object.fromEntries(Object.entries(QUESTION_POOLS).map(([k,v])=>[k,new QuestionDeck(v)]));
-    const CATEGORY_ROTATIONS = {};
-    function drawCategory(name,categories) {
-      if (!CATEGORY_ROTATIONS[name]?.length) CATEGORY_ROTATIONS[name]=shuffleArray(categories);
-      return CATEGORY_DECKS[CATEGORY_ROTATIONS[name].pop()].draw();
+    const CATEGORY_DECKS=Object.fromEntries(Object.entries(QUESTION_POOLS).map(([k,v])=>[k,new QuestionDeck(v)]));
+    const CATEGORY_ROTATIONS={};
+    function drawCategory(tier,categories) {
+      const rotation=tier+':'+categories.join(',');
+      if(!CATEGORY_ROTATIONS[rotation]?.length) CATEGORY_ROTATIONS[rotation]=shuffleArray(categories);
+      return CATEGORY_DECKS[CATEGORY_ROTATIONS[rotation].pop()].draw(q=>eligibleQuestion(q,tier),true);
     }
     function presentQuestion(q) {
-      return {...q,opts:shuffleArray([q.ans,...shuffleArray(q.candidates).slice(0,3)])};
+      // Beginner key-signature distractors also stay within the requested 12 keys.
+      const candidates=!isExamMode&&currentTier==='BEGINNER'&&q.family==='signature'
+        ?q.candidates.filter(n=>BEGINNER_KEYS.includes(n.replace(' Major',''))):q.candidates;
+      return {...q,opts:shuffleArray([q.ans,...shuffleArray(candidates).slice(0,3)]),counted:false};
     }
     let examDeck=[];
     function buildExamDeck() {
-      // Five questions from each foundation category, unique within the exam.
-      return shuffleArray([1,2,3,4].flatMap(k=>shuffleArray(QUESTION_POOLS[k]).slice(0,5)));
+      // Promotion assesses the entire intermediate syllabus, never Drop voicings.
+      const pick=(category,n,predicate)=>shuffleArray(QUESTION_POOLS[category].filter(predicate)).slice(0,n);
+      return shuffleArray([
+        ...pick(1,2,q=>q.level===1),...pick(1,3,q=>q.level===2),
+        ...pick(2,1,q=>q.family==='major'),...pick(2,1,q=>q.family==='signature'),
+        ...['Natural Minor','Harmonic Minor','Melodic Minor'].flatMap(t=>pick(2,1,q=>q.signature.endsWith(':'+t))),
+        ...pick(3,2,q=>q.catKO.startsWith('3')||q.family==='rootName'&&Object.keys(TRIADS).some(t=>q.ans===q.root+t)),
+        ...pick(3,3,q=>q.catKO.startsWith('4')||q.family==='rootName'&&Object.keys(CHORD_INTERVALS).some(t=>q.ans===q.root+t)),
+        ...pick(4,5,()=>true)
+      ]);
     }
     function generateQuestion() {
       let q;
-      if (isExamMode) q=examDeck[examCurrentIndex-1];
-      else if (playMode==='SOLO') q=CATEGORY_DECKS[currentSoloGame].draw();
-      else if (currentTier==='BEGINNER') q=drawCategory('beginner',[1,2]);
-      else if (currentTier==='INTERMEDIATE') q=drawCategory('intermediate',[3,4]);
-      else q=drawCategory('advanced',[5,'advanced']);
+      if(isExamMode) q=examDeck[examCurrentIndex-1];
+      else if(playMode==='SOLO') q=CATEGORY_DECKS[currentSoloGame].draw(q=>eligibleQuestion(q,currentTier),true);
+      else q=drawCategory(currentTier,currentTier==='BEGINNER'?[1,2,3]:currentTier==='INTERMEDIATE'?[1,2,3,4]:[1,2,3,4,5]);
       return presentQuestion(q);
+    }
+    function recordCompletedQuestion() {
+      if(!currentQuestion||currentQuestion.counted||isExamMode) return;
+      currentQuestion.counted=true;
+      userProgress.curriculumCompleted=completedPractice()+1;
+      saveState();
     }
     let pendingNext=null;
     function cancelPendingNext() { clearTimeout(pendingNext); pendingNext=null; }
@@ -1021,6 +1082,9 @@
 
     function selectSoloGame(num) {
       closeCourseSheet();
+      if (num === 4 && !userProgress.intermediateUnlocked && !userProgress.examPassed) {
+        alert(I18N[currentLang].intRequireAlert);return;
+      }
       if (num === 5 && !userProgress.examPassed) {
         alert(I18N[currentLang].advRequireAlert);
         return;
@@ -1030,6 +1094,8 @@
       ensureGameScreenVisible();
       playMode = 'SOLO';
       currentSoloGame = num;
+      if(num===4 && currentTier==='BEGINNER') currentTier='INTERMEDIATE';
+      if(num===5) currentTier='ADVANCED';
 
       document.getElementById('tierNav').classList.add('hidden');
       document.getElementById('unlockGuideBar').classList.add('hidden');
@@ -1272,6 +1338,7 @@
     }
 
     function handleTimeout() {
+      recordCompletedQuestion();
       const dict = I18N[currentLang];
       playWrongSound();
       combo = 0;
@@ -1447,6 +1514,7 @@
 
     function submitAnswer(chosen) {
       if (!isQuestionActive || isTimerPaused) return;
+      recordCompletedQuestion();
       const reactionTime = Math.max(0.1, (maxTime - timeLeft)).toFixed(1);
       stopTimer();
       initAudio();
