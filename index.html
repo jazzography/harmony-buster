@@ -856,12 +856,14 @@
     function addQuestion(category, root, level, family, signature, qKO, qEN, ans, candidates, catKO, catEN) {
       const wrong=[...new Set(candidates)].filter(x=>x!==ans);
       if(wrong.length<2) throw new Error('Insufficient options: '+signature);
-      QUESTION_POOLS[category].push(Object.freeze({category,root,level,family,signature,qKO,qEN,ans,
+      const quality=category===3?signature.slice(signature.indexOf(':')+1+root.length):null;
+      const chordSize=quality===null?null:CHORDS[quality].length;
+      QUESTION_POOLS[category].push(Object.freeze({category,root,level,family,signature,qKO,qEN,ans,quality,chordSize,
         candidates:Object.freeze(wrong),type:'MCQ',catKO,catEN,
         gameTag:['','INTERVAL','SCALE','CHORD LAB','INVERSIONS','VOICING'][category],url:YOUTUBE_URL}));
     }
     const CHORDS = {...TRIADS,...CHORD_INTERVALS};
-    const BASIC_CHORDS = ['','m','dim','maj7','7','m7','m7b5'];
+    const BASIC_CHORDS = ['','m','dim'];
     function rotateNotes(notes,n) { return [...notes.slice(n),...notes.slice(0,n)]; }
     const INV_NAMES=['Root','1st','2nd','3rd'];
     for(const root of ROOTS_POOL) {
@@ -927,8 +929,29 @@ What is the top note with ${tones[f[0]]} in the bass?`,
       }
     }
     function completedPractice() { return Math.max(0,Number(userProgress.curriculumCompleted)||0); }
+    // Separate versioned beginner counter: previous practice/exams do not skip
+    // the new gentle onboarding. Unlocks and membership records remain intact.
+    function beginnerCompleted() { return Math.max(0,Number(userProgress.beginnerGentleCompleted)||0); }
+    const BEGINNER_STAGES = [
+      {until:50,keys:['C','F','Bb','G','D','A'],qualities:['','m'],intervals:['P1','P4','P5','P8','M2','m2','M3','m3']},
+      {until:100,keys:['C','G','F','D','A','E','Bb','Eb'],qualities:['','m','dim'],intervals:BASIC_INTERVALS},
+      {until:150,keys:['C','G','F','D','A','E','Bb','Eb','B','Ab'],qualities:['','m','dim'],intervals:BASIC_INTERVALS},
+      {until:Infinity,keys:BEGINNER_KEYS,qualities:['','m','dim'],intervals:BASIC_INTERVALS}
+    ];
+    function beginnerStage() { return BEGINNER_STAGES.find(stage=>beginnerCompleted()<stage.until); }
     function eligibleQuestion(q,tier) {
-      return q.level<=LEVELS[tier] && (tier!=='BEGINNER'||BEGINNER_KEYS.includes(q.root));
+      if(q.level>LEVELS[tier]) return false;
+      if(tier!=='BEGINNER') return true;
+      const stage=beginnerStage();
+      if(!stage.keys.includes(q.root)) return false;
+      if(q.category===1) return stage.intervals.includes(q.signature.split(':').at(-1));
+      if(q.category===3) {
+        if(q.chordSize!==3||!stage.qualities.includes(q.quality)) return false;
+        // Bb minor is available from the start; delay other flat-root minor/diminished triads.
+        if(beginnerCompleted()<100 && q.root.includes('b') && q.quality!=='' && !(q.root==='Bb' && q.quality==='m')) return false;
+        if(beginnerCompleted()<150 && chordNotes(q.root,CHORDS[q.quality]).some(n=>/bb|##/.test(n))) return false;
+      }
+      return q.category<=3;
     }
     // Fisher-Yates queues are shared across tier/solo modes. Changing levels or
     // crossing 50 completed questions does not discard the remaining cards.
@@ -970,8 +993,16 @@ What is the top note with ${tones[f[0]]} in the bass?`,
     }
     function presentQuestion(q) {
       // Beginner key-signature distractors also stay within the requested 12 keys.
-      const candidates=!isExamMode&&currentTier==='BEGINNER'&&q.family==='signature'
-        ?q.candidates.filter(n=>BEGINNER_KEYS.includes(n.replace(' Major',''))):q.candidates;
+      let candidates=q.candidates;
+      if(!isExamMode&&currentTier==='BEGINNER') {
+        if(q.family==='signature') candidates=candidates.filter(n=>beginnerStage().keys.includes(n.replace(' Major','')));
+        if(q.category===3) {
+          // Options use the same unlocked material as the question, so a first
+          // major-triad lesson does not introduce dim/aug as unexplained options.
+          candidates=QUESTION_POOLS[3].filter(p=>p.family===q.family&&eligibleQuestion(p,'BEGINNER')&&p.ans!==q.ans).map(p=>p.ans);
+          candidates=[...new Set(candidates)];
+        }
+      }
       return {...q,opts:shuffleArray([q.ans,...shuffleArray(candidates).slice(0,3)]),counted:false};
     }
     let examDeck=[];
@@ -998,6 +1029,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
       if(!currentQuestion||currentQuestion.counted||isExamMode) return;
       currentQuestion.counted=true;
       userProgress.curriculumCompleted=completedPractice()+1;
+      if(currentTier==='BEGINNER') userProgress.beginnerGentleCompleted=beginnerCompleted()+1;
       saveState();
     }
     let pendingNext=null;
