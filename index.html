@@ -562,6 +562,8 @@
     };
 
     function setLanguage(lang) {
+      lang = lang === 'EN' ? 'EN' : 'KO';
+      document.documentElement.lang = lang === 'EN' ? 'en' : 'ko';
       currentLang = lang;
       localStorage.setItem('hb_lang', lang);
       const dict = I18N[lang];
@@ -594,7 +596,7 @@
       updateTabsUI();
       if (currentQuestion) {
         renderCurrentQuestionText();
-        renderPad();
+        if (isQuestionActive) renderPad();
       }
     }
 
@@ -629,340 +631,150 @@
     let isQuestionActive = false;
     let isTimerPaused = false;
 
-    // --- 음악 이론 연산 엔진 ---
-    const INTERVAL_EXACT_MAP = {
-      'C':  { 'm3': 'Eb', 'M3': 'E',  'P4': 'F',  'P5': 'G',  'M6': 'A',  'm7': 'Bb' },
-      'G':  { 'm3': 'Bb', 'M3': 'B',  'P4': 'C',  'P5': 'D',  'M6': 'E',  'm7': 'F' },
-      'D':  { 'm3': 'F',  'M3': 'F#', 'P4': 'G',  'P5': 'A',  'M6': 'B',  'm7': 'C' },
-      'A':  { 'm3': 'C',  'M3': 'C#', 'P4': 'D',  'P5': 'E',  'M6': 'F#', 'm7': 'G' },
-      'E':  { 'm3': 'G',  'M3': 'G#', 'P4': 'A',  'P5': 'B',  'M6': 'C#', 'm7': 'D' },
-      'B':  { 'm3': 'D',  'M3': 'D#', 'P4': 'E',  'P5': 'F#', 'M6': 'G#', 'm7': 'A' },
-      'F#': { 'm3': 'A',  'M3': 'A#', 'P4': 'B',  'P5': 'C#', 'M6': 'D#', 'm7': 'E' },
-      'F':  { 'm3': 'Ab', 'M3': 'A',  'P4': 'Bb', 'P5': 'C',  'M6': 'D',  'm7': 'Eb' },
-      'Bb': { 'm3': 'Db', 'M3': 'D',  'P4': 'Eb', 'P5': 'F',  'M6': 'G',  'm7': 'Ab' },
-      'Eb': { 'm3': 'Gb', 'M3': 'G',  'P4': 'Ab', 'P5': 'Bb', 'M6': 'C',  'm7': 'Db' },
-      'Ab': { 'm3': 'Cb', 'M3': 'C',  'P4': 'Db', 'P5': 'Eb', 'M6': 'F',  'm7': 'Gb' },
-      'Db': { 'm3': 'Fb', 'M3': 'F',  'P4': 'Gb', 'P5': 'Ab', 'M6': 'Bb', 'm7': 'B' }
-    };
 
-    const ROOTS_POOL = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'F', 'Bb', 'Eb', 'Ab'];
-
-    const CHORD_TONES_DATABASE = {
-      'C': { 'maj7': 'C E G B', '7': 'C E G Bb', 'm7': 'C Eb G Bb', 'm(maj7)': 'C Eb G B', 'm7b5': 'C Eb Gb Bb' },
-      'F': { 'maj7': 'F A C E', '7': 'F A C Eb', 'm7': 'F Ab C Eb', 'm(maj7)': 'F Ab C E', 'm7b5': 'F Ab Cb Eb' },
-      'Bb': { 'maj7': 'Bb D F A', '7': 'Bb D F Ab', 'm7': 'Bb Db F Ab', 'm(maj7)': 'Bb Db F A', 'm7b5': 'Bb Db Fb Ab' },
-      'Eb': { 'maj7': 'Eb G Bb D', '7': 'Eb G Bb Db', 'm7': 'Eb Gb Bb Db', 'm(maj7)': 'Eb Gb Bb D', 'm7b5': 'Eb Gb Bbb Db' },
-      'Ab': { 'maj7': 'Ab C Eb G', '7': 'Ab C Eb Gb', 'm7': 'Ab Cb Eb Gb', 'm(maj7)': 'Ab Cb Eb G', 'm7b5': 'Ab Cb Ebb Gb' },
-      'G': { 'maj7': 'G B D F#', '7': 'G B D F', 'm7': 'G Bb D F', 'm(maj7)': 'G Bb D F#', 'm7b5': 'G Bb Db F' },
-      'D': { 'maj7': 'D F# A C#', '7': 'D F# A C', 'm7': 'D F A C', 'm(maj7)': 'D F A C#', 'm7b5': 'D F Ab C' },
-      'A': { 'maj7': 'A C# E G#', '7': 'A C# E G', 'm7': 'A C E G', 'm(maj7)': 'A C E G#', 'm7b5': 'A C Eb G' },
-      'E': { 'maj7': 'E G# B D#', '7': 'E G# B D', 'm7': 'E G B D', 'm(maj7)': 'E G B D#', 'm7b5': 'E G Bb D' },
-      'B': { 'maj7': 'B D# F# A#', '7': 'B D# F# A', 'm7': 'B D F# A', 'm(maj7)': 'B D F# A#', 'm7b5': 'B D F A' }
-    };
-
-    function getNoteByInterval(root, semitones) {
-      const chromaticSharp = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-      const chromaticFlat = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
-      const isFlatKey = root.includes('b') || ['F', 'Bb', 'Eb', 'Ab', 'Db'].includes(root);
-      const scale = isFlatKey ? chromaticFlat : chromaticSharp;
-      const noteMap = { 'C':0, 'C#':1, 'Db':1, 'D':2, 'D#':3, 'Eb':3, 'E':4, 'F':5, 'F#':6, 'Gb':6, 'G':7, 'G#':8, 'Ab':8, 'A':9, 'A#':10, 'Bb':10, 'B':11 };
-      const baseIdx = noteMap[root] !== undefined ? noteMap[root] : 0;
-      return scale[(baseIdx + semitones) % 12];
+    // Spelling uses BOTH diatonic degree and chromatic distance. Never infer a
+    // letter from pitch class: Db + minor seventh is Cb, not B.
+    const LETTERS = 'CDEFGAB';
+    const NATURAL = [0, 2, 4, 5, 7, 9, 11];
+    const ROOTS_POOL = ['C','G','D','A','E','B','F#','C#','F','Bb','Eb','Ab','Db','Gb','Cb'];
+    function getNoteByInterval(root, semitones, degree) {
+      if (!/^[A-G](#{1,2}|b{1,2})?$/.test(root) || !Number.isInteger(degree) || degree < 1)
+        throw new Error('A valid root and explicit diatonic degree are required');
+      const i = LETTERS.indexOf(root[0]);
+      const accidental = [...root.slice(1)].reduce((n,c) => n + (c === '#' ? 1 : -1), 0);
+      const target = i + degree - 1;
+      const delta = NATURAL[i] + accidental + semitones - (NATURAL[target % 7] + 12 * Math.floor(target / 7));
+      return LETTERS[target % 7] + (delta >= 0 ? '#'.repeat(delta) : 'b'.repeat(-delta));
     }
-
-    function getScaleNotes(root, scaleType) {
-      const intervals = {
-        'Major': [0, 2, 4, 5, 7, 9, 11],
-        'Natural Minor': [0, 2, 3, 5, 7, 8, 10],
-        'Harmonic Minor': [0, 2, 3, 5, 7, 8, 11],
-        'Melodic Minor': [0, 2, 3, 5, 7, 9, 11]
-      };
-      return intervals[scaleType].map(sem => getNoteByInterval(root, sem)).join(' ');
+    const SCALE_INTERVALS = {
+      'Major': [0,2,4,5,7,9,11], 'Natural Minor': [0,2,3,5,7,8,10],
+      'Harmonic Minor': [0,2,3,5,7,8,11], 'Melodic Minor': [0,2,3,5,7,9,11]
+    };
+    function getScaleNotes(root, type) {
+      return SCALE_INTERVALS[type].map((n,i) => getNoteByInterval(root,n,i+1)).join(' ');
     }
+    const INTERVALS = [
+      ['m2',1,2,'단2도'],['M2',2,2,'장2도'],['m3',3,3,'단3도'],['M3',4,3,'장3도'],
+      ['P4',5,4,'완전4도'],['A4',6,4,'증4도'],['d5',6,5,'감5도'],['P5',7,5,'완전5도'],
+      ['m6',8,6,'단6도'],['M6',9,6,'장6도'],['m7',10,7,'단7도'],['M7',11,7,'장7도']
+    ];
+    const INTERVAL_EXACT_MAP = Object.fromEntries(ROOTS_POOL.map(r => [r,
+      Object.fromEntries(INTERVALS.map(([name,sem,degree]) => [name,getNoteByInterval(r,sem,degree)]))]));
+    const CHORD_INTERVALS = {maj7:[0,4,7,11], '7':[0,4,7,10], m7:[0,3,7,10],
+      'm(maj7)':[0,3,7,11], m7b5:[0,3,6,10], dim7:[0,3,6,9]};
+    const TRIADS = {'':[0,4,7], m:[0,3,7], dim:[0,3,6], aug:[0,4,8]};
+    function chordNotes(root, intervals) {
+      return intervals.map((sem,i) => getNoteByInterval(root,sem,2*i+1));
+    }
+    const CHORD_TONES_DATABASE = Object.fromEntries(ROOTS_POOL.map(r => [r,
+      Object.fromEntries(Object.entries(CHORD_INTERVALS).map(([q,iv]) => [q,chordNotes(r,iv).join(' ')]))]));
+    const TRIAD_INVERSIONS = ROOTS_POOL.flatMap(root => Object.entries(TRIADS).flatMap(([quality,iv]) =>
+      chordNotes(root,iv).map((base,i) => ({triad:root+quality,base,inv:['Root','1st','2nd'][i]}))));
 
-    // --- [완전 개편] Drop 2 및 Drop 3 정밀 생성기 ---
-    function generateDropVoicingProblem(isDrop3 = false) {
-      const voicingName = isDrop3 ? 'Drop 3' : 'Drop 2';
-      const rootList = ['C', 'F', 'G', 'Bb', 'Eb', 'D', 'A', 'E'];
-      const root = rootList[Math.floor(Math.random() * rootList.length)];
-      const chordTypesList = ['maj7', '7', 'm7', 'm7b5'];
-      const chordType = chordTypesList[Math.floor(Math.random() * chordTypesList.length)];
-      const chordName = `${root}${chordType}`;
-
-      const t3 = (chordType === 'maj7' || chordType === '7') ? 4 : 3;
-      const t5 = chordType === 'm7b5' ? 6 : 7;
-      const t7 = (chordType === 'maj7') ? 11 : 10;
-
-      const n1 = root;
-      const n3 = getNoteByInterval(root, t3);
-      const n5 = getNoteByInterval(root, t5);
-      const n7 = getNoteByInterval(root, t7);
-      
-      const tones = [n1, n3, n5, n7];
-
-      // 드롭 공식 구조
-      const d2Forms = [
-        { bass: n1, top: n3, voicing: [n1, n5, n7, n3] },
-        { bass: n3, top: n5, voicing: [n3, n7, n1, n5] },
-        { bass: n5, top: n7, voicing: [n5, n1, n3, n7] },
-        { bass: n7, top: n1, voicing: [n7, n3, n5, n1] }
-      ];
-      const d3Forms = [
-        { bass: n1, top: n5, voicing: [n1, n7, n3, n5] },
-        { bass: n3, top: n7, voicing: [n3, n1, n5, n7] },
-        { bass: n5, top: n1, voicing: [n5, n3, n7, n1] },
-        { bass: n7, top: n3, voicing: [n7, n5, n1, n3] }
-      ];
-
-      const forms = isDrop3 ? d3Forms : d2Forms;
-      const validVoicingStrings = forms.map(f => f.voicing.join(' - '));
-
-      const typeNum = Math.floor(Math.random() * 3) + 1; // 1: 올바른 구성음 찾기, 2: 탑노트, 3: 올바른 도수숫자구성
-
-      if (typeNum === 1) {
-        // [수정] 유형 1: "올바른 보이싱을 고르시오"
-        const ans = validVoicingStrings[Math.floor(Math.random() * validVoicingStrings.length)];
-        
-        // 오답 선지 만들기: 4개의 구성음으로 만들 수 있는 24가지 순열 중, 정답/드롭보이싱이 아닌 것 무작위 3개 추출 (중복음 원천 차단)
-        const allPermutations = [];
-        for(let i=0; i<4; i++){
-          for(let j=0; j<4; j++){
-            if(i===j) continue;
-            for(let k=0; k<4; k++){
-              if(i===k || j===k) continue;
-              for(let l=0; l<4; l++){
-                if(i===l || j===l || k===l) continue;
-                allPermutations.push(`${tones[i]} - ${tones[j]} - ${tones[k]} - ${tones[l]}`);
-              }
-            }
+    // Signatures encode the learning task, not answer order, language, or distractors.
+    const QUESTION_POOLS = {1:[],2:[],3:[],4:[],5:[],advanced:[]};
+    function addQuestion(category, signature, qKO, qEN, ans, candidates, catKO, catEN) {
+      const wrong = [...new Set(candidates)].filter(x => x !== ans);
+      if (wrong.length < 2) throw new Error('Insufficient distractors: '+signature);
+      QUESTION_POOLS[category].push(Object.freeze({signature, qKO,qEN,ans,
+        candidates:Object.freeze(wrong),type:'MCQ',catKO,catEN,
+        gameTag:category === 'advanced' ? 'PRO SCALE LAB' : `GAME ${category}. HARMONY BUSTER`,url:YOUTUBE_URL}));
+    }
+    for (const root of ROOTS_POOL) {
+      for (const [name,sem,degree,ko] of INTERVALS) {
+        const ans = getNoteByInterval(root,sem,degree);
+        addQuestion(1,`interval:${root}:${name}`,`${root}에서 ${ko} (${name}) 위의 음은? (정확한 철자)`,
+          `Spell the ${name} above ${root}.`,ans,
+          [-2,-1,1,2].map(d => getNoteByInterval(root,sem+d,degree)), '음정 · 음이름 표기','Interval spelling');
+      }
+      const scale = getScaleNotes(root,'Major');
+      addQuestion(2,`major:${root}`,`${root} Major 스케일의 올바른 구성음은?`,
+        `Spell the ${root} major scale.`,scale,
+        ['Natural Minor','Harmonic Minor','Melodic Minor'].map(t => getScaleNotes(root,t)), '장음계 구성음','Major scale spelling');
+      const notes = scale.split(' '), sharps = notes.filter(n=>n.includes('#')).length, flats = notes.filter(n=>n.includes('b')).length;
+      const keyKO = sharps ? `샵(#) ${sharps}개` : flats ? `플랫(b) ${flats}개` : '조표 없음';
+      const keyEN = sharps ? `${sharps} sharps` : flats ? `${flats} flats` : 'no sharps or flats';
+      addQuestion(2,`signature:${root}`,`${keyKO}: 해당하는 장조는?`,
+        `Which major key has ${keyEN}?`,root+' Major',ROOTS_POOL.map(r=>r+' Major'),'조표와 장조','Major key signatures');
+      for (const [quality,ans] of Object.entries(CHORD_TONES_DATABASE[root])) {
+        addQuestion(3,`chord:${root}:${quality}`,`${root}${quality}의 올바른 코드톤은?`,
+          `Spell the chord tones of ${root}${quality}.`,ans,Object.values(CHORD_TONES_DATABASE[root]),'7화음 구성음','Seventh chord tones');
+      }
+      for (const type of ['Harmonic Minor','Melodic Minor']) {
+        addQuestion('advanced',`scale:${root}:${type}`,`${root} ${type}의 상행 구성음은?`,
+          `Spell the ascending ${root} ${type} scale.`,getScaleNotes(root,type),
+          Object.keys(SCALE_INTERVALS).map(t=>getScaleNotes(root,t)),'단음계 (상행)','Minor scales (ascending)');
+      }
+      for (const quality of ['maj7','7','m7','m7b5']) {
+        const tones = chordNotes(root,CHORD_INTERVALS[quality]);
+        for (const drop of [2,3]) {
+          const forms = drop===2 ? [[0,2,3,1],[1,3,0,2],[2,0,1,3],[3,1,2,0]] : [[0,3,1,2],[1,0,2,3],[2,1,3,0],[3,2,0,1]];
+          forms.forEach((f,i) => {
+            const order = f.map(j=>tones[j]).join(' - ');
+            addQuestion(5,`drop:${root}:${quality}:${drop}:${i}`,
+              `${root}${quality} · Drop ${drop}\n베이스 ${tones[f[0]]}인 보이싱의 탑 노트는?`,
+              `${root}${quality} · Drop ${drop}\nWhat is the top note with ${tones[f[0]]} in the bass?`,
+              tones[f[3]],tones,`드롭 보이싱 · 저음→고음`, 'Drop voicing · low to high');
+          });
+        }
+      }
+    }
+    for (const item of TRIAD_INVERSIONS) {
+      addQuestion(4,`inversion:${item.triad}:${item.base}`,`${item.triad} / ${item.base}의 전위 상태는?`,
+        `Which inversion is ${item.triad} / ${item.base}?`,item.inv,['Root','1st','2nd'],'3화음 전위','Triad inversions');
+    }
+    // One shared category deck survives tier/solo switches within this page session.
+    class QuestionDeck {
+      constructor(pool) {
+        this.pool = [...new Map(pool.map(q=>[q.signature,q])).values()];
+        if (!this.pool.length) throw new Error('Empty question pool');
+        this.cards=[]; this.last=null;
+      }
+      draw() {
+        if (!this.cards.length) {
+          this.cards=shuffleArray(this.pool);
+          const end=this.cards.length-1;
+          if (end>0 && this.cards[end].signature===this.last) {
+            const j=Math.floor(Math.random()*end);
+            [this.cards[j],this.cards[end]]=[this.cards[end],this.cards[j]];
           }
         }
-        // 올바른 형태들을 제외한 나머지 배열들을 오답으로 사용
-        const wrongCandidates = allPermutations.filter(p => !validVoicingStrings.includes(p));
-        const wrongOpts = shuffleArray(wrongCandidates).slice(0, 3);
-
-        return {
-          gameTag: `GAME 5. ${voicingName.toUpperCase()} BUSTER`,
-          type: 'MCQ',
-          catKO: `${voicingName} 올바른 구성음 찾기`,
-          catEN: `Find Correct ${voicingName}`,
-          qKO: `[ ${chordName} ] 의 올바른 ${voicingName} 보이싱 구성은?`,
-          qEN: `Which is the correct ${voicingName} voicing for ${chordName}?`,
-          ans: ans,
-          opts: shuffleArray([ans, ...wrongOpts]),
-          url: YOUTUBE_URL + '&index=12'
-        };
-
-      } else if (typeNum === 2) {
-        // [수정] 유형 2: 슬래시 코드 탑노트 찾기 (루트, 3도, 5도, 7도 베이스 랜덤 출제)
-        const chosenForm = forms[Math.floor(Math.random() * forms.length)];
-        // 1도 베이스일 때는 슬래시 없이 기본 코드 이름으로 출제
-        const slashChordName = chosenForm.bass === n1 ? chordName : `${chordName}/${chosenForm.bass}`;
-        const ans = chosenForm.top;
-
-        return {
-          gameTag: `GAME 5. ${voicingName.toUpperCase()} BUSTER`,
-          type: 'MCQ',
-          catKO: `${voicingName} 탑노트 판독 훈련`,
-          catEN: `${voicingName} Top Note Training`,
-          qKO: `[ ${slashChordName} ] ${voicingName} 보이싱의 탑노트(최고음)는?`,
-          qEN: `What is the top note of [ ${slashChordName} ] ${voicingName} voicing?`,
-          ans: ans,
-          opts: shuffleArray([n1, n3, n5, n7]),
-          url: YOUTUBE_URL + '&index=12'
-        };
-
-      } else {
-        // [수정] 유형 3: "올바른" 숫자 구성 찾기 (4지선다 고정)
-        const correctList = isDrop3 ? ['1 - 7 - 3 - 5', '3 - 1 - 5 - 7', '5 - 3 - 7 - 1', '7 - 5 - 1 - 3'] : ['1 - 5 - 7 - 3', '3 - 7 - 1 - 5', '5 - 1 - 3 - 7', '7 - 3 - 5 - 1'];
-        const ans = correctList[Math.floor(Math.random() * correctList.length)];
-        
-        // 오답 선지: 클로즈드 보이싱, 반대 드롭 보이싱 등
-        const wrongPool = ['1 - 3 - 5 - 7', '3 - 5 - 7 - 1', '5 - 7 - 1 - 3', '7 - 1 - 3 - 5', ...(!isDrop3 ? ['1 - 7 - 3 - 5', '3 - 1 - 5 - 7', '5 - 3 - 7 - 1', '7 - 5 - 1 - 3'] : ['1 - 5 - 7 - 3', '3 - 7 - 1 - 5', '5 - 1 - 3 - 7', '7 - 3 - 5 - 1'])];
-        const wrongOpts = shuffleArray(wrongPool).slice(0, 3);
-        
-        return {
-          gameTag: `GAME 5. ${voicingName.toUpperCase()} BUSTER`,
-          type: 'MCQ',
-          catKO: `${voicingName} 도수 구성 판독`,
-          catEN: `${voicingName} Degree Pattern Test`,
-          qKO: `다음 중 [ ${voicingName} ] 보이싱의 올바른 숫자(도수) 구성은?`,
-          qEN: `Which is a valid degree sequence for ${voicingName}?`,
-          ans: ans,
-          opts: shuffleArray([ans, ...wrongOpts]),
-          url: YOUTUBE_URL + '&index=12'
-        };
+        const q=this.cards.pop(); this.last=q.signature; return q;
       }
     }
-
-    // 고급 모드(Advanced) 복합 출제 (드롭2: 25%, 드롭3: 25%, 하모닉마이너: 25%, 멜로딕마이너: 25%)
-    function genAdvancedProblem() {
-      const rand = Math.random();
-      
-      if (rand < 0.25) {
-        return generateDropVoicingProblem(false); // Drop 2 (25%)
-      } else if (rand < 0.50) {
-        return generateDropVoicingProblem(true);  // Drop 3 (25%)
-      } else if (rand < 0.75) {
-        const root = ROOTS_POOL[Math.floor(Math.random() * ROOTS_POOL.length)];
-        const ans = getScaleNotes(root, 'Harmonic Minor');
-        const opts = shuffleArray([
-          ans,
-          getScaleNotes(root, 'Melodic Minor'),
-          getScaleNotes(root, 'Natural Minor'),
-          getScaleNotes(root, 'Major')
-        ]);
-        return {
-          gameTag: 'GAME 5. ADVANCED HARMONIC MINOR',
-          type: 'MCQ',
-          catKO: '하모닉 마이너 스케일 구성음',
-          catEN: 'Harmonic Minor Scale',
-          qKO: `[ ${root} Harmonic Minor Scale ] 의 올바른 구성음은?`,
-          qEN: `Correct notes of [ ${root} Harmonic Minor Scale ]?`,
-          ans: ans,
-          opts: opts,
-          url: YOUTUBE_URL + '&index=7'
-        };
-      } else {
-        const root = ROOTS_POOL[Math.floor(Math.random() * ROOTS_POOL.length)];
-        const ans = getScaleNotes(root, 'Melodic Minor');
-        const opts = shuffleArray([
-          ans,
-          getScaleNotes(root, 'Harmonic Minor'),
-          getScaleNotes(root, 'Natural Minor'),
-          getScaleNotes(root, 'Major')
-        ]);
-        return {
-          gameTag: 'GAME 5. ADVANCED MELODIC MINOR',
-          type: 'MCQ',
-          catKO: '멜로딕 마이너 스케일 구성음',
-          catEN: 'Melodic Minor Scale',
-          qKO: `[ ${root} Melodic Minor Scale ] 의 올바른 구성음은?`,
-          qEN: `Correct notes of [ ${root} Melodic Minor Scale ]?`,
-          ans: ans,
-          opts: opts,
-          url: YOUTUBE_URL + '&index=8'
-        };
-      }
+    const CATEGORY_DECKS = Object.fromEntries(Object.entries(QUESTION_POOLS).map(([k,v])=>[k,new QuestionDeck(v)]));
+    const CATEGORY_ROTATIONS = {};
+    function drawCategory(name,categories) {
+      if (!CATEGORY_ROTATIONS[name]?.length) CATEGORY_ROTATIONS[name]=shuffleArray(categories);
+      return CATEGORY_DECKS[CATEGORY_ROTATIONS[name].pop()].draw();
     }
-
-    function genGame1() {
-      const root = ROOTS_POOL[Math.floor(Math.random() * ROOTS_POOL.length)];
-      const ivDefs = [
-        { key: 'm3', nameKO: '단3도 (m3)', nameEN: 'Minor 3rd' },
-        { key: 'M3', nameKO: '장3도 (M3)', nameEN: 'Major 3rd' },
-        { key: 'P4', nameKO: '완전4도 (P4)', nameEN: 'Perfect 4th' },
-        { key: 'P5', nameKO: '완전5도 (P5)', nameEN: 'Perfect 5th' },
-        { key: 'M6', nameKO: '장6도 (M6)', nameEN: 'Major 6th' },
-        { key: 'm7', nameKO: '단7도 (m7)', nameEN: 'Minor 7th' }
-      ];
-      const iv = ivDefs[Math.floor(Math.random() * ivDefs.length)];
-      const ans = INTERVAL_EXACT_MAP[root][iv.key];
-      const allPossibleNotes = ['C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
-      const wrongOpts = shuffleArray(allPossibleNotes.filter(n => n !== ans)).slice(0, 3);
-
-      return {
-        gameTag: 'GAME 1. INTERVAL BUSTER',
-        type: 'MCQ',
-        catKO: '기본 음정 (1~4강)',
-        catEN: 'Intervals (Ep. 1-4)',
-        qKO: `${root} 에서 ${iv.nameKO} 위의 음은?`,
-        qEN: `What is the ${iv.nameEN} above ${root}?`,
-        ans: ans,
-        opts: shuffleArray([ans, ...wrongOpts]),
-        url: YOUTUBE_URL + '&index=1'
-      };
+    function presentQuestion(q) {
+      return {...q,opts:shuffleArray([q.ans,...shuffleArray(q.candidates).slice(0,3)])};
     }
-
-    function genGame2() {
-      const isScaleQ = Math.random() > 0.5;
-      if (isScaleQ) {
-        return {
-          gameTag: 'GAME 2. SCALE SPELLING',
-          type: 'MCQ',
-          catKO: '메이저 스케일 구성음 (5~8강)',
-          catEN: 'Major Scale Spelling (Ep. 5-8)',
-          qKO: `[ C Major Scale ] 의 올바른 구성음은?`,
-          qEN: `Correct notes of [ C Major Scale ]?`,
-          ans: 'C D E F G A B',
-          opts: shuffleArray(['C D E F G A B', 'C D Eb F G A Bb', 'C D E F G Ab B', 'C D Eb F G Ab Bb']),
-          url: YOUTUBE_URL + '&index=5'
-        };
-      } else {
-        return {
-          gameTag: 'GAME 2. KEY SIGNATURE BLITZ',
-          type: 'MCQ',
-          catKO: '조표 & 키 (5~6강)',
-          catEN: 'Key Signatures (Ep. 5-6)',
-          qKO: `샵(#) 1개가 붙는 Major Key는?`,
-          qEN: `Which Major Key has 1 Sharp (#)?`,
-          ans: 'G Major',
-          opts: shuffleArray(['G Major', 'D Major', 'F Major', 'A Major']),
-          url: YOUTUBE_URL + '&index=5'
-        };
-      }
+    let examDeck=[];
+    function buildExamDeck() {
+      // Five questions from each foundation category, unique within the exam.
+      return shuffleArray([1,2,3,4].flatMap(k=>shuffleArray(QUESTION_POOLS[k]).slice(0,5)));
     }
-
-    function genGame3() {
-      const roots = Object.keys(CHORD_TONES_DATABASE);
-      const root = roots[Math.floor(Math.random() * roots.length)];
-      const qualities = Object.keys(CHORD_TONES_DATABASE[root]);
-      const targetQ = qualities[Math.floor(Math.random() * qualities.length)];
-      const ans = CHORD_TONES_DATABASE[root][targetQ];
-      const wrongOpts = shuffleArray(qualities.filter(q => q !== targetQ)).slice(0, 3).map(q => CHORD_TONES_DATABASE[root][q]);
-
-      return {
-        gameTag: 'GAME 3. CHORD TONES (MCQ)',
-        type: 'MCQ',
-        catKO: '코드톤 정밀 판독',
-        catEN: 'Chord Tone Spelling',
-        qKO: `코드 [ ${root}${targetQ} ] 의 올바른 코드톤은?`,
-        qEN: `What are the correct chord tones for [ ${root}${targetQ} ]?`,
-        ans: ans,
-        opts: shuffleArray([ans, ...wrongOpts]),
-        url: YOUTUBE_URL + '&index=12'
-      };
-    }
-
-    function genGame4() {
-      const item = TRIAD_INVERSIONS[Math.floor(Math.random() * TRIAD_INVERSIONS.length)];
-      return {
-        gameTag: 'GAME 4. INVERSION FINDER',
-        type: 'INVERSION',
-        catKO: '3화음 전위 판독 (9~11강)',
-        catEN: 'Triad Inversions (Ep. 9-11)',
-        qKO: `분수코드 [ ${item.triad} / ${item.base} ] 의 전위 상태는?`,
-        qEN: `Which inversion is slash chord [ ${item.triad} / ${item.base} ]?`,
-        ans: item.inv,
-        opts: ['Root', '1st', '2nd'],
-        url: YOUTUBE_URL + '&index=9'
-      };
-    }
-
-    function genGame5() {
-      return generateDropVoicingProblem(Math.random() > 0.5);
-    }
-
     function generateQuestion() {
-      if (playMode === 'SOLO') {
-        if (currentSoloGame === 1) return genGame1();
-        if (currentSoloGame === 2) return genGame2();
-        if (currentSoloGame === 3) return genGame3();
-        if (currentSoloGame === 4) return genGame4();
-        if (currentSoloGame === 5) return genGame5(); // 드롭2, 3 전용 (5:5 비율)
-      }
-
-      if (currentTier === 'BEGINNER') {
-        return Math.random() > 0.5 ? genGame1() : genGame2();
-      }
-      if (currentTier === 'INTERMEDIATE') {
-        return Math.random() > 0.4 ? genGame3() : genGame4();
-      }
-      if (currentTier === 'ADVANCED') {
-        return genAdvancedProblem(); // 고급 모드 복합 비율 출제
-      }
+      let q;
+      if (isExamMode) q=examDeck[examCurrentIndex-1];
+      else if (playMode==='SOLO') q=CATEGORY_DECKS[currentSoloGame].draw();
+      else if (currentTier==='BEGINNER') q=drawCategory('beginner',[1,2]);
+      else if (currentTier==='INTERMEDIATE') q=drawCategory('intermediate',[3,4]);
+      else q=drawCategory('advanced',[5,'advanced']);
+      return presentQuestion(q);
     }
-
+    let pendingNext=null;
+    function cancelPendingNext() { clearTimeout(pendingNext); pendingNext=null; }
+    function scheduleNextQuestion() {
+      cancelPendingNext();
+      pendingNext=setTimeout(()=>{
+        pendingNext=null;
+        if (isTimerPaused) { scheduleNextQuestion(); return; }
+        nextQuestion();
+      },400);
+    }
     function saveState() {
       try {
         localStorage.setItem('harmony_buster_save', JSON.stringify(userProgress));
@@ -1015,6 +827,7 @@
     }
 
     function goToWelcomeScreen() {
+      cancelPendingNext();
       if (isExamMode) {
         if (!confirm('시험 진행 중입니다. 메인 홈 화면으로 나가시겠습니까? (현재 기록은 초기화됩니다)')) return;
         exitExamMode();
@@ -1038,6 +851,7 @@
         return;
       }
 
+      if (isExamMode) exitExamMode();
       ensureGameScreenVisible();
       playMode = 'SOLO';
       currentSoloGame = num;
@@ -1059,6 +873,7 @@
     }
 
     function selectPlayMode(mode) {
+      if (isExamMode) exitExamMode();
       playMode = mode;
       document.getElementById('btnBackToMain').classList.add('hidden');
       document.getElementById('tierNav').classList.remove('hidden');
@@ -1135,6 +950,7 @@
     }
 
     function startExamMode() {
+      cancelPendingNext();
       isTimerPaused = true;
       if (!confirm('🎓 [고급 승급 라이선스 시험]\n- 총 20문항 실전 테스트\n- 합격 기준: 85점 이상 (17문제 이상 정답)\n- 통과 시 프로 고급 모드가 영구 해금됩니다!\n\n시험을 시작하시겠습니까?')) {
         isTimerPaused = false;
@@ -1146,6 +962,7 @@
       examCurrentIndex = 0;
       examCorrectCount = 0;
       examWrongAnswers = [];
+      examDeck = buildExamDeck();
 
       document.getElementById('tierNav').classList.add('hidden');
       document.getElementById('unlockGuideBar').classList.add('hidden');
@@ -1159,6 +976,7 @@
     }
 
     function exitExamMode() {
+      cancelPendingNext();
       isExamMode = false;
       document.getElementById('tierNav').classList.remove('hidden');
       document.getElementById('examStatusHeader').classList.add('hidden');
@@ -1290,7 +1108,7 @@
           chosen: '시간 초과',
           ans: currentQuestion.ans
         });
-        setTimeout(() => nextQuestion(), 400);
+        scheduleNextQuestion();
         return;
       }
 
@@ -1313,6 +1131,7 @@
     }
 
     function nextQuestion() {
+      cancelPendingNext();
       if (isExamMode) {
         examCurrentIndex++;
         if (examCurrentIndex > examTotalCount) {
@@ -1446,7 +1265,7 @@
     }
 
     function submitAnswer(chosen) {
-      if (!isQuestionActive) return;
+      if (!isQuestionActive || isTimerPaused) return;
       const reactionTime = Math.max(0.1, (maxTime - timeLeft)).toFixed(1);
       stopTimer();
       initAudio();
@@ -1482,9 +1301,7 @@
         updateComboBadge();
         updateTabsUI();
 
-        setTimeout(() => {
-          nextQuestion();
-        }, 400);
+        scheduleNextQuestion();
 
       } else {
         playWrongSound();
@@ -1498,9 +1315,7 @@
             ans: currentQuestion.ans
           });
           card.className = "p-4 sm:p-5 rounded-2xl bg-[#EF476F]/10 border-2 border-[#EF476F] flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden backdrop-blur-sm";
-          setTimeout(() => {
-            nextQuestion();
-          }, 400);
+          scheduleNextQuestion();
           return;
         }
 
@@ -1528,10 +1343,20 @@
       }
     }
 
-    function verifyVipCode() {
+    // STATIC DEMO ONLY: hashing hides the literal code, but cannot enforce access.
+    // Users can bypass JS/localStorage checks. Do not ship secret paid content here.
+    // Production: verify account entitlement on a server and authorize every protected
+    // content/API request. Keep credentials and signing secrets exclusively server-side.
+    async function verifyVipCode() {
       const dict = I18N[currentLang];
       const code = document.getElementById('secretInput').value.trim().toUpperCase();
-      if (code === 'HARMONY2026') {
+      if (!globalThis.crypto?.subtle) {
+        alert(currentLang === 'KO' ? 'VIP 확인은 HTTPS 또는 localhost에서 이용해 주세요.' : 'Use HTTPS or localhost for VIP verification.');
+        return;
+      }
+      const hash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(code))))
+        .map(b => b.toString(16).padStart(2,'0')).join('');
+      if (hash === '9a6280aadd84df72890daa7439a16996eb8a0d62320e4b973bac59cef6751bc7') {
         userProgress.isVip = true;
         saveState();
         closeVipModal();
@@ -1539,7 +1364,7 @@
         updateTabsUI();
         selectSoloGame(5);
       } else {
-        alert(dict.vipFailAlt || "Invalid code.");
+        alert(dict.vipFailAlert || "Invalid code.");
       }
     }
 
@@ -1549,7 +1374,7 @@
     }
 
     window.addEventListener('keydown', (e) => {
-      if (isTimerPaused) return;
+      if (isTimerPaused || e.repeat || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
       const fbBox = document.getElementById('feedbackBox');
       if (!fbBox.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) {
         e.preventDefault();
