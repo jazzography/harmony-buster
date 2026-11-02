@@ -2,13 +2,13 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Harmony Buster - 화성학 두뇌 연산 자동화 트레이너</title>
   
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="HarmonyBuster">
-  <meta name="theme-color" content="#121316">
+  <meta name="theme-color" content="#0B1220">
   <link rel="apple-touch-icon" href="https://via.placeholder.com/192/FFB703/000000?text=HB">
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -42,11 +42,92 @@
     .animate-slide-up {
       animation: slideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+
+    /* Mobile app layout: play first, navigation second. */
+    :root { color-scheme:dark; --ink:#0B1220; --surface:#121E30; --mint:#63E6BE; --muted:#93A4BA; }
+    body { margin:0; background:#070C15; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    button,a { touch-action:manipulation; }
+    button:focus-visible,a:focus-visible,input:focus-visible { outline:3px solid #63E6BE; outline-offset:3px; }
+    #appShell { background:var(--ink); max-width:480px; height:100dvh; height:100svh; border-color:#263449; border-radius:0; box-shadow:0 20px 100px #0008; }
+    #gameScreen { padding: max(12px,env(safe-area-inset-top)) 20px 12px; gap:12px; min-height:0; }
+    #gameScreen>header { border:0; padding:0; flex-wrap:wrap; gap:8px; }
+    #gameScreen>header>button { gap:9px; padding:0; }
+    #gameScreen>header h2 { font-size:13px; letter-spacing:1px; color:#EAF4FA; }
+    #gameScreen>header>div { gap:5px; margin-left:auto; }
+    #gameScreen>header>div>button { min-width:40px; min-height:40px; border:1px solid #263449; background:#142034; border-radius:14px; padding:6px; }
+    .brand-symbol { width:36px; height:40px; display:grid; place-content:center; position:relative; background:#63E6BE; color:#0B1220; font-size:25px; font-weight:900; border-radius:12px; }
+    .brand-symbol>span { position:absolute; right:3px; bottom:3px; font-size:12px; }
+    #speedBadge,#comboBadge { position:static; font-size:10px; padding:4px 6px; white-space:nowrap; }
+    #comboBadge { animation:none; background:#F8C66A18; color:#F8C66A; border-color:#F8C66A40; }
+    #tierNav { margin:0; padding:4px; gap:4px; background:#142034; border-radius:16px; }
+    #tierNav button { min-height:40px; font-size:12px; border-radius:12px; }
+    #tierNav button[class*="bg-[#FFB703]"] { background:var(--mint); color:#09251E; box-shadow:0 3px 12px #0002; }
+    #unlockGuideBar { font-size:11px; padding:0; background:transparent; color:var(--muted); }
+    #timerContainer { margin:0; }
+    #timerContainer>div:first-child { font-size:10px; letter-spacing:1.5px; margin-bottom:7px; }
+    #timerText { font-size:13px; font-variant-numeric:tabular-nums; color:var(--mint); }
+    #timerContainer>div:last-child { height:5px; background:#223148; }
+    #timerBar { background:var(--mint); }
+    #timerBar[class*="EF476F"] { background:#FF7F92; }
+    .session-meta { display:flex; justify-content:space-between; align-items:center; font-size:10px; color:var(--muted); letter-spacing:.4px; min-height:15px; }
+    .session-meta strong { color:var(--mint); font-weight:600; }
+    #gameScreen>main { margin:0; min-height:200px; justify-content:center; }
+    #cardBox { width:100%; padding:26px 18px; border:1px solid #2B3B52; border-radius:26px; min-height:215px; background:radial-gradient(ellipse at top,#1C3044 0%,#132034 72%); box-shadow:0 14px 40px #0002; justify-content:center; overflow:visible; }
+    #cardBox>div:first-child { flex-direction:column; gap:6px; margin-bottom:16px; }
+    #qGameTag { font-size:10px; letter-spacing:2.5px; padding:0; border:0; color:var(--mint); background:transparent; }
+    #qCategory { font-size:10px; color:var(--muted); background:transparent; border:0; padding:0; }
+    #qText { font-size:clamp(18px,5vw,23px); line-height:1.6; letter-spacing:-.5px; word-break:keep-all; overflow-wrap:anywhere; white-space:pre-line; margin:0; color:#F1F6FC; }
+    #cardBox[class*="bg-[#06D6A0]"] { border-color:var(--mint); background:#14382F; }
+    #cardBox[class*="bg-[#EF476F]"] { border-color:#FF7F92; background:#322333; }
+    #inputPadArea { margin:0; padding-top:2px; }
+    #inputPadArea>div { gap:10px; }
+    #inputPadArea button { min-height:64px; border:1px solid #30445D; border-bottom-width:3px; border-radius:18px; background:#1A2B41; color:#F1F6FC; font-size:17px; padding:14px 10px; line-height:1.5; overflow-wrap:anywhere; transition:background .15s,transform .15s; }
+    #inputPadArea button span { color:#8499B3; font-size:10px; margin-right:8px; }
+    #inputPadArea button:active { transform:translateY(2px); background:#265044; border-color:var(--mint); }
+    #feedbackBox { border:0; background:#0B122080; padding:12px; }
+    #feedbackAnsValue { font-size:22px; color:var(--mint); overflow-wrap:anywhere; }
+    #feedbackBox button { background:var(--mint); color:#09251E; min-height:46px; }
+    #bottomBar { background:#0E1828; border-color:#263449; }
+    #bottomBar nav { border:0; padding:8px 12px max(8px,env(safe-area-inset-bottom)); gap:6px; }
+    #bottomBar nav button { flex:1; min-height:48px; padding:5px 3px; gap:5px; border-radius:14px; }
+    #bottomBar nav button>span:first-child { font-size:19px; line-height:20px; }
+    #bottomBar nav button>span:last-child { font-size:10px; font-weight:600; }
+    #bottomBar nav button[class*="text-[#FFB703]"] { color:var(--mint); background:#63E6BE0E; }
+    .menu-overlay { position:fixed; inset:0; z-index:60; display:flex; justify-content:center; align-items:flex-end; background:#030915B8; backdrop-filter:blur(8px); }
+    .menu-overlay.hidden { display:none; }
+    .menu-panel { width:100%; max-width:480px; max-height:88dvh; overflow-y:auto; padding:12px 22px max(22px,env(safe-area-inset-bottom)); border-radius:28px 28px 0 0; background:#142034; border:1px solid #30445D; box-shadow:0 -20px 80px #0004; }
+    .sheet-handle { width:36px; height:4px; margin:0 auto 22px; border-radius:5px; background:#526278; }
+    .sheet-heading { display:flex; justify-content:space-between; gap:12px; align-items:center; margin-bottom:20px; }
+    .sheet-heading small { color:var(--mint); font-size:9px; letter-spacing:2px; }
+    .sheet-heading h2 { font-size:20px; font-weight:800; margin-top:6px; letter-spacing:-.5px; }
+    .sheet-heading>button { min-width:44px; min-height:44px; background:#23334A; border-radius:14px; }
+    #soloChipsArea>div:first-child { display:none; }
+    #soloChipsArea>div:last-child { display:grid; grid-template-columns:1fr; gap:9px; overflow:visible; }
+    #soloChipsArea button { display:flex; align-items:center; min-height:56px; border:1px solid #30445D; padding:14px 16px; background:#1B2D43; border-radius:16px; font-size:14px; text-align:left; color:#ECF4FC; }
+    #soloChipsArea button:after { content:'→'; margin-left:auto; color:var(--mint); }
+    .sheet-note { color:var(--muted); font-size:11px; line-height:1.7; margin-top:18px; }
+    .membership-entry { display:flex; align-items:center; justify-content:space-between; width:100%; padding:18px; background:#63E6BE12; border:1px solid #63E6BE40; border-radius:18px; color:var(--mint); text-align:left; }
+    .membership-entry small { display:block; color:var(--muted); font-size:11px; margin-top:6px; }
+    #moreSheet .grid { grid-template-columns:1fr; padding:0; margin-top:12px; }
+    #moreSheet .grid>a,#moreSheet .grid>button { justify-content:flex-start; padding:14px 18px; min-height:62px; border-color:#30445D; background:#1B2D43; }
+    #supportSheet>div,#vipModal>div { background:#142034; max-height:92dvh; overflow-y:auto; }
+    #secretInput { min-width:0; width:100%; font-size:16px; }
+    #welcomeScreen { padding:20px; }
+    #welcomeScreen header { border-color:#263449; }
+    #welcomeScreen h1 { font-size:36px; letter-spacing:-1.5px; line-height:1.1; }
+    #welcomeScreen h1 span,#welcomeScreen h2 { color:var(--mint); }
+    #welcomeScreen button[onclick="startGame()"] { background:var(--mint); color:#09251E; border-radius:18px; box-shadow:0 8px 28px #63E6BE18; min-height:58px; }
+    #t-welcome-badge { color:var(--mint); font-size:9px; letter-spacing:2px; border-color:#63E6BE30; background:#63E6BE0D; }
+    #t-welcome-headline { font-size:14px; line-height:1.8; color:#AEBED1; margin-top:16px; }
+    @media (max-width:360px) { #gameScreen { padding-left:14px; padding-right:14px; gap:8px; } #gameScreen>header h2 { font-size:11px; } #inputPadArea button { font-size:15px; } #cardBox { padding:20px 14px; } }
+    @media (max-height:700px) { #gameScreen { gap:8px; } #gameScreen>main { min-height:170px; } #cardBox { min-height:170px; padding:18px 14px; } #inputPadArea button { min-height:52px; padding:10px; } }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; } }
+
   </style>
 </head>
 <body class="min-h-screen w-full flex justify-center items-center font-sans text-[#EDEDED] antialiased">
 
-  <div class="w-full max-w-[480px] h-[100dvh] bg-[#121316] sm:border sm:border-gray-800 sm:rounded-[36px] sm:shadow-[0_0_50px_rgba(255,183,3,0.08)] flex flex-col justify-between overflow-hidden relative">
+  <div id="appShell" class="w-full max-w-[480px] h-[100dvh] bg-[#121316] sm:border sm:border-gray-800 sm:rounded-[36px] sm:shadow-[0_0_50px_rgba(255,183,3,0.08)] flex flex-col justify-between overflow-hidden relative">
 
     <!-- 0. 오프닝 웰컴 화면 -->
     <section id="welcomeScreen" class="w-full flex-1 flex flex-col justify-between items-center text-center px-4 pt-safe-top pb-3 my-auto overflow-y-auto no-scrollbar">
@@ -74,7 +155,7 @@
 
       <div class="my-auto w-full flex flex-col items-center py-2">
         <div id="t-welcome-badge" class="inline-block px-3.5 py-1 bg-[#FFB703]/10 border border-[#FFB703]/30 rounded-full text-xs font-bold text-[#FFB703] mb-3">
-          🧠 두뇌 화성 연산 자동화 트레이너
+          DAILY HARMONY TRAINING
         </div>
         
         <h1 class="text-3xl sm:text-4xl font-black tracking-wider text-white mb-2 leading-tight">
@@ -107,7 +188,7 @@
         </div>
 
         <button onclick="startGame()" class="w-full py-4 bg-[#FFB703] hover:bg-yellow-400 active:scale-95 text-black font-black text-base rounded-2xl shadow-lg shadow-[#FFB703]/20 transition-all mb-2">
-          <span id="t-welcome-start-btn">지금 바로 두뇌 연산 시작하기 🔥</span>
+          <span id="t-welcome-start-btn">연습 시작하기 →</span>
         </button>
         <p id="t-welcome-sound-hint" class="text-xs text-gray-500">※ PC에서는 숫자키(1~4)로도 빠른 정답 선택이 가능합니다.</p>
       </div>
@@ -118,13 +199,13 @@
       
       <header class="w-full flex justify-between items-center py-2 border-b border-gray-800/80 shrink-0">
         <button onclick="goToWelcomeScreen()" class="cursor-pointer active:scale-95 transition-transform text-left flex items-center gap-2 py-1 pr-2 rounded-xl hover:bg-gray-800/50">
-          <span class="px-2 py-1 bg-gray-800 border border-gray-700 rounded-lg text-xs font-bold text-[#FFB703]">🏠 홈</span>
+          <span class="brand-symbol" aria-hidden="true">H<span>♪</span></span>
           <div>
             <h2 class="text-base sm:text-lg font-black tracking-wider text-[#FFB703] leading-none">
               HARMONY BUSTER
             </h2>
             <div class="flex items-center gap-2 mt-1">
-              <span class="text-[11px] font-bold text-amber-400">🏆 최고 콤보 <strong id="bestComboText">0</strong></span>
+              <span class="text-[11px] font-bold text-amber-400">BEST <strong id="bestComboText">0</strong></span>
             </div>
           </div>
         </button>
@@ -147,32 +228,6 @@
           </button>
         </div>
       </header>
-
-      <div id="soloChipsArea" class="w-full mt-2 mb-1 shrink-0">
-        <div class="flex items-center justify-between px-1 mb-1">
-          <span class="text-xs font-extrabold text-gray-400">🕹️ 5대 개별 집중 코스</span>
-          <button onclick="selectPlayMode('TIER')" id="btnBackToMain" class="text-xs font-bold text-[#FFB703] hover:underline hidden">
-            ← 메인 챌린지 복귀
-          </button>
-        </div>
-        <div class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-          <button onclick="selectSoloGame(1)" id="btnG1" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] active:scale-95 transition-all">
-            1. 음정
-          </button>
-          <button onclick="selectSoloGame(2)" id="btnG2" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] active:scale-95 transition-all">
-            2. 조표·스케일
-          </button>
-          <button onclick="selectSoloGame(3)" id="btnG3" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] active:scale-95 transition-all">
-            3. 코드톤
-          </button>
-          <button onclick="selectSoloGame(4)" id="btnG4" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] active:scale-95 transition-all">
-            4. 전위
-          </button>
-          <button onclick="selectSoloGame(5)" id="btnG5" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-purple-500/50 rounded-xl text-xs font-bold text-purple-300 hover:border-purple-400 active:scale-95 transition-all flex items-center gap-1">
-            <span id="g5LockIcon">🔒</span> 5. 보이싱
-          </button>
-        </div>
-      </div>
 
       <div id="tierNav" class="w-full grid grid-cols-3 gap-1.5 my-1 bg-gray-900 p-1 rounded-xl text-center shrink-0">
         <button id="btnTierBeg" onclick="selectTier('BEGINNER')" class="py-2 text-xs sm:text-sm font-bold rounded-lg bg-[#FFB703] text-black active:scale-95 transition-all">
@@ -205,6 +260,7 @@
         </div>
       </div>
 
+      <div id="sessionMeta" class="session-meta" aria-live="polite"></div>
       <main class="w-full flex-1 flex flex-col justify-center my-1 min-h-0">
         <div id="cardBox" class="p-4 sm:p-5 rounded-2xl bg-gray-900/90 border-2 border-gray-800 flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden backdrop-blur-sm">
           <div class="flex items-center gap-2 mb-2">
@@ -266,7 +322,7 @@
           </div>
           <div>
             <span class="text-xs text-gray-400 block">합격선</span>
-            <span class="text-base font-black text-gray-300">85점 (17개)</span>
+            <span class="text-base font-black text-gray-300">80점 (16개)</span>
           </div>
         </div>
 
@@ -284,9 +340,72 @@
       </div>
     </section>
 
-    <!-- 3. 상시 노출 배너 & 하단 탭바 -->
-    <div class="w-full bg-gray-950 border-t border-gray-800 shrink-0 z-40">
-      <div class="grid grid-cols-2 gap-2 px-3 pt-2 pb-1.5">
+    <!-- 3. 하단 내비게이션 -->
+    <div id="bottomBar" class="w-full bg-gray-950 border-t border-gray-800 shrink-0 z-40">
+      <nav class="w-full px-2 pt-1.5 pb-safe flex justify-around items-center border-t border-gray-900">
+        <button onclick="switchTab('HOME')" id="tabHome" class="flex flex-col items-center gap-1 text-[#FFB703] active:scale-90 transition-transform py-1 px-3">
+          <span class="text-xl leading-none">🏠</span>
+          <span class="text-xs font-extrabold" data-ko="플레이" data-en="Play">플레이</span>
+        </button>
+
+        <button onclick="openCourseSheet()" id="tabSolo" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-200 active:scale-90 transition-transform py-1 px-3">
+          <span class="text-xl leading-none">🕹️</span>
+          <span class="text-xs font-extrabold" data-ko="연습실" data-en="Practice">연습실</span>
+        </button>
+
+        <button onclick="switchTab('EXAM')" id="tabExam" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-200 active:scale-90 transition-transform py-1 px-3">
+          <span class="text-xl leading-none">🎓</span>
+          <span class="text-xs font-extrabold" data-ko="승급시험" data-en="Exam">승급시험</span>
+        </button>
+
+        <button onclick="openMoreSheet()" id="tabVip" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-200 active:scale-90 transition-transform py-1 px-3">
+          <span class="text-xl leading-none">···</span>
+          <span class="text-xs font-extrabold" data-ko="더보기" data-en="More">더보기</span>
+        </button>
+      </nav>
+    </div>
+
+
+    <div id="courseSheet" class="hidden menu-overlay" role="dialog" aria-modal="true" aria-labelledby="courseTitle">
+      <div class="menu-panel">
+        <div class="sheet-handle"></div>
+        <div class="sheet-heading"><div><small>PRACTICE ROOM</small><h2 id="courseTitle" data-ko="오늘은 무엇을 연습할까요?" data-en="What will you practice?">오늘은 무엇을 연습할까요?</h2></div><button onclick="closeCourseSheet()" aria-label="닫기 / Close">✕</button></div>
+              <div id="soloChipsArea" class="w-full mt-2 mb-1 shrink-0">
+        <div class="flex items-center justify-between px-1 mb-1">
+          <span class="text-xs font-extrabold text-gray-400">🕹️ 5대 개별 집중 코스</span>
+          <button onclick="selectPlayMode('TIER')" id="btnBackToMain" class="text-xs font-bold text-[#FFB703] hover:underline hidden">
+            ← 메인 챌린지 복귀
+          </button>
+        </div>
+        <div class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+          <button onclick="selectSoloGame(1)" id="btnG1" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] active:scale-95 transition-all">
+            1. 음정
+          </button>
+          <button onclick="selectSoloGame(2)" id="btnG2" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] active:scale-95 transition-all">
+            2. 조표·스케일
+          </button>
+          <button onclick="selectSoloGame(3)" id="btnG3" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] active:scale-95 transition-all">
+            3. 코드톤
+          </button>
+          <button onclick="selectSoloGame(4)" id="btnG4" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] active:scale-95 transition-all">
+            4. 전위
+          </button>
+          <button onclick="selectSoloGame(5)" id="btnG5" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-purple-500/50 rounded-xl text-xs font-bold text-purple-300 hover:border-purple-400 active:scale-95 transition-all flex items-center gap-1">
+            <span id="g5LockIcon">🔒</span> 5. 보이싱
+          </button>
+        </div>
+      </div>
+
+
+        <p class="sheet-note" data-ko="한 번에 한 가지에 집중하세요. 문제는 중복 없이 순환합니다." data-en="Focus on one skill. Each deck cycles without repeats.">한 번에 한 가지에 집중하세요. 문제는 중복 없이 순환합니다.</p>
+      </div>
+    </div>
+    <div id="moreSheet" class="hidden menu-overlay" role="dialog" aria-modal="true" aria-labelledby="moreTitle">
+      <div class="menu-panel">
+        <div class="sheet-handle"></div>
+        <div class="sheet-heading"><div><small>YOUR HARMONY LAB</small><h2 id="moreTitle" data-ko="더보기" data-en="More">더보기</h2></div><button onclick="closeMoreSheet()" aria-label="닫기 / Close">✕</button></div>
+        <button class="membership-entry" onclick="closeMoreSheet();openVipSheetFromTab()"><span>✦ <strong data-ko="멤버십 코드" data-en="Membership code">멤버십 코드</strong><small data-ko="이번 달 코드로 고급 무제한 이용" data-en="Unlock unlimited advanced practice this month">이번 달 코드로 고급 무제한 이용</small></span><span>→</span></button>
+              <div class="grid grid-cols-2 gap-2 px-3 pt-2 pb-1.5">
         <a href="https://youtube.com/playlist?list=PLUhKlj-gxAgqQxhGNKJkvZF2ihiY0wQUC" target="_blank" class="flex items-center justify-center gap-2 py-2 px-2.5 bg-gray-900 hover:bg-gray-800 active:scale-95 border border-red-500/40 rounded-xl shadow-sm transition-all">
           <span class="text-base">📺</span>
           <div class="text-left leading-tight">
@@ -304,27 +423,9 @@
         </button>
       </div>
 
-      <nav class="w-full px-2 pt-1.5 pb-safe flex justify-around items-center border-t border-gray-900">
-        <button onclick="switchTab('HOME')" id="tabHome" class="flex flex-col items-center gap-1 text-[#FFB703] active:scale-90 transition-transform py-1 px-3">
-          <span class="text-xl leading-none">🏠</span>
-          <span class="text-xs font-extrabold">메인챌린지</span>
-        </button>
 
-        <button onclick="switchTab('SOLO')" id="tabSolo" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-200 active:scale-90 transition-transform py-1 px-3">
-          <span class="text-xl leading-none">🕹️</span>
-          <span class="text-xs font-extrabold">개별훈련</span>
-        </button>
-
-        <button onclick="switchTab('EXAM')" id="tabExam" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-200 active:scale-90 transition-transform py-1 px-3">
-          <span class="text-xl leading-none">🎓</span>
-          <span class="text-xs font-extrabold">승급시험</span>
-        </button>
-
-        <button onclick="openVipSheetFromTab()" id="tabVip" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-200 active:scale-90 transition-transform py-1 px-3">
-          <span class="text-xl leading-none">👑</span>
-          <span class="text-xs font-extrabold">멤버십코드</span>
-        </button>
-      </nav>
+        <p class="sheet-note">HARMONY BUSTER · by Jun Kim</p>
+      </div>
     </div>
 
     <!-- 4. 후원 모달 -->
@@ -377,7 +478,7 @@
             🎯 <strong>Drop 2 & Drop 3 정밀 마스터</strong>: 1-5-7-3, 1-7-3-5 공식에 따른 완벽한 실전 보이싱을 훈련합니다.
           </p>
           <p class="leading-relaxed text-gray-400">
-            ✨ <strong>준킴 유튜브 멤버십 회원</strong>에게 영구 무제한으로 제공되는 스페셜 코스입니다.
+            ✨ <strong>준킴 유튜브 멤버십 회원</strong>에게 매월 코드 인증 후 무제한으로 제공되는 스페셜 코스입니다.
           </p>
         </div>
 
@@ -420,6 +521,30 @@
   </div>
 
   <script>
+
+    let menuReturnFocus = null;
+    function openMenu(id) {
+      menuReturnFocus = document.activeElement;
+      isTimerPaused = true;
+      document.getElementById(id).classList.remove('hidden');
+      document.getElementById(id).querySelector('button')?.focus();
+    }
+    function closeMenu(id) {
+      document.getElementById(id).classList.add('hidden');
+      isTimerPaused = false;
+      menuReturnFocus?.focus?.();
+    }
+    function openCourseSheet() { openMenu('courseSheet'); }
+    function closeCourseSheet() { closeMenu('courseSheet'); }
+    function openMoreSheet() { openMenu('moreSheet'); }
+    function closeMoreSheet() { closeMenu('moreSheet'); }
+    function updateSessionMeta() {
+      const en = currentLang === 'EN';
+      const label = isExamMode ? (en ? 'LICENSE EXAM' : '승급시험') : playMode === 'SOLO' ? (en ? 'FOCUSED PRACTICE' : '개별 집중 연습') : (en ? 'DAILY CHALLENGE' : '오늘의 챌린지');
+      const detail = isExamMode ? examCurrentIndex + ' / 20' : isAdvancedPractice() ? (hasCurrentVip() ? (en ? 'MEMBER · UNLIMITED' : '멤버십 · 무제한') : (en ? 'FREE ' : '무료 체험 ') + advancedUsed() + ' / 10') : (en ? 'One question at a time' : '한 문제씩, 음악의 감각으로');
+      document.getElementById('sessionMeta').innerHTML = '<span>'+label+'</span><strong>'+detail+'</strong>';
+    }
+
     let audioCtx = null;
     let isMuted = localStorage.getItem('hb_muted') === 'true';
 
@@ -489,15 +614,15 @@
     const I18N = {
       KO: {
         welcomeSub: "화성학 두뇌 연산 자동화 트레이너",
-        welcomeBadge: "🧠 두뇌 화성 연산 자동화 트레이너",
-        welcomeHeadline: '"악보를 보고 생각하는 3초는 늦습니다.<br />악기를 잡기 전 머릿속 연산을 0.1초 만에 자동화하세요!"',
-        welcomeStartBtn: "지금 바로 두뇌 연산 시작하기 🔥",
+        welcomeBadge: "DAILY HARMONY TRAINING",
+        welcomeHeadline: '하루 한 번, 화성학을 플레이하세요.<br />생각하던 음이 자연스러운 감각이 될 때까지.',
+        welcomeStartBtn: "연습 시작하기 →",
         welcomeSoundHint: "※ PC에서는 숫자키(1~4)로도 빠른 정답 선택이 가능합니다.",
-        tierBeg: "초급 (4선다)",
-        tierInt: "중급 (키패드)",
+        tierBeg: "초급",
+        tierInt: "중급",
         tierAdv: "고급",
         tierIntLocked: "🔒 중급",
-        tierAdvLocked: "🔒 고급 (시험 통과)",
+        tierAdvLocked: "🔒 고급",
         unlockGuide: "중급 해금 조건: 10 콤보 달성",
         previewLabel: "선택한 코드:",
         previewClear: "⌫ 지우기",
@@ -519,15 +644,15 @@
         needRootAlert: "먼저 Root 음을 선택해주세요!",
         intUnlockAlert: "🎉 축하합니다! 10 콤보를 달성하여 [중급 모드]가 해금되었습니다!",
         intRequireAlert: "🔒 초급에서 10 콤보를 먼저 달성해야 중급이 열립니다!",
-        advRequireAlert: "🔒 하단 [🎓 승급시험] 탭에서 85점 이상을 달성하면 고급 모드가 열립니다!",
-        vipSuccessAlert: "🎉 VIP 인증 완료! 5. 보이싱 버스터 모드가 영구 해금되었습니다.",
+        advRequireAlert: "🔒 하단 [🎓 승급시험] 탭에서 80점 이상을 달성하면 고급 모드가 열립니다!",
+        vipSuccessAlert: "🎉 VIP 인증 완료! 이번 달 고급 무제한 이용이 활성화되었습니다.",
         vipFailAlert: "올바르지 않은 코드입니다. 유튜브 커뮤니티 전용 코드를 확인해 주세요."
       },
       EN: {
         welcomeSub: "Instinctive Music Theory Brain Trainer",
         welcomeBadge: "🧠 Brain Harmony Reflex Trainer",
-        welcomeHeadline: '"Thinking for 3 seconds is too late.<br />Automate harmony calculations in 0.1s!"',
-        welcomeStartBtn: "Start Brain Training Now 🔥",
+        welcomeHeadline: 'A little practice. A stronger musical instinct.<br />Make harmony part of your daily rhythm.',
+        welcomeStartBtn: "Start practicing →",
         welcomeSoundHint: "※ Use number keys (1-4) on PC for fast answers.",
         tierBeg: "Beginner",
         tierInt: "Intermediate",
@@ -555,8 +680,8 @@
         needRootAlert: "Please select a Root note first!",
         intUnlockAlert: "🎉 Congratulations! You reached 10 Combo and unlocked Intermediate Mode!",
         intRequireAlert: "🔒 Reach 10 Combo in Beginner Mode to unlock Intermediate!",
-        advRequireAlert: "🔒 Pass the License Exam (85%+) in the bottom tab to unlock Advanced!",
-        vipSuccessAlert: "🎉 VIP Verified! Voicing Buster is permanently unlocked.",
+        advRequireAlert: "🔒 Pass the License Exam (80%+) in the bottom tab to unlock Advanced!",
+        vipSuccessAlert: "🎉 VIP Verified! Unlimited advanced access is active for this month.",
         vipFailAlert: "Invalid code. Please check your YouTube Community tab."
       }
     };
@@ -567,6 +692,8 @@
       currentLang = lang;
       localStorage.setItem('hb_lang', lang);
       const dict = I18N[lang];
+      document.querySelectorAll("[data-ko]").forEach(el => { el.textContent = el.dataset[lang === "EN" ? "en" : "ko"]; });
+      updateSessionMeta();
 
       document.getElementById('langLabelWelcome').innerText = lang === 'KO' ? 'EN' : 'KO';
       document.getElementById('langLabelGame').innerText = lang === 'KO' ? 'EN' : 'KO';
@@ -594,7 +721,7 @@
       document.getElementById('t-modal-donate-close').innerText = dict.donateClose;
 
       updateTabsUI();
-      if (currentQuestion) {
+      if (currentQuestion && !advancedGateBlocked) {
         renderCurrentQuestionText();
         if (isQuestionActive) renderPad();
       }
@@ -611,6 +738,53 @@
       if (saved) userProgress = { ...userProgress, ...JSON.parse(saved) };
     } catch(e) {}
 
+    // Monthly code configuration. November remains unchanged.
+    // Static-only convenience gate: localStorage/JS can be bypassed. Real paid
+    // access requires server-side account entitlement checks on every request.
+    const VIP_CODE_CONFIG = {
+      month: '2026-11',
+      sha256: '9a6280aadd84df72890daa7439a16996eb8a0d62320e4b973bac59cef6751bc7'
+    };
+    const ADVANCED_FREE_LIMIT = 10;
+    function membershipMonth(date = new Date()) {
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit'
+      }).formatToParts(date);
+      return parts.find(p => p.type === 'year').value + '-' + parts.find(p => p.type === 'month').value;
+    }
+    function hasCurrentVip() {
+      return userProgress.vipMonth === membershipMonth() && VIP_CODE_CONFIG.month === membershipMonth();
+    }
+    function advancedUsed() {
+      return Math.max(0, Math.floor(Number(userProgress.advancedFreeUsed) || 0));
+    }
+    let advancedGateBlocked = false;
+    function isAdvancedPractice() {
+      return !isExamMode && ((playMode === 'TIER' && currentTier === 'ADVANCED') ||
+        (playMode === 'SOLO' && currentSoloGame === 5));
+    }
+    function allowAdvancedQuestion() {
+      if (!isAdvancedPractice()) return true;
+      if (!userProgress.examPassed) {
+        alert(I18N[currentLang].advRequireAlert);
+        return false;
+      }
+      if (hasCurrentVip()) return true;
+      if (advancedUsed() >= ADVANCED_FREE_LIMIT) {
+        advancedGateBlocked = true;
+        stopTimer();
+        document.getElementById('feedbackBox').classList.add('hidden');
+        document.getElementById('inputPadArea').innerHTML = '';
+        document.getElementById('qText').innerText = currentLang === 'KO'
+          ? '고급 무료 10문항을 모두 이용했습니다. 이번 달 멤버십 코드를 입력하면 무제한으로 계속할 수 있습니다.'
+          : 'All 10 free advanced questions have been used. Enter this month’s membership code to continue.';
+        openVipSheetFromTab();
+        return false;
+      }
+      userProgress.advancedFreeUsed = advancedUsed() + 1;
+      saveState();
+      return true;
+    }
     let playMode = 'TIER';
     let currentTier = 'BEGINNER';
     let currentSoloGame = 1;
@@ -678,7 +852,7 @@
       if (wrong.length < 2) throw new Error('Insufficient distractors: '+signature);
       QUESTION_POOLS[category].push(Object.freeze({signature, qKO,qEN,ans,
         candidates:Object.freeze(wrong),type:'MCQ',catKO,catEN,
-        gameTag:category === 'advanced' ? 'PRO SCALE LAB' : `GAME ${category}. HARMONY BUSTER`,url:YOUTUBE_URL}));
+        gameTag:category === 'advanced' ? 'PRO SCALE LAB' : `${["","INTERVAL","SCALE","CHORD TONES","INVERSIONS","VOICING"][category]}`,url:YOUTUBE_URL}));
     }
     for (const root of ROOTS_POOL) {
       for (const [name,sem,degree,ko] of INTERVALS) {
@@ -812,6 +986,7 @@
     }
 
     function openSupportSheet() {
+      closeMoreSheet();
       isTimerPaused = true;
       document.getElementById('supportSheet').classList.remove('hidden');
     }
@@ -845,9 +1020,9 @@
     }
 
     function selectSoloGame(num) {
-      if (num === 5 && !userProgress.isVip) {
-        isTimerPaused = true;
-        document.getElementById('vipModal').classList.remove('hidden');
+      closeCourseSheet();
+      if (num === 5 && !userProgress.examPassed) {
+        alert(I18N[currentLang].advRequireAlert);
         return;
       }
 
@@ -906,7 +1081,7 @@
         btnInt.className = 'py-2 text-xs sm:text-sm font-bold rounded-lg text-gray-600 cursor-not-allowed';
       }
 
-      if (userProgress.advancedUnlocked || userProgress.examPassed || userProgress.isVip) {
+      if (userProgress.examPassed) {
         btnAdv.innerText = dict.tierAdv;
         btnAdv.className = `py-2 text-xs sm:text-sm font-bold rounded-lg transition-all ${currentTier === 'ADVANCED' && playMode === 'TIER' ? 'bg-[#FFB703] text-black shadow-lg' : 'text-gray-300'}`;
       } else {
@@ -914,12 +1089,14 @@
         btnAdv.className = 'py-2 text-xs sm:text-sm font-bold rounded-lg text-gray-600 cursor-not-allowed';
       }
 
-      if (userProgress.isVip) {
+      if (hasCurrentVip()) {
         document.getElementById('g5LockIcon').innerText = '👑';
+      } else {
+        document.getElementById('g5LockIcon').innerText = userProgress.examPassed ? '🎯' : '🔒';
       }
 
       const guideBar = document.getElementById('unlockGuideBar');
-      if (!userProgress.intermediateUnlocked && playMode === 'TIER') {
+      if (!isExamMode && !userProgress.intermediateUnlocked && playMode === 'TIER') {
         guideBar.classList.remove('hidden');
         document.getElementById('unlockProgress').innerText = combo;
       } else {
@@ -938,7 +1115,7 @@
         alert(dict.intRequireAlert);
         return;
       }
-      if (t === 'ADVANCED' && !userProgress.advancedUnlocked && !userProgress.examPassed && !userProgress.isVip) {
+      if (t === 'ADVANCED' && !userProgress.examPassed) {
         alert(dict.advRequireAlert);
         return;
       }
@@ -952,7 +1129,7 @@
     function startExamMode() {
       cancelPendingNext();
       isTimerPaused = true;
-      if (!confirm('🎓 [고급 승급 라이선스 시험]\n- 총 20문항 실전 테스트\n- 합격 기준: 85점 이상 (17문제 이상 정답)\n- 통과 시 프로 고급 모드가 영구 해금됩니다!\n\n시험을 시작하시겠습니까?')) {
+      if (!confirm('🎓 [고급 승급 라이선스 시험]\n- 총 20문항 실전 테스트\n- 합격 기준: 80점 이상 (16문제 이상 정답)\n- 통과 시 프로 고급 모드가 영구 해금됩니다!\n\n시험을 시작하시겠습니까?')) {
         isTimerPaused = false;
         return;
       }
@@ -993,7 +1170,7 @@
       const finalScore = Math.round((examCorrectCount / examTotalCount) * 100);
       document.getElementById('examFinalScore').innerText = `${finalScore}점`;
 
-      const isPass = finalScore >= 85;
+      const isPass = finalScore >= 80;
       const icon = document.getElementById('examResultIcon');
       const title = document.getElementById('examResultTitle');
       const desc = document.getElementById('examResultDesc');
@@ -1021,14 +1198,14 @@
         icon.innerText = '🎉';
         title.innerText = '축하합니다! 라이선스 합격!';
         title.className = 'text-lg font-black text-[#06D6A0] mb-1';
-        desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong>를 맞혔습니다.<br />이제 모든 <strong>[고급 모드]</strong>가 영구 해금되었습니다!`;
+        desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong>를 맞혔습니다.<br />이제 <strong>[고급 모드]</strong>에 진입할 수 있습니다!<br />무료 체험은 총 10문항이며, 이후 매월 멤버십 코드가 필요합니다.`;
         actionBtn.innerText = '고급 모드 바로 시작하기 🚀';
         actionBtn.className = 'w-full py-3.5 bg-[#06D6A0] hover:bg-emerald-400 text-black font-black text-sm rounded-xl transition-all shadow-lg active:scale-95';
       } else {
         icon.innerText = '💡';
         title.innerText = '아쉽습니다! 재도전 필요';
         title.className = 'text-lg font-black text-[#EF476F] mb-1';
-        desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong> 정답 (기준: 17문제 이상).<br />오답 노트를 확인하고 다시 도전해 보세요!`;
+        desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong> 정답 (기준: 16문제 이상).<br />오답 노트를 확인하고 다시 도전해 보세요!`;
         actionBtn.innerText = '시험 다시 치르기 🔄';
         actionBtn.className = 'w-full py-3.5 bg-[#FFB703] hover:bg-yellow-400 text-black font-black text-sm rounded-xl transition-all shadow-lg active:scale-95';
       }
@@ -1132,6 +1309,9 @@
 
     function nextQuestion() {
       cancelPendingNext();
+      stopTimer();
+      if (!allowAdvancedQuestion()) return;
+      advancedGateBlocked = false;
       if (isExamMode) {
         examCurrentIndex++;
         if (examCurrentIndex > examTotalCount) {
@@ -1149,6 +1329,7 @@
 
       currentQuestion = generateQuestion();
       renderCurrentQuestionText();
+      updateSessionMeta();
 
       const card = document.getElementById('cardBox');
       card.className = "p-4 sm:p-5 rounded-2xl bg-gray-900/90 border-2 border-gray-800 flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden backdrop-blur-sm";
@@ -1356,13 +1537,18 @@
       }
       const hash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(code))))
         .map(b => b.toString(16).padStart(2,'0')).join('');
-      if (hash === '9a6280aadd84df72890daa7439a16996eb8a0d62320e4b973bac59cef6751bc7') {
-        userProgress.isVip = true;
+      if (VIP_CODE_CONFIG.month !== membershipMonth()) {
+        alert(currentLang === 'KO' ? '이번 달 코드 업데이트를 기다려 주세요.' : 'Please wait for this month’s code update.');
+        return;
+      }
+      if (hash === VIP_CODE_CONFIG.sha256) {
+        userProgress.vipMonth = membershipMonth();
+        userProgress.isVip = false; // Legacy permanent unlock is no longer used.
         saveState();
         closeVipModal();
         alert(dict.vipSuccessAlert);
         updateTabsUI();
-        selectSoloGame(5);
+        if (advancedGateBlocked && userProgress.examPassed) nextQuestion();
       } else {
         alert(dict.vipFailAlert || "Invalid code.");
       }
@@ -1374,6 +1560,15 @@
     }
 
     window.addEventListener('keydown', (e) => {
+      const menuId = ['courseSheet','moreSheet'].find(id => !document.getElementById(id).classList.contains('hidden'));
+      if (menuId && e.key === 'Escape') { closeMenu(menuId); return; }
+      if (menuId && e.key === 'Tab') {
+        const buttons = [...document.getElementById(menuId).querySelectorAll('button,a[href]')].filter(el => el.getClientRects().length);
+        const first=buttons[0], last=buttons[buttons.length-1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+        return;
+      }
       if (isTimerPaused || e.repeat || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
       const fbBox = document.getElementById('feedbackBox');
       if (!fbBox.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) {
