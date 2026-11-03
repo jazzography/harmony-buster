@@ -837,11 +837,20 @@
     ];
     const INTERVAL_EXACT_MAP = Object.fromEntries(ROOTS_POOL.map(r => [r,
       Object.fromEntries(INTERVALS.map(([name,sem,degree]) => [name,getNoteByInterval(r,sem,degree)]))]));
-    const CHORD_INTERVALS = {maj7:[0,4,7,11], '7':[0,4,7,10], m7:[0,3,7,10],
-      'm(maj7)':[0,3,7,11], m7b5:[0,3,6,10], dim7:[0,3,6,9]};
-    const TRIADS = {'':[0,4,7], m:[0,3,7], dim:[0,3,6], aug:[0,4,8]};
+    const CHORD_INTERVALS = {
+      M7:[0,4,7,11], '7':[0,4,7,10], m7:[0,3,7,10], m7b5:[0,3,6,10], dim7:[0,3,6,9],
+      mM7:[0,3,7,11], aug7:[0,4,8,10], 'M7+':[0,4,8,11],
+      '6':[0,4,7,9], m6:[0,3,7,9], '7sus':[0,5,7,10]
+    };
+    const TRIADS = {'':[0,4,7], m:[0,3,7], dim:[0,3,6], aug:[0,4,8], sus4:[0,5,7]};
+    const INTERMEDIATE_FOUR = ['M7','7','m7','m7b5','dim7'];
+    const CHORD_DEGREES=new Map([...Object.entries(TRIADS),...Object.entries(CHORD_INTERVALS)].map(([quality,iv])=>[
+      iv,quality==='sus4'?[1,4,5]:quality==='7sus'?[1,4,5,7]:['6','m6'].includes(quality)?[1,3,5,6]:iv.map((_,i)=>2*i+1)
+    ]));
     function chordNotes(root, intervals) {
-      return intervals.map((sem,i) => getNoteByInterval(root,sem,2*i+1));
+      const degrees=CHORD_DEGREES.get(intervals);
+      if(!degrees) throw new Error('Missing chord degree definition');
+      return intervals.map((sem,i) => getNoteByInterval(root,sem,degrees[i]));
     }
     const CHORD_TONES_DATABASE = Object.fromEntries(ROOTS_POOL.map(r => [r,
       Object.fromEntries(Object.entries(CHORD_INTERVALS).map(([q,iv]) => [q,chordNotes(r,iv).join(' ')]))]));
@@ -853,17 +862,17 @@
     const BASIC_INTERVALS = ['P1','P4','P5','P8','M2','m2','M3','m3','M6','m6','M7','m7'];
     const LEVELS = {BEGINNER:1,INTERMEDIATE:2,ADVANCED:3};
     const QUESTION_POOLS = {1:[],2:[],3:[],4:[],5:[]};
-    function addQuestion(category, root, level, family, signature, qKO, qEN, ans, candidates, catKO, catEN) {
+    function addQuestion(category, root, level, family, signature, qKO, qEN, ans, candidates, catKO, catEN, metadata={}) {
       const wrong=[...new Set(candidates)].filter(x=>x!==ans);
       if(wrong.length<2) throw new Error('Insufficient options: '+signature);
-      const quality=category===3?signature.slice(signature.indexOf(':')+1+root.length):null;
+      const quality=metadata.quality??(category===3?signature.slice(signature.indexOf(':')+1+root.length):null);
       const chordSize=quality===null?null:CHORDS[quality].length;
       QUESTION_POOLS[category].push(Object.freeze({category,root,level,family,signature,qKO,qEN,ans,quality,chordSize,
         candidates:Object.freeze(wrong),type:'MCQ',catKO,catEN,
         gameTag:['','INTERVAL','SCALE','CHORD LAB','INVERSIONS','VOICING'][category],url:YOUTUBE_URL}));
     }
     const CHORDS = {...TRIADS,...CHORD_INTERVALS};
-    const BASIC_CHORDS = ['','m','dim'];
+    const BASIC_CHORDS = Object.keys(TRIADS);
     function rotateNotes(notes,n) { return [...notes.slice(n),...notes.slice(0,n)]; }
     const INV_NAMES=['Root','1st','2nd','3rd'];
     for(const root of ROOTS_POOL) {
@@ -885,7 +894,7 @@
       const en=sharp?`${sharp} sharps`:flat?`${flat} flats`:'no sharps or flats';
       addQuestion(2,root,1,'signature',`signature:${root}`,`${ko}: 해당하는 장조는?`,`Which major key has ${en}?`,root+' Major',ROOTS_POOL.map(r=>r+' Major'),'장조 조표','Major key signatures');
       for(const [quality,iv] of Object.entries(CHORDS)) {
-        const tones=chordNotes(root,iv),name=root+quality,level=BASIC_CHORDS.includes(quality)?1:2;
+        const tones=chordNotes(root,iv),name=root+quality,level=BASIC_CHORDS.includes(quality)?1:INTERMEDIATE_FOUR.includes(quality)?2:3;
         const peers=Object.entries(CHORDS).filter(([q,v])=>v.length===iv.length);
         addQuestion(3,root,level,'rootTones',`tones:${name}`,
           `${name}의 기본위치 코드톤은?`,`Spell ${name} in root position.`,tones.join(' '),
@@ -897,25 +906,25 @@ Name this chord.`,name,
           peers.map(([q])=>root+q),'코드 이름 · 기본위치','Chord naming · root position');
         for(let inversion=1;inversion<tones.length;inversion++) {
           const ordered=rotateNotes(tones,inversion),slash=name+'/'+ordered[0];
-          addQuestion(4,root,2,'closedTones',`closed:${name}:${inversion}`,
+          addQuestion(4,root,Math.max(2,level),'closedTones',`closed:${name}:${inversion}`,
             `${slash}의 클로즈드 보이싱은?
 낮은 음 → 높은 음 (한 옥타브 이내)`,
             `Spell ${slash} in close position, low to high (within one octave).`,ordered.join(' – '),
-            tones.map((_,i)=>rotateNotes(tones,i).join(' – ')),`${tones.length}화음 · 클로즈드 전위`,`${tones.length}-note chord · close position`);
-          addQuestion(4,root,2,'inversion',`inversion:${name}:${inversion}`,
+            tones.map((_,i)=>rotateNotes(tones,i).join(' – ')),`${tones.length}화음 · 클로즈드 전위`,`${tones.length}-note chord · close position`,{quality});
+          addQuestion(4,root,Math.max(2,level),'inversion',`inversion:${name}:${inversion}`,
             `${name} · ${ordered.join(' – ')}
 낮은 음부터 배열한 이 코드의 전위는?`,
             `${name} · ${ordered.join(' – ')} (low to high)
-Which inversion is this?`,INV_NAMES[inversion],INV_NAMES.slice(0,tones.length),'전위 판독','Inversion identification');
-          addQuestion(4,root,2,'closedName',`closedName:${name}:${inversion}`,
+Which inversion is this?`,INV_NAMES[inversion],INV_NAMES.slice(0,tones.length),'전위 판독','Inversion identification',{quality});
+          addQuestion(4,root,Math.max(2,level),'closedName',`closedName:${name}:${inversion}`,
             `근음 ${root} · ${ordered.join(' – ')}
 클로즈드 보이싱의 코드명/베이스는?`,
             `Root ${root} · ${ordered.join(' – ')} (low to high)
 Name this close-position slash chord.`,slash,
-            peers.map(([q])=>root+q+'/'+ordered[0]),'전위 코드 이름','Inverted chord naming');
+            peers.map(([q])=>root+q+'/'+ordered[0]),'전위 코드 이름','Inverted chord naming',{quality});
         }
       }
-      for(const quality of ['maj7','7','m7','m7b5']) {
+      for(const quality of Object.keys(CHORD_INTERVALS)) {
         const tones=chordNotes(root,CHORD_INTERVALS[quality]);
         for(const drop of [2,3]) {
           const forms=drop===2?[[0,2,3,1],[1,3,0,2],[2,0,1,3],[3,1,2,0]]:[[0,3,1,2],[1,0,2,3],[2,1,3,0],[3,2,0,1]];
@@ -924,7 +933,7 @@ Name this close-position slash chord.`,slash,
 베이스 ${tones[f[0]]}인 보이싱의 탑 노트는?`,
             `${root}${quality} · Drop ${drop}
 What is the top note with ${tones[f[0]]} in the bass?`,
-            tones[f[3]],tones,'Drop 보이싱 · 저음→고음','Drop voicing · low to high'));
+            tones[f[3]],tones,'Drop 보이싱 · 저음→고음','Drop voicing · low to high',{quality}));
         }
       }
     }
@@ -933,10 +942,8 @@ What is the top note with ${tones[f[0]]} in the bass?`,
     // the new gentle onboarding. Unlocks and membership records remain intact.
     function beginnerCompleted() { return Math.max(0,Number(userProgress.beginnerGentleCompleted)||0); }
     const BEGINNER_STAGES = [
-      {until:50,keys:['C','F','Bb','G','D','A'],qualities:['','m'],intervals:['P1','P4','P5','P8','M2','m2','M3','m3']},
-      {until:100,keys:BEGINNER_KEYS,qualities:['','m','dim'],intervals:BASIC_INTERVALS},
-      {until:150,keys:BEGINNER_KEYS,qualities:['','m','dim'],intervals:BASIC_INTERVALS},
-      {until:Infinity,keys:BEGINNER_KEYS,qualities:['','m','dim'],intervals:BASIC_INTERVALS}
+      {until:20,keys:['C','F','Bb','G','D','A'],qualities:['','m'],intervals:['P1','P4','P5','P8','M2','m2','M3','m3']},
+      {until:Infinity,keys:BEGINNER_KEYS,qualities:Object.keys(TRIADS),intervals:BASIC_INTERVALS}
     ];
     function beginnerStage() { return BEGINNER_STAGES.find(stage=>beginnerCompleted()<stage.until); }
     function eligibleQuestion(q,tier) {
@@ -947,14 +954,11 @@ What is the top note with ${tones[f[0]]} in the bass?`,
       if(q.category===1) return stage.intervals.includes(q.signature.split(':').at(-1));
       if(q.category===3) {
         if(q.chordSize!==3||!stage.qualities.includes(q.quality)) return false;
-        // Bb minor is available from the start; delay other flat-root minor/diminished triads.
-        if(beginnerCompleted()<100 && q.root.includes('b') && q.quality!=='' && !(q.root==='Bb' && q.quality==='m')) return false;
-        if(beginnerCompleted()<150 && chordNotes(q.root,CHORDS[q.quality]).some(n=>/bb|##/.test(n))) return false;
       }
       return q.category<=3;
     }
     // Fisher-Yates queues are shared across tier/solo modes. Changing levels or
-    // crossing 50 completed questions does not discard the remaining cards.
+    // crossing 20 completed questions does not discard the remaining cards.
     class QuestionDeck {
       constructor(pool) { this.pool=[...new Map(pool.map(q=>[q.signature,q])).values()]; this.cards=shuffleArray(this.pool);this.last=null; }
       draw(predicate=()=>true) {
@@ -981,7 +985,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
     // One persistent root cursor per tier/phase, shared by main and solo practice.
     // Old progress is preserved; a newly introduced cursor starts at C.
     function rootCycleKey(tier) {
-      return tier==='BEGINNER'?(beginnerCompleted()<50?'beginnerEarly':'beginnerFull'):tier;
+      return tier==='BEGINNER'?(beginnerCompleted()<20?'beginnerEarly':'beginnerFull'):tier;
     }
     function nextScheduledRoot(tier) {
       const key=rootCycleKey(tier),cycle=ROOT_CYCLES[key];
@@ -1011,13 +1015,27 @@ What is the top note with ${tones[f[0]]} in the bass?`,
         tier==='INTERMEDIATE'?['interval','scale','chord','signature','inversion']:
         ['interval','scale','chord','signature','inversion','drop'];
     }
+    function balancedChoice(key,values) {
+      if(!userProgress.chordBagsV1||typeof userProgress.chordBagsV1!=='object')userProgress.chordBagsV1={};
+      const fullKey=key+':'+values.join('|');
+      let bag=userProgress.chordBagsV1[fullKey];
+      if(!Array.isArray(bag)||!bag.length||new Set(bag).size!==bag.length||bag.some(v=>!values.includes(v)))bag=shuffleArray(values);
+      const value=bag.pop();userProgress.chordBagsV1[fullKey]=bag;return value;
+    }
+    function balancedChordSpec(tier,group) {
+      const size=tier==='BEGINNER'?3:group==='drop'?4:balancedChoice(tier+':size',[3,4]);
+      const qualities=size===3?(tier==='BEGINNER'?beginnerStage().qualities:Object.keys(TRIADS)):
+        tier==='INTERMEDIATE'?INTERMEDIATE_FOUR:Object.keys(CHORD_INTERVALS);
+      return {size,quality:balancedChoice(tier+':quality:'+size,qualities)};
+    }
     function drawScheduledQuestion(tier,solo=null) {
       const step=nextScheduledRoot(tier),groups=allowedGroups(tier,solo);
       const rotation=tier+':'+(solo===null?'main':solo);
       if(!CATEGORY_ROTATIONS[rotation]?.length) CATEGORY_ROTATIONS[rotation]=shuffleArray(groups);
       const group=CATEGORY_ROTATIONS[rotation].pop();
-      const key=step.root+':'+group;
-      if(!ROOT_DECKS[key]) ROOT_DECKS[key]=new QuestionDeck(Object.values(QUESTION_POOLS).flat().filter(q=>q.root===step.root&&QUESTION_GROUPS[group](q)));
+      const spec=['chord','inversion','drop'].includes(group)?balancedChordSpec(tier,group):null;
+      const key=step.root+':'+group+(spec?':'+spec.quality:'');
+      if(!ROOT_DECKS[key]) ROOT_DECKS[key]=new QuestionDeck(Object.values(QUESTION_POOLS).flat().filter(q=>q.root===step.root&&QUESTION_GROUPS[group](q)&&(!spec||q.quality===spec.quality)));
       const q=ROOT_DECKS[key].draw(q=>eligibleQuestion(q,tier));
       // Advance only after a question was successfully selected, never on answer,
       // language changes, failed access checks or opening a menu.
@@ -1027,6 +1045,14 @@ What is the top note with ${tones[f[0]]} in the bass?`,
     function presentQuestion(q) {
       // Beginner key-signature distractors also stay within the requested 12 keys.
       let candidates=q.candidates;
+      const optionTier=isExamMode?'INTERMEDIATE':currentTier;
+      if(q.quality!==null && ['rootTones','rootName','closedName'].includes(q.family)) {
+        const allowed=Object.entries(CHORDS).filter(([quality,iv])=>iv.length===q.chordSize &&
+          (iv.length===3||optionTier==='ADVANCED'||INTERMEDIATE_FOUR.includes(quality)));
+        candidates=q.family==='rootTones'?allowed.map(([quality,iv])=>chordNotes(q.root,iv).join(' ')):
+          allowed.map(([quality])=>q.root+quality+(q.family==='closedName'?'/'+q.ans.split('/')[1]:''));
+        candidates=[...new Set(candidates)].filter(ans=>ans!==q.ans);
+      }
       if(!isExamMode&&currentTier==='BEGINNER') {
         if(q.family==='signature') candidates=candidates.filter(n=>beginnerStage().keys.includes(n.replace(' Major','')));
         if(q.category===3) {
@@ -1053,7 +1079,14 @@ What is the top note with ${tones[f[0]]} in the bass?`,
       const seen=new Set(),pool=Object.values(QUESTION_POOLS).flat();
       return topics.map((predicate,index)=>{
         const root=ROOT_CYCLES.INTERMEDIATE[index%ROOT_CYCLES.INTERMEDIATE.length];
-        const choices=pool.filter(q=>q.root===root&&predicate(q)&&eligibleQuestion(q,'INTERMEDIATE')&&!seen.has(q.signature));
+        let choices=pool.filter(q=>q.root===root&&predicate(q)&&eligibleQuestion(q,'INTERMEDIATE')&&!seen.has(q.signature));
+        if(choices[0]?.quality!==null && choices.length) {
+          const sizes=[...new Set(choices.map(q=>q.chordSize))];
+          const size=sizes.length===1?sizes[0]:balancedChoice('INTERMEDIATE:size',[3,4]);
+          const qualities=size===3?Object.keys(TRIADS):INTERMEDIATE_FOUR;
+          const quality=balancedChoice('INTERMEDIATE:quality:'+size,qualities);
+          choices=choices.filter(q=>q.chordSize===size&&q.quality===quality);
+        }
         if(!choices.length) throw new Error('No unique exam question for '+root);
         const q=shuffleArray(choices)[0];seen.add(q.signature);return q;
       });
