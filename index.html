@@ -934,8 +934,8 @@ What is the top note with ${tones[f[0]]} in the bass?`,
     function beginnerCompleted() { return Math.max(0,Number(userProgress.beginnerGentleCompleted)||0); }
     const BEGINNER_STAGES = [
       {until:50,keys:['C','F','Bb','G','D','A'],qualities:['','m'],intervals:['P1','P4','P5','P8','M2','m2','M3','m3']},
-      {until:100,keys:['C','G','F','D','A','E','Bb','Eb'],qualities:['','m','dim'],intervals:BASIC_INTERVALS},
-      {until:150,keys:['C','G','F','D','A','E','Bb','Eb','B','Ab'],qualities:['','m','dim'],intervals:BASIC_INTERVALS},
+      {until:100,keys:BEGINNER_KEYS,qualities:['','m','dim'],intervals:BASIC_INTERVALS},
+      {until:150,keys:BEGINNER_KEYS,qualities:['','m','dim'],intervals:BASIC_INTERVALS},
       {until:Infinity,keys:BEGINNER_KEYS,qualities:['','m','dim'],intervals:BASIC_INTERVALS}
     ];
     function beginnerStage() { return BEGINNER_STAGES.find(stage=>beginnerCompleted()<stage.until); }
@@ -957,7 +957,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
     // crossing 50 completed questions does not discard the remaining cards.
     class QuestionDeck {
       constructor(pool) { this.pool=[...new Map(pool.map(q=>[q.signature,q])).values()]; this.cards=shuffleArray(this.pool);this.last=null; }
-      draw(predicate=()=>true,progressive=false) {
+      draw(predicate=()=>true) {
         let available=this.cards.filter(predicate);
         if(!available.length) {
           const eligible=this.pool.filter(predicate);
@@ -966,30 +966,63 @@ What is the top note with ${tones[f[0]]} in the bass?`,
           available=this.cards.filter(predicate);
         }
         let choices=available;
-        if(progressive) {
-          const early=completedPractice()<50;
-          const easy=available.filter(q=>EASY_KEYS.includes(q.root));
-          const hard=available.filter(q=>!EASY_KEYS.includes(q.root));
-          const preferEasy=Math.random()<(early?0.9:0.55);
-          choices=preferEasy?(easy.length?easy:hard):(hard.length?hard:easy);
-        }
-        if(progressive && choices[0]?.category===1) {
-          const basic=choices.filter(q=>q.level===1), altered=choices.filter(q=>q.level===2);
-          const preferBasic=Math.random()<(completedPractice()<50?0.8:0.4);
-          choices=preferBasic?(basic.length?basic:altered):(altered.length?altered:basic);
-        }
         if(choices.length>1) choices=choices.filter(q=>q.signature!==this.last);
         else if(choices[0].signature===this.last && available.length>1) choices=available.filter(q=>q.signature!==this.last);
         // Queue order is already Fisher-Yates shuffled; choose the last eligible card.
         const q=choices[choices.length-1];this.cards.splice(this.cards.indexOf(q),1);this.last=q.signature;return q;
       }
     }
-    const CATEGORY_DECKS=Object.fromEntries(Object.entries(QUESTION_POOLS).map(([k,v])=>[k,new QuestionDeck(v)]));
+    const ROOT_CYCLES = {
+      beginnerEarly:['C','F','Bb','A','D','G'],
+      beginnerFull:['C','F','Bb','Eb','Ab','Db','Gb','B','E','A','D','G'],
+      INTERMEDIATE:['C','F','Bb','Eb','Ab','Db','Gb','Cb','C#','F#','B','E','A','D','G'],
+      ADVANCED:['C','F','Bb','Eb','Ab','Db','Gb','Cb','C#','F#','B','E','A','D','G']
+    };
+    // One persistent root cursor per tier/phase, shared by main and solo practice.
+    // Old progress is preserved; a newly introduced cursor starts at C.
+    function rootCycleKey(tier) {
+      return tier==='BEGINNER'?(beginnerCompleted()<50?'beginnerEarly':'beginnerFull'):tier;
+    }
+    function nextScheduledRoot(tier) {
+      const key=rootCycleKey(tier),cycle=ROOT_CYCLES[key];
+      const saved=userProgress.rootCycleV1;
+      const state=saved&&typeof saved==='object'?saved:{};
+      const index=Number.isSafeInteger(state[key])&&state[key]>=0?state[key]%cycle.length:0;
+      return {root:cycle[index],key,index,cycle};
+    }
+    function commitScheduledRoot(step) {
+      if(!userProgress.rootCycleV1||typeof userProgress.rootCycleV1!=='object') userProgress.rootCycleV1={};
+      userProgress.rootCycleV1[step.key]=(step.index+1)%step.cycle.length;
+      saveState();
+    }
+    const QUESTION_GROUPS={
+      interval:q=>q.category===1,
+      scale:q=>q.category===2&&q.family!=='signature',
+      signature:q=>q.category===2&&q.family==='signature',
+      chord:q=>q.category===3,
+      inversion:q=>q.category===4,
+      drop:q=>q.category===5
+    };
+    const ROOT_DECKS={};
     const CATEGORY_ROTATIONS={};
-    function drawCategory(tier,categories) {
-      const rotation=tier+':'+categories.join(',');
-      if(!CATEGORY_ROTATIONS[rotation]?.length) CATEGORY_ROTATIONS[rotation]=shuffleArray(categories);
-      return CATEGORY_DECKS[CATEGORY_ROTATIONS[rotation].pop()].draw(q=>eligibleQuestion(q,tier),true);
+    function allowedGroups(tier,solo=null) {
+      if(solo!==null) return {1:['interval'],2:['scale','signature'],3:['chord'],4:['inversion'],5:['drop']}[solo];
+      return tier==='BEGINNER'?['interval','scale','chord','signature']:
+        tier==='INTERMEDIATE'?['interval','scale','chord','signature','inversion']:
+        ['interval','scale','chord','signature','inversion','drop'];
+    }
+    function drawScheduledQuestion(tier,solo=null) {
+      const step=nextScheduledRoot(tier),groups=allowedGroups(tier,solo);
+      const rotation=tier+':'+(solo===null?'main':solo);
+      if(!CATEGORY_ROTATIONS[rotation]?.length) CATEGORY_ROTATIONS[rotation]=shuffleArray(groups);
+      const group=CATEGORY_ROTATIONS[rotation].pop();
+      const key=step.root+':'+group;
+      if(!ROOT_DECKS[key]) ROOT_DECKS[key]=new QuestionDeck(Object.values(QUESTION_POOLS).flat().filter(q=>q.root===step.root&&QUESTION_GROUPS[group](q)));
+      const q=ROOT_DECKS[key].draw(q=>eligibleQuestion(q,tier));
+      // Advance only after a question was successfully selected, never on answer,
+      // language changes, failed access checks or opening a menu.
+      commitScheduledRoot(step);
+      return q;
     }
     function presentQuestion(q) {
       // Beginner key-signature distractors also stay within the requested 12 keys.
@@ -1007,22 +1040,26 @@ What is the top note with ${tones[f[0]]} in the bass?`,
     }
     let examDeck=[];
     function buildExamDeck() {
-      // Promotion assesses the entire intermediate syllabus, never Drop voicings.
-      const pick=(category,n,predicate)=>shuffleArray(QUESTION_POOLS[category].filter(predicate)).slice(0,n);
-      return shuffleArray([
-        ...pick(1,2,q=>q.level===1),...pick(1,3,q=>q.level===2),
-        ...pick(2,1,q=>q.family==='major'),...pick(2,1,q=>q.family==='signature'),
-        ...['Natural Minor','Harmonic Minor','Melodic Minor'].flatMap(t=>pick(2,1,q=>q.signature.endsWith(':'+t))),
-        ...pick(3,2,q=>q.catKO.startsWith('3')||q.family==='rootName'&&Object.keys(TRIADS).some(t=>q.ans===q.root+t)),
-        ...pick(3,3,q=>q.catKO.startsWith('4')||q.family==='rootName'&&Object.keys(CHORD_INTERVALS).some(t=>q.ans===q.root+t)),
-        ...pick(4,5,()=>true)
+      // Randomized assessment topics, deterministic intermediate root order.
+      const topics=shuffleArray([
+        ...Array(2).fill(q=>q.category===1&&q.level===1),
+        ...Array(3).fill(q=>q.category===1&&q.level===2),
+        q=>q.family==='major',q=>q.family==='signature',
+        ...['Natural Minor','Harmonic Minor','Melodic Minor'].map(t=>q=>q.category===2&&q.signature.endsWith(':'+t)),
+        ...Array(2).fill(q=>q.category===3&&q.chordSize===3),
+        ...Array(3).fill(q=>q.category===3&&q.chordSize===4),
+        ...Array(5).fill(q=>q.category===4)
       ]);
+      const seen=new Set(),pool=Object.values(QUESTION_POOLS).flat();
+      return topics.map((predicate,index)=>{
+        const root=ROOT_CYCLES.INTERMEDIATE[index%ROOT_CYCLES.INTERMEDIATE.length];
+        const choices=pool.filter(q=>q.root===root&&predicate(q)&&eligibleQuestion(q,'INTERMEDIATE')&&!seen.has(q.signature));
+        if(!choices.length) throw new Error('No unique exam question for '+root);
+        const q=shuffleArray(choices)[0];seen.add(q.signature);return q;
+      });
     }
     function generateQuestion() {
-      let q;
-      if(isExamMode) q=examDeck[examCurrentIndex-1];
-      else if(playMode==='SOLO') q=CATEGORY_DECKS[currentSoloGame].draw(q=>eligibleQuestion(q,currentTier),true);
-      else q=drawCategory(currentTier,currentTier==='BEGINNER'?[1,2,3]:currentTier==='INTERMEDIATE'?[1,2,3,4]:[1,2,3,4,5]);
+      const q=isExamMode?examDeck[examCurrentIndex-1]:drawScheduledQuestion(currentTier,playMode==='SOLO'?currentSoloGame:null);
       return presentQuestion(q);
     }
     function recordCompletedQuestion() {
