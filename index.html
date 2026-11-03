@@ -138,11 +138,11 @@
         </div>
 
         <div class="flex items-center gap-2">
-          <button onclick="toggleMute()" class="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 active:scale-95 border border-gray-700 rounded-lg text-xs font-bold text-gray-200">
+          <button data-aria-ko="소리 켜기/끄기" data-aria-en="Toggle sound" aria-label="소리 켜기/끄기" onclick="toggleMute()" class="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 active:scale-95 border border-gray-700 rounded-lg text-xs font-bold text-gray-200">
             <span id="muteLabelWelcome">🔊</span>
           </button>
 
-          <button onclick="toggleLanguage()" class="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 active:scale-95 border border-gray-700 rounded-lg text-xs font-bold text-gray-200">
+          <button data-aria-ko="언어 변경" data-aria-en="Change language" aria-label="언어 변경" onclick="toggleLanguage()" class="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 active:scale-95 border border-gray-700 rounded-lg text-xs font-bold text-gray-200">
             <span id="langLabelWelcome">EN</span>
           </button>
 
@@ -170,19 +170,19 @@
           <div class="flex items-start gap-2.5">
             <span class="text-base leading-none">🎯</span>
             <div class="leading-relaxed">
-              <strong class="text-white">메인 챌린지</strong>: 초급 → 중급 → 20문항 승급시험 → 프로 고급 단계별 성장
+              <span data-ko="메인 챌린지: 초급 → 중급 → 20문항 승급시험 → 프로 고급 단계별 성장" data-en="Main challenge: Beginner → Intermediate → 20-question promotion exam → Advanced">메인 챌린지: 초급 → 중급 → 20문항 승급시험 → 프로 고급 단계별 성장</span>
             </div>
           </div>
           <div class="flex items-start gap-2.5">
             <span class="text-base leading-none">🕹️</span>
             <div class="leading-relaxed">
-              <strong class="text-white">5대 개별 트레이닝</strong>: 음정 · 스케일 · 코드톤 · 전위 · 프로 보이싱
+              <span data-ko="5대 개별 트레이닝: 음정 · 스케일 · 코드톤 · 전위 · 프로 보이싱" data-en="Five practice courses: Intervals · Scales · Chord tones · Inversions · Voicings">5대 개별 트레이닝: 음정 · 스케일 · 코드톤 · 전위 · 프로 보이싱</span>
             </div>
           </div>
           <div class="flex items-start gap-2.5">
             <span class="text-base leading-none">⚡</span>
             <div class="leading-relaxed text-gray-400">
-              <strong class="text-white">순발력 속도 측정</strong>: 매 문제마다 두뇌 반응 속도(초)와 최고 콤보가 자동 기록됩니다.
+              <span data-ko="순발력 속도 측정: 매 문제마다 두뇌 반응 속도(초)와 최고 콤보가 자동 기록됩니다." data-en="Track your response time and personal best combo as you play.">순발력 속도 측정: 매 문제마다 두뇌 반응 속도(초)와 최고 콤보가 자동 기록됩니다.</span>
             </div>
           </div>
         </div>
@@ -205,7 +205,7 @@
               HARMONY BUSTER
             </h2>
             <div class="flex items-center gap-2 mt-1">
-              <span class="text-[11px] font-bold text-amber-400">BEST <strong id="bestComboText">0</strong></span>
+              <span class="text-[11px] font-bold text-amber-400"><span data-ko="최고 콤보" data-en="BEST">최고 콤보</span> <strong id="bestComboText">0</strong></span>
             </div>
           </div>
         </button>
@@ -219,11 +219,11 @@
             🔥 <span id="comboCount">0</span>
           </div>
 
-          <button onclick="toggleMute()" class="px-2.5 py-1.5 bg-gray-800 hover:bg-gray-700 active:scale-95 border border-gray-700 rounded-lg text-xs font-bold text-gray-200">
+          <button data-aria-ko="소리 켜기/끄기" data-aria-en="Toggle sound" aria-label="소리 켜기/끄기" onclick="toggleMute()" class="px-2.5 py-1.5 bg-gray-800 hover:bg-gray-700 active:scale-95 border border-gray-700 rounded-lg text-xs font-bold text-gray-200">
             <span id="muteLabelGame">🔊</span>
           </button>
 
-          <button onclick="toggleLanguage()" class="px-2.5 py-1.5 bg-gray-800 hover:bg-gray-700 active:scale-95 border border-gray-700 rounded-lg text-xs font-bold text-gray-200">
+          <button data-aria-ko="언어 변경" data-aria-en="Change language" aria-label="언어 변경" onclick="toggleLanguage()" class="px-2.5 py-1.5 bg-gray-800 hover:bg-gray-700 active:scale-95 border border-gray-700 rounded-lg text-xs font-bold text-gray-200">
             <span id="langLabelGame">EN</span>
           </button>
         </div>
@@ -246,13 +246,13 @@
       </div>
 
       <div id="examStatusHeader" class="hidden w-full py-1.5 px-3 bg-purple-950/60 border border-purple-800/80 rounded-xl my-1 flex justify-between items-center text-xs shrink-0">
-        <span class="font-bold text-purple-300">🎓 실전 시험: <strong id="examCurrentQ" class="text-[#FFB703]">1</strong> / 20</span>
-        <span class="font-bold text-gray-200">정답: <strong id="examScore" class="text-[#06D6A0]">0</strong>개</span>
+        <span class="font-bold text-purple-300"><span data-ko="🎓 실전 시험:" data-en="🎓 Exam:">🎓 실전 시험:</span> <strong id="examCurrentQ" class="text-[#FFB703]">1</strong> / 20</span>
+        <span class="font-bold text-gray-200"><span data-ko="정답:" data-en="Correct:">정답:</span> <strong id="examScore" class="text-[#06D6A0]">0</strong><span data-ko="개" data-en="">개</span></span>
       </div>
 
       <div id="timerContainer" class="w-full mt-1 mb-1 shrink-0">
         <div class="flex justify-between items-center text-xs text-gray-400 mb-1 px-1">
-          <span id="timerLabel" class="font-bold">TIME ATTACK</span>
+          <span id="timerLabel" class="font-bold" data-ko="제한 시간" data-en="TIME ATTACK">제한 시간</span>
           <span id="timerText" class="font-black text-sm text-[#FFB703]">10.0s</span>
         </div>
         <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
@@ -307,35 +307,36 @@
     <!-- 2. 라이선스 시험 성적표 화면 -->
     <section id="examResultScreen" class="hidden w-full flex-1 flex flex-col justify-start items-center text-center p-4 pt-safe-top my-auto max-h-[82vh] overflow-y-auto no-scrollbar">
       <div class="bg-gray-900 border-2 border-purple-500/50 rounded-3xl p-5 w-full shadow-2xl">
+        <button data-aria-ko="언어 변경" data-aria-en="Change language" aria-label="언어 변경" onclick="toggleLanguage()" id="resultLanguageButton" class="mb-3 px-4 py-2 rounded-xl bg-gray-800 text-sm font-bold">EN</button>
         <div id="examResultIcon" class="text-4xl mb-2">🏆</div>
         <h3 id="examResultTitle" class="text-lg font-black text-white mb-1">시험 결과</h3>
         <p id="examResultDesc" class="text-xs text-gray-300 mb-4 leading-relaxed"></p>
 
         <div class="bg-gray-950 border border-gray-800 rounded-2xl p-3 mb-4 flex justify-around">
           <div>
-            <span class="text-xs text-gray-400 block">총 문항</span>
+            <span class="text-xs text-gray-400 block"><span data-ko="총 문항" data-en="Questions">총 문항</span></span>
             <span class="text-base font-black text-white">20</span>
           </div>
           <div>
-            <span class="text-xs text-gray-400 block">취득 점수</span>
+            <span class="text-xs text-gray-400 block"><span data-ko="취득 점수" data-en="Score">취득 점수</span></span>
             <span id="examFinalScore" class="text-2xl font-black text-[#FFB703]">0점</span>
           </div>
           <div>
-            <span class="text-xs text-gray-400 block">합격선</span>
-            <span class="text-base font-black text-gray-300">80점 (16개)</span>
+            <span class="text-xs text-gray-400 block"><span data-ko="합격선" data-en="Pass mark">합격선</span></span>
+            <span class="text-base font-black text-gray-300"><span data-ko="80점 (16개)" data-en="80% (16 correct)">80점 (16개)</span></span>
           </div>
         </div>
 
         <div id="examReviewSection" class="hidden text-left mb-4 bg-gray-950/80 border border-gray-800 rounded-2xl p-3">
           <h4 class="text-xs font-bold text-red-400 mb-2 flex items-center gap-1">
-            <span>📝</span> <span>틀린 문항 오답 노트</span>
+            <span>📝</span> <span><span data-ko="틀린 문항 오답 노트" data-en="Review incorrect answers">틀린 문항 오답 노트</span></span>
           </h4>
           <div id="examReviewList" class="space-y-2 text-xs text-gray-300 max-h-40 overflow-y-auto pr-1"></div>
         </div>
 
         <div class="flex flex-col gap-2">
           <button id="examActionBtn" onclick="finishExamAction()" class="w-full py-3.5 bg-[#FFB703] hover:bg-yellow-400 text-black font-black text-sm rounded-xl transition-all shadow-lg active:scale-95"></button>
-          <button onclick="backToTraining()" class="w-full py-3 bg-gray-800 hover:bg-gray-700 text-gray-200 font-bold text-xs rounded-xl active:scale-95">일반 훈련으로 돌아가기</button>
+          <button onclick="backToTraining()" class="w-full py-3 bg-gray-800 hover:bg-gray-700 text-gray-200 font-bold text-xs rounded-xl active:scale-95"><span data-ko="일반 훈련으로 돌아가기" data-en="Back to practice">일반 훈련으로 돌아가기</span></button>
         </div>
       </div>
     </section>
@@ -369,29 +370,29 @@
     <div id="courseSheet" class="hidden menu-overlay" role="dialog" aria-modal="true" aria-labelledby="courseTitle">
       <div class="menu-panel">
         <div class="sheet-handle"></div>
-        <div class="sheet-heading"><div><small>PRACTICE ROOM</small><h2 id="courseTitle" data-ko="오늘은 무엇을 연습할까요?" data-en="What will you practice?">오늘은 무엇을 연습할까요?</h2></div><button onclick="closeCourseSheet()" aria-label="닫기 / Close">✕</button></div>
+        <div class="sheet-heading"><div><small data-ko="개별 연습실" data-en="PRACTICE ROOM">개별 연습실</small><h2 id="courseTitle" data-ko="오늘은 무엇을 연습할까요?" data-en="What will you practice?">오늘은 무엇을 연습할까요?</h2></div><button onclick="closeCourseSheet()" aria-label="닫기" data-aria-ko="닫기" data-aria-en="Close">✕</button></div>
               <div id="soloChipsArea" class="w-full mt-2 mb-1 shrink-0">
         <div class="flex items-center justify-between px-1 mb-1">
-          <span class="text-xs font-extrabold text-gray-400">🕹️ 5대 개별 집중 코스</span>
+          <span class="text-xs font-extrabold text-gray-400"><span data-ko="🕹️ 5대 개별 집중 코스" data-en="🕹️ Five practice courses">🕹️ 5대 개별 집중 코스</span></span>
           <button onclick="selectPlayMode('TIER')" id="btnBackToMain" class="text-xs font-bold text-[#FFB703] hover:underline hidden">
-            ← 메인 챌린지 복귀
+            <span data-ko="← 메인 챌린지 복귀" data-en="← Back to challenge">← 메인 챌린지 복귀</span>
           </button>
         </div>
         <div class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5">
           <button onclick="selectSoloGame(1)" id="btnG1" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] active:scale-95 transition-all">
-            1. 음정
+            <span data-ko="1. 음정" data-en="1. Intervals">1. 음정</span>
           </button>
           <button onclick="selectSoloGame(2)" id="btnG2" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] active:scale-95 transition-all">
-            2. 조표·스케일
+            <span data-ko="2. 조표·스케일" data-en="2. Keys &amp; scales">2. 조표·스케일</span>
           </button>
           <button onclick="selectSoloGame(3)" id="btnG3" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] active:scale-95 transition-all">
-            3. 코드 · 코드톤
+            <span data-ko="3. 코드 · 코드톤" data-en="3. Chords &amp; chord tones">3. 코드 · 코드톤</span>
           </button>
           <button onclick="selectSoloGame(4)" id="btnG4" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold text-gray-200 hover:border-[#FFB703] active:scale-95 transition-all">
-            4. 전위 · 중급
+            <span data-ko="4. 전위 · 중급" data-en="4. Inversions · Intermediate">4. 전위 · 중급</span>
           </button>
           <button onclick="selectSoloGame(5)" id="btnG5" class="whitespace-nowrap px-3 py-1.5 bg-gray-900 border border-purple-500/50 rounded-xl text-xs font-bold text-purple-300 hover:border-purple-400 active:scale-95 transition-all flex items-center gap-1">
-            <span id="g5LockIcon">🔒</span> 5. 보이싱
+            <span id="g5LockIcon">🔒</span> <span data-ko="5. 보이싱" data-en="5. Voicings">5. 보이싱</span>
           </button>
         </div>
       </div>
@@ -403,7 +404,7 @@
     <div id="moreSheet" class="hidden menu-overlay" role="dialog" aria-modal="true" aria-labelledby="moreTitle">
       <div class="menu-panel">
         <div class="sheet-handle"></div>
-        <div class="sheet-heading"><div><small>YOUR HARMONY LAB</small><h2 id="moreTitle" data-ko="더보기" data-en="More">더보기</h2></div><button onclick="closeMoreSheet()" aria-label="닫기 / Close">✕</button></div>
+        <div class="sheet-heading"><div><small data-ko="나의 화성학 연습실" data-en="YOUR HARMONY LAB">나의 화성학 연습실</small><h2 id="moreTitle" data-ko="더보기" data-en="More">더보기</h2></div><button onclick="closeMoreSheet()" aria-label="닫기" data-aria-ko="닫기" data-aria-en="Close">✕</button></div>
         <button class="membership-entry" onclick="closeMoreSheet();openVipSheetFromTab()"><span>✦ <strong data-ko="멤버십 코드" data-en="Membership code">멤버십 코드</strong><small data-ko="이번 달 코드로 고급 무제한 이용" data-en="Unlock unlimited advanced practice this month">이번 달 코드로 고급 무제한 이용</small></span><span>→</span></button>
               <div class="grid grid-cols-2 gap-2 px-3 pt-2 pb-1.5">
         <a href="https://youtube.com/playlist?list=PLUhKlj-gxAgqQxhGNKJkvZF2ihiY0wQUC" target="_blank" class="flex items-center justify-center gap-2 py-2 px-2.5 bg-gray-900 hover:bg-gray-800 active:scale-95 border border-red-500/40 rounded-xl shadow-sm transition-all">
@@ -469,7 +470,7 @@
         <div class="w-full text-left">
           <label for="secretInput" class="block text-xs text-gray-400 mb-2" data-ko="이미 회원이라면, 이번 달 인증코드를 입력하세요." data-en="Already a member? Enter this month’s code.">이미 회원이라면, 이번 달 인증코드를 입력하세요.</label>
           <div class="flex gap-2">
-            <input id="secretInput" type="text" autocomplete="off" aria-label="인증코드 / Membership code" class="flex-1 bg-gray-950 border border-gray-700 px-3.5 py-2.5 text-sm rounded-xl text-white uppercase focus:outline-none focus:border-[#63E6BE]" />
+            <input id="secretInput" type="text" autocomplete="off" aria-label="인증코드" data-aria-ko="인증코드" data-aria-en="Membership code" class="flex-1 bg-gray-950 border border-gray-700 px-3.5 py-2.5 text-sm rounded-xl text-white uppercase focus:outline-none focus:border-[#63E6BE]" />
             <button onclick="verifyVipCode()" class="bg-gray-800 px-5 py-2.5 text-sm font-bold text-white rounded-xl border border-gray-700" data-ko="인증" data-en="Verify">인증</button>
           </div>
         </div>
@@ -650,11 +651,17 @@
       lang = lang === 'EN' ? 'EN' : 'KO';
       document.documentElement.lang = lang === 'EN' ? 'en' : 'ko';
       currentLang = lang;
+      document.title = lang === 'EN' ? 'Harmony Buster — Music Theory Trainer' : 'Harmony Buster — 화성학 트레이너';
       localStorage.setItem('hb_lang', lang);
       const dict = I18N[lang];
       refreshVipOfferTitle();
       document.querySelectorAll("[data-ko]").forEach(el => { el.textContent = el.dataset[lang === "EN" ? "en" : "ko"]; });
+      document.querySelectorAll('[data-aria-ko]').forEach(el => el.setAttribute('aria-label',el.dataset[lang==='EN'?'ariaEn':'ariaKo']));
+      document.getElementById('resultLanguageButton').innerText=lang==='EN'?'KO':'EN';
       updateSessionMeta();
+      if(lastExamResult) renderExamResult();
+      if(feedbackKind) document.getElementById('feedbackStatus').innerText=feedbackKind==='timeout'?dict.timeoutMsg:dict.wrongMsg;
+      if(advancedGateBlocked && document.getElementById('feedbackBox').classList.contains('hidden')) renderTrialGateText();
 
       document.getElementById('langLabelWelcome').innerText = lang === 'KO' ? 'EN' : 'KO';
       document.getElementById('langLabelGame').innerText = lang === 'KO' ? 'EN' : 'KO';
@@ -682,7 +689,7 @@
       document.getElementById('t-modal-donate-close').innerText = dict.donateClose;
 
       updateTabsUI();
-      if (currentQuestion && !advancedGateBlocked) {
+      if (currentQuestion && (!advancedGateBlocked || feedbackKind)) {
         renderCurrentQuestionText();
         if (isQuestionActive) renderPad();
       }
@@ -724,6 +731,11 @@
       return !isExamMode && ((playMode === 'TIER' && currentTier === 'ADVANCED') ||
         (playMode === 'SOLO' && (currentTier === 'ADVANCED' || currentSoloGame === 5)));
     }
+    function renderTrialGateText() {
+        document.getElementById('qText').innerText = currentLang === 'KO'
+          ? '고급 무료 체험 20문항을 완료했습니다. 멤버십 인증 후 계속 이용할 수 있습니다.'
+          : 'Your 20-question advanced trial is complete. Verify your membership to continue.';
+    }
     function allowAdvancedQuestion() {
       if (!isAdvancedPractice()) return true;
       if (!userProgress.examPassed) {
@@ -736,9 +748,7 @@
         stopTimer();
         document.getElementById('feedbackBox').classList.add('hidden');
         document.getElementById('inputPadArea').innerHTML = '';
-        document.getElementById('qText').innerText = currentLang === 'KO'
-          ? '고급 무료 체험 20문항을 완료했습니다. 멤버십 인증 후 계속 이용할 수 있습니다.'
-          : 'Your 20-question advanced trial is complete. Verify your membership to continue.';
+        renderTrialGateText();
         openVipSheetFromTab();
         return false;
       }
@@ -759,6 +769,8 @@
     let examCurrentIndex = 0;
     let examCorrectCount = 0;
     let examWrongAnswers = [];
+    let lastExamResult = null;
+    let feedbackKind = null;
 
     let timerInterval = null;
     let maxTime = 10;
@@ -1140,7 +1152,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
     function goToWelcomeScreen() {
       cancelPendingNext();
       if (isExamMode) {
-        if (!confirm('시험 진행 중입니다. 메인 홈 화면으로 나가시겠습니까? (현재 기록은 초기화됩니다)')) return;
+        if (!confirm(currentLang==='KO'?'시험 진행 중입니다. 홈으로 나가면 현재 시험 기록이 초기화됩니다. 나가시겠습니까?':'Leave the exam and return home? Your current exam progress will be lost.')) return;
         exitExamMode();
       }
       stopTimer();
@@ -1247,7 +1259,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
 
     function selectTier(t) {
       if (isExamMode) {
-        if (!confirm('시험 도중에 티어를 변경하시겠습니까? 현재 시험 기록은 초기화됩니다.')) return;
+        if (!confirm(currentLang==='KO'?'시험 도중에 단계를 변경하시겠습니까? 현재 시험 기록은 초기화됩니다.':'Change level and leave the exam? Your current exam progress will be lost.')) return;
         exitExamMode();
       }
 
@@ -1283,6 +1295,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
       examCurrentIndex = 0;
       examCorrectCount = 0;
       examWrongAnswers = [];
+      lastExamResult = null;
       examDeck = buildExamDeck();
 
       document.getElementById('tierNav').classList.add('hidden');
@@ -1308,11 +1321,20 @@ What is the top note with ${tones[f[0]]} in the bass?`,
 
     function finishExam() {
       stopTimer();
+      lastExamResult={correct:examCorrectCount,total:examTotalCount,wrong:examWrongAnswers.map(w=>({...w}))};
+      if(examCorrectCount/examTotalCount>=0.8){
+        userProgress.examPassed=true;userProgress.advancedUnlocked=true;saveState();
+      }
       document.getElementById('gameScreen').classList.add('hidden');
       document.getElementById('examResultScreen').classList.remove('hidden');
-
+      renderExamResult();
+    }
+    function renderExamResult() {
+      if(!lastExamResult)return;
+      const en=currentLang==='EN';
+      const examCorrectCount=lastExamResult.correct,examTotalCount=lastExamResult.total,examWrongAnswers=lastExamResult.wrong;
       const finalScore = Math.round((examCorrectCount / examTotalCount) * 100);
-      document.getElementById('examFinalScore').innerText = `${finalScore}점`;
+      document.getElementById('examFinalScore').innerText = en?`${finalScore}%`:`${finalScore}점`;
 
       const isPass = finalScore >= 80;
       const icon = document.getElementById('examResultIcon');
@@ -1326,8 +1348,8 @@ What is the top note with ${tones[f[0]]} in the bass?`,
         reviewSection.classList.remove('hidden');
         reviewList.innerHTML = examWrongAnswers.map((w, idx) => `
           <div class="p-2 bg-gray-900 border border-gray-800 rounded-lg">
-            <p class="font-bold text-white text-xs mb-1">${idx + 1}. ${w.q}</p>
-            <p class="text-[11px] text-gray-400">내 답: <span class="text-red-400 font-bold">${w.chosen}</span> | 정답: <span class="text-[#06D6A0] font-black">${w.ans}</span></p>
+            <p class="font-bold text-white text-xs mb-1">${idx + 1}. ${en?w.qEN:w.qKO}</p>
+            <p class="text-[11px] text-gray-400">${en?'Your answer':'내 답'}: <span class="text-red-400 font-bold">${w.timedOut?(en?'Time out':'시간 초과'):w.chosen}</span> | ${en?'Correct answer':'정답'}: <span class="text-[#06D6A0] font-black">${w.ans}</span></p>
           </div>
         `).join('');
       } else {
@@ -1335,22 +1357,18 @@ What is the top note with ${tones[f[0]]} in the bass?`,
       }
 
       if (isPass) {
-        userProgress.examPassed = true;
-        userProgress.advancedUnlocked = true;
-        saveState();
-
         icon.innerText = '🎉';
-        title.innerText = '축하합니다! 라이선스 합격!';
+        title.innerText = en?'Congratulations! You passed!':'축하합니다! 승급시험 합격!';
         title.className = 'text-lg font-black text-[#06D6A0] mb-1';
-        desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong>를 맞혔습니다.<br />이제 <strong>[고급 모드]</strong>에 진입할 수 있습니다!`;
-        actionBtn.innerText = '고급 모드 바로 시작하기 🚀';
+        desc.innerHTML = en?`<strong>${examCorrectCount} of ${examTotalCount}</strong> correct.<br />You can now enter <strong>Advanced mode</strong>!`:`${examTotalCount}문제 중 <strong>${examCorrectCount}문제</strong>를 맞혔습니다.<br />이제 <strong>고급 모드</strong>에 진입할 수 있습니다!`;
+        actionBtn.innerText = en?'Start Advanced mode 🚀':'고급 모드 바로 시작하기 🚀';
         actionBtn.className = 'w-full py-3.5 bg-[#06D6A0] hover:bg-emerald-400 text-black font-black text-sm rounded-xl transition-all shadow-lg active:scale-95';
       } else {
         icon.innerText = '💡';
-        title.innerText = '아쉽습니다! 재도전 필요';
+        title.innerText = en?'Keep practicing and try again':'아쉽습니다! 다시 도전해 보세요';
         title.className = 'text-lg font-black text-[#EF476F] mb-1';
-        desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong> 정답 (기준: 16문제 이상).<br />오답 노트를 확인하고 다시 도전해 보세요!`;
-        actionBtn.innerText = '시험 다시 치르기 🔄';
+        desc.innerHTML = en?`<strong>${examCorrectCount} of ${examTotalCount}</strong> correct (16 needed to pass).<br />Review your answers and try again!`:`${examTotalCount}문제 중 <strong>${examCorrectCount}문제</strong> 정답 (기준: 16문제 이상).<br />오답 노트를 확인하고 다시 도전해 보세요!`;
+        actionBtn.innerText = en?'Retake the exam 🔄':'시험 다시 치르기 🔄';
         actionBtn.className = 'w-full py-3.5 bg-[#FFB703] hover:bg-yellow-400 text-black font-black text-sm rounded-xl transition-all shadow-lg active:scale-95';
       }
     }
@@ -1426,8 +1444,8 @@ What is the top note with ${tones[f[0]]} in the bass?`,
 
       if (isExamMode) {
         examWrongAnswers.push({
-          q: currentLang === 'KO' ? currentQuestion.qKO : currentQuestion.qEN,
-          chosen: '시간 초과',
+          qKO:currentQuestion.qKO,qEN:currentQuestion.qEN,
+          chosen:null,timedOut:true,
           ans: currentQuestion.ans
         });
         scheduleNextQuestion();
@@ -1437,6 +1455,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
       const card = document.getElementById('cardBox');
       card.className = "p-4 sm:p-5 rounded-2xl bg-[#EF476F]/10 border-2 border-[#EF476F] flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden backdrop-blur-sm";
 
+      feedbackKind='timeout';
       document.getElementById('feedbackStatus').innerText = dict.timeoutMsg;
       document.getElementById('feedbackAnsValue').innerText = currentQuestion.ans;
       document.getElementById('feedbackUrl').href = currentQuestion.url;
@@ -1473,6 +1492,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
       document.getElementById('inputPreviewBox').classList.add('hidden');
       document.getElementById('feedbackBox').classList.add('hidden');
 
+      feedbackKind=null;
       currentQuestion = generateQuestion();
       renderCurrentQuestionText();
       updateSessionMeta();
@@ -1621,7 +1641,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
           userProgress.intermediateUnlocked = true;
           saveState();
           setTimeout(() => {
-            alert(dict.intUnlockAlert);
+            alert(I18N[currentLang].intUnlockAlert);
             updateTabsUI();
           }, 300);
         }
@@ -1638,7 +1658,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
 
         if (isExamMode) {
           examWrongAnswers.push({
-            q: currentLang === 'KO' ? currentQuestion.qKO : currentQuestion.qEN,
+            qKO:currentQuestion.qKO,qEN:currentQuestion.qEN,
             chosen: chosen,
             ans: currentQuestion.ans
           });
@@ -1649,6 +1669,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
 
         card.className = "p-4 sm:p-5 rounded-2xl bg-[#EF476F]/10 border-2 border-[#EF476F] flex flex-col items-center text-center shadow-xl transition-all relative overflow-hidden backdrop-blur-sm";
         
+        feedbackKind='wrong';
         document.getElementById('feedbackStatus').innerText = dict.wrongMsg;
         document.getElementById('feedbackAnsValue').innerText = currentQuestion.ans;
         document.getElementById('feedbackUrl').href = currentQuestion.url;
