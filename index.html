@@ -462,59 +462,18 @@
       <div class="w-full max-w-[480px] bg-gray-900 border-t border-[#FFB703]/40 rounded-t-[32px] p-6 pb-safe animate-slide-up shadow-2xl flex flex-col items-center text-center">
         <div class="w-12 h-1.5 bg-gray-700 rounded-full mb-4"></div>
 
-        <div class="inline-block px-3 py-1 bg-[#FFB703]/10 border border-[#FFB703]/30 rounded-full text-xs font-black text-[#FFB703] tracking-wider mb-2">
-          PRO LEVEL VOICING
-        </div>
-
-        <div class="text-4xl mb-2">🎸🎹</div>
-        
-        <h3 class="text-lg font-black text-white mb-2 leading-snug">
-          지판과 건반 위 보이싱,<br />
-          이제 <span class="text-[#FFB703]">0.1초 본능</span>이 됩니다
-        </h3>
-
-        <div class="w-full bg-gray-950/80 border border-gray-800 rounded-2xl p-3.5 mb-4 text-left space-y-1.5 text-xs sm:text-sm text-gray-300">
-          <p class="leading-relaxed">
-            🎯 <strong>Drop 2 & Drop 3 정밀 마스터</strong>: 1-5-7-3, 1-7-3-5 공식에 따른 완벽한 실전 보이싱을 훈련합니다.
-          </p>
-          <p class="leading-relaxed text-gray-400">
-            ✨ <strong>준킴 유튜브 멤버십 회원</strong>에게 매월 코드 인증 후 무제한으로 제공되는 스페셜 코스입니다.
-          </p>
-        </div>
-
-        <a 
-          href="https://youtube.com/@junkimmusic/join" 
-          target="_blank" 
-          rel="noreferrer"
-          class="block w-full py-3.5 bg-gradient-to-r from-[#FFB703] to-yellow-400 hover:from-yellow-400 hover:to-yellow-300 active:scale-98 text-black font-black text-sm rounded-xl mb-4 shadow-lg shadow-[#FFB703]/20 transition-all"
-        >
-          👉 멤버십 가입하고 시크릿 코드 받기 ↗
-        </a>
-
-        <div class="w-full pt-3 border-t border-gray-800/80 text-left">
-          <p class="text-xs text-gray-300 font-semibold mb-2">
-            이미 멤버십 회원이신가요? <br />
-            <span class="text-gray-400 font-normal">유튜브 커뮤니티 전용 시크릿 코드를 입력하세요:</span>
-          </p>
+        <div class="text-3xl mb-3" aria-hidden="true">✦</div>
+        <h3 id="vipOfferTitle" class="text-xl font-black text-white mb-3">고급 퀴즈를 계속 즐겨보세요</h3>
+        <p class="text-sm text-gray-300 leading-relaxed mb-5" data-ko="준킴 유튜브 베이직 이상 멤버십 가입 후, 멤버십 게시판의 이번 달 인증코드를 입력하면 고급 퀴즈를 무제한으로 이용할 수 있습니다." data-en="Join Jun Kim’s YouTube membership at Basic or above, then enter this month’s code from the membership board for unlimited advanced quizzes.">준킴 유튜브 베이직 이상 멤버십 가입 후, 멤버십 게시판의 이번 달 인증코드를 입력하면 고급 퀴즈를 무제한으로 이용할 수 있습니다.</p>
+        <a href="https://youtube.com/@junkimmusic/join" target="_blank" rel="noreferrer" class="block w-full py-3.5 bg-[#63E6BE] text-[#09251E] font-black text-sm rounded-xl mb-5" data-ko="멤버십 가입하기 ↗" data-en="Join membership ↗">멤버십 가입하기 ↗</a>
+        <div class="w-full text-left">
+          <label for="secretInput" class="block text-xs text-gray-400 mb-2" data-ko="이미 회원이라면, 이번 달 인증코드를 입력하세요." data-en="Already a member? Enter this month’s code.">이미 회원이라면, 이번 달 인증코드를 입력하세요.</label>
           <div class="flex gap-2">
-            <input 
-              id="secretInput" 
-              type="text" 
-              placeholder="시크릿 코드 입력" 
-              class="flex-1 bg-gray-950 border border-gray-700 px-3.5 py-2.5 text-sm rounded-xl text-white uppercase placeholder-gray-600 focus:outline-none focus:border-[#FFB703]" 
-            />
-            <button 
-              onclick="verifyVipCode()" 
-              class="bg-gray-800 hover:bg-gray-700 active:scale-95 px-5 py-2.5 text-sm font-bold text-white rounded-xl border border-gray-700 transition-transform"
-            >
-              해금
-            </button>
+            <input id="secretInput" type="text" autocomplete="off" aria-label="인증코드 / Membership code" class="flex-1 bg-gray-950 border border-gray-700 px-3.5 py-2.5 text-sm rounded-xl text-white uppercase focus:outline-none focus:border-[#63E6BE]" />
+            <button onclick="verifyVipCode()" class="bg-gray-800 px-5 py-2.5 text-sm font-bold text-white rounded-xl border border-gray-700" data-ko="인증" data-en="Verify">인증</button>
           </div>
         </div>
-
-        <button onclick="closeVipModal()" class="mt-4 text-sm text-gray-400 hover:text-gray-200 py-1 font-bold">
-          나중에 둘러보기
-        </button>
+        <button onclick="closeVipModal()" class="mt-4 min-h-[44px] text-sm text-gray-400 font-bold" data-ko="나중에 하기" data-en="Maybe later">나중에 하기</button>
       </div>
     </div>
 
@@ -542,7 +501,7 @@
       const en = currentLang === 'EN';
       const levelName = currentLang === 'EN' ? {BEGINNER:'Beginner',INTERMEDIATE:'Intermediate',ADVANCED:'Advanced'}[currentTier] : {BEGINNER:'초급',INTERMEDIATE:'중급',ADVANCED:'고급'}[currentTier];
       const label = isExamMode ? (en ? 'LICENSE EXAM' : '승급시험') : playMode === 'SOLO' ? (en ? 'PRACTICE · ' : '개별 연습 · ') + levelName : (en ? 'DAILY CHALLENGE' : '오늘의 챌린지');
-      const detail = isExamMode ? examCurrentIndex + ' / 20' : isAdvancedPractice() ? (hasCurrentVip() ? (en ? 'MEMBER · UNLIMITED' : '멤버십 · 무제한') : (en ? 'FREE ' : '무료 체험 ') + advancedUsed() + ' / 10') : (en ? 'One question at a time' : '한 문제씩, 음악의 감각으로');
+      const detail = isExamMode ? examCurrentIndex + ' / 20' : isAdvancedPractice() ? (hasCurrentVip() ? (en ? 'MEMBER · UNLIMITED' : '멤버십 · 무제한') : (en ? 'FREE ' : '무료 체험 ') + advancedUsed() + ' / ' + ADVANCED_FREE_LIMIT) : (en ? 'One question at a time' : '한 문제씩, 음악의 감각으로');
       document.getElementById('sessionMeta').innerHTML = '<span>'+label+'</span><strong>'+detail+'</strong>';
     }
 
@@ -693,6 +652,7 @@
       currentLang = lang;
       localStorage.setItem('hb_lang', lang);
       const dict = I18N[lang];
+      refreshVipOfferTitle();
       document.querySelectorAll("[data-ko]").forEach(el => { el.textContent = el.dataset[lang === "EN" ? "en" : "ko"]; });
       updateSessionMeta();
 
@@ -746,7 +706,7 @@
       month: '2026-11',
       sha256: '9a6280aadd84df72890daa7439a16996eb8a0d62320e4b973bac59cef6751bc7'
     };
-    const ADVANCED_FREE_LIMIT = 10;
+    const ADVANCED_FREE_LIMIT = 20;
     function membershipMonth(date = new Date()) {
       const parts = new Intl.DateTimeFormat('en-US', {
         timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit'
@@ -777,8 +737,8 @@
         document.getElementById('feedbackBox').classList.add('hidden');
         document.getElementById('inputPadArea').innerHTML = '';
         document.getElementById('qText').innerText = currentLang === 'KO'
-          ? '고급 무료 10문항을 모두 이용했습니다. 이번 달 멤버십 코드를 입력하면 무제한으로 계속할 수 있습니다.'
-          : 'All 10 free advanced questions have been used. Enter this month’s membership code to continue.';
+          ? '고급 무료 체험 20문항을 완료했습니다. 멤버십 인증 후 계속 이용할 수 있습니다.'
+          : 'Your 20-question advanced trial is complete. Verify your membership to continue.';
         openVipSheetFromTab();
         return false;
       }
@@ -1159,7 +1119,20 @@ What is the top note with ${tones[f[0]]} in the bass?`,
       document.getElementById('supportSheet').classList.add('hidden');
     }
 
+    function refreshVipOfferTitle() {
+      document.getElementById('vipOfferTitle').innerText = advancedGateBlocked
+        ? (currentLang === 'KO' ? '무료 체험 20문항을 완료했어요!' : 'Your 20-question trial is complete!')
+        : (currentLang === 'KO' ? '고급 퀴즈를 계속 즐겨보세요' : 'Keep playing advanced quizzes');
+    }
+    function offerAfterAdvancedTrial() {
+      if (!isAdvancedPractice() || hasCurrentVip() || advancedUsed() < ADVANCED_FREE_LIMIT) return;
+      cancelPendingNext();
+      stopTimer();
+      advancedGateBlocked = true;
+      openVipSheetFromTab();
+    }
     function openVipSheetFromTab() {
+      refreshVipOfferTitle();
       isTimerPaused = true;
       document.getElementById('vipModal').classList.remove('hidden');
     }
@@ -1297,7 +1270,10 @@ What is the top note with ${tones[f[0]]} in the bass?`,
     function startExamMode() {
       cancelPendingNext();
       isTimerPaused = true;
-      if (!confirm('🎓 [고급 승급 라이선스 시험]\n- 총 20문항 실전 테스트\n- 합격 기준: 80점 이상 (16문제 이상 정답)\n- 통과 시 프로 고급 모드가 영구 해금됩니다!\n\n시험을 시작하시겠습니까?')) {
+      const examNotice = currentLang === 'KO'
+        ? '🎓 [고급 승급 라이선스 시험]\n- 총 20문항 실전 테스트\n- 합격 기준: 80점 이상 (16문제 이상 정답)\n- 통과 시 고급 모드가 해금됩니다!\n\n시험을 시작하시겠습니까?'
+        : '🎓 Advanced Promotion Exam\n- 20 questions\n- Pass with 80% (16 correct)\n- Passing unlocks Advanced mode!\n\nStart the exam?';
+      if (!confirm(examNotice)) {
         isTimerPaused = false;
         return;
       }
@@ -1366,7 +1342,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
         icon.innerText = '🎉';
         title.innerText = '축하합니다! 라이선스 합격!';
         title.className = 'text-lg font-black text-[#06D6A0] mb-1';
-        desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong>를 맞혔습니다.<br />이제 <strong>[고급 모드]</strong>에 진입할 수 있습니다!<br />무료 체험은 총 10문항이며, 이후 매월 멤버십 코드가 필요합니다.`;
+        desc.innerHTML = `20문제 중 <strong>${examCorrectCount}문제</strong>를 맞혔습니다.<br />이제 <strong>[고급 모드]</strong>에 진입할 수 있습니다!`;
         actionBtn.innerText = '고급 모드 바로 시작하기 🚀';
         actionBtn.className = 'w-full py-3.5 bg-[#06D6A0] hover:bg-emerald-400 text-black font-black text-sm rounded-xl transition-all shadow-lg active:scale-95';
       } else {
@@ -1467,6 +1443,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
       document.getElementById('feedbackBox').classList.remove('hidden');
 
       document.getElementById('inputPadArea').innerHTML = '';
+      offerAfterAdvancedTrial();
     }
 
     function renderCurrentQuestionText() {
@@ -1681,6 +1658,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
         updateComboBadge();
         updateTabsUI();
       }
+      offerAfterAdvancedTrial();
     }
 
     function updateComboBadge() {
