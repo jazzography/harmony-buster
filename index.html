@@ -2,6 +2,19 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <!-- GA4: install once. Do not also install a GTM container tracking this property. -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CWFWJ3KDYY"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){window.dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-CWFWJ3KDYY', {allow_google_signals:false, allow_ad_personalization_signals:false});
+    // Only aggregate gameplay metadata; never send membership codes or typed answers.
+    function trackUsage(name, parameters={}) {
+      try { gtag('event', name, parameters); } catch (_) { /* Analytics must not block play. */ }
+    }
+  </script>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Harmony Buster - 화성학 두뇌 연산 자동화 트레이너</title>
   
@@ -444,12 +457,12 @@
         </p>
 
         <div class="w-full flex flex-col gap-2.5 mb-4">
-          <a href="https://qr.kakaopay.com/FMnnbr8OU" target="_blank" rel="noreferrer" class="flex items-center justify-center gap-2 py-3.5 bg-[#FEE500] hover:bg-yellow-400 active:scale-98 text-[#191919] font-black text-sm rounded-xl shadow-md transition-all">
+          <a href="https://qr.kakaopay.com/FMnnbr8OU" onclick="trackUsage('support_click')" target="_blank" rel="noreferrer" class="flex items-center justify-center gap-2 py-3.5 bg-[#FEE500] hover:bg-yellow-400 active:scale-98 text-[#191919] font-black text-sm rounded-xl shadow-md transition-all">
             <span>💬</span>
             <span id="t-modal-donate-kakao">카카오페이로 송금 (국내 모바일)</span>
           </a>
 
-          <a href="https://ko-fi.com/junkimmusic" target="_blank" rel="noreferrer" class="flex items-center justify-center gap-2 py-3.5 bg-[#FF5E5B] hover:bg-red-500 active:scale-98 text-white font-black text-sm rounded-xl shadow-md transition-all">
+          <a href="https://ko-fi.com/junkimmusic" onclick="trackUsage('support_click')" target="_blank" rel="noreferrer" class="flex items-center justify-center gap-2 py-3.5 bg-[#FF5E5B] hover:bg-red-500 active:scale-98 text-white font-black text-sm rounded-xl shadow-md transition-all">
             <span>🌍</span>
             <span id="t-modal-donate-kofi">Ko-fi 후원 (카드 / PayPal / 해외)</span>
           </a>
@@ -469,7 +482,7 @@
         <div class="text-3xl mb-3" aria-hidden="true">✦</div>
         <h3 id="vipOfferTitle" class="text-xl font-black text-white mb-3">고급 퀴즈를 계속 즐겨보세요</h3>
         <p class="text-sm text-gray-300 leading-relaxed mb-5" data-ko="준킴 유튜브 베이직 이상 멤버십 가입 후, 멤버십 게시판의 이번 달 인증코드를 입력하면 고급 퀴즈를 무제한으로 이용할 수 있습니다." data-en="Join Jun Kim’s YouTube membership at Basic or above, then enter this month’s code from the membership board for unlimited advanced quizzes.">준킴 유튜브 베이직 이상 멤버십 가입 후, 멤버십 게시판의 이번 달 인증코드를 입력하면 고급 퀴즈를 무제한으로 이용할 수 있습니다.</p>
-        <a href="https://youtube.com/@junkimmusic/join" target="_blank" rel="noreferrer" class="block w-full py-3.5 bg-[#63E6BE] text-[#09251E] font-black text-sm rounded-xl mb-5" data-ko="멤버십 가입하기 ↗" data-en="Join membership ↗">멤버십 가입하기 ↗</a>
+        <a href="https://youtube.com/@junkimmusic/join" onclick="trackUsage('membership_click')" target="_blank" rel="noreferrer" class="block w-full py-3.5 bg-[#63E6BE] text-[#09251E] font-black text-sm rounded-xl mb-5" data-ko="멤버십 가입하기 ↗" data-en="Join membership ↗">멤버십 가입하기 ↗</a>
         <div class="w-full text-left">
           <label for="secretInput" class="block text-xs text-gray-400 mb-2" data-ko="이미 회원이라면, 이번 달 인증코드를 입력하세요." data-en="Already a member? Enter this month’s code.">이미 회원이라면, 이번 달 인증코드를 입력하세요.</label>
           <div class="flex gap-2">
@@ -1146,6 +1159,16 @@ What is the top note with ${tones[f[0]]} in the bass?`,
       const q=isExamMode?examDeck[examCurrentIndex-1]:playMode==='SOLO'?drawSoloQuestion(currentSoloGame):drawScheduledQuestion(currentTier);
       return presentQuestion(q);
     }
+    function trackQuestionResult(result) {
+      if (!currentQuestion || currentQuestion.analyticsRecorded) return;
+      currentQuestion.analyticsRecorded=true;
+      trackUsage('question_complete', {
+        play_mode:isExamMode?'EXAM':playMode, tier:currentTier,
+        category:String(currentQuestion.category),
+        practice_stage:currentQuestion.practiceStage === undefined ? -1 : currentQuestion.practiceStage,
+        result:result, ui_language:currentLang
+      });
+    }
     function recordCompletedQuestion() {
       if(!currentQuestion||currentQuestion.counted||isExamMode) return;
       currentQuestion.counted=true;
@@ -1221,6 +1244,11 @@ What is the top note with ${tones[f[0]]} in the bass?`,
     }
     function offerAfterAdvancedTrial() {
       if (!isAdvancedPractice() || hasCurrentVip() || advancedUsed() < ADVANCED_FREE_LIMIT) return;
+      if (!userProgress.analyticsTrialCompleteV1) {
+        userProgress.analyticsTrialCompleteV1=true;
+        saveState();
+        trackUsage('advanced_trial_complete', {question_limit:ADVANCED_FREE_LIMIT});
+      }
       cancelPendingNext();
       stopTimer();
       advancedGateBlocked = true;
@@ -1245,6 +1273,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
     }
 
     function startGame() {
+      trackUsage('practice_start', {play_mode:playMode,tier:currentTier});
       ensureGameScreenVisible();
       updateTabsUI();
       nextQuestion();
@@ -1264,6 +1293,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
       ensureGameScreenVisible();
       playMode = 'SOLO';
       currentSoloGame = num;
+      trackUsage('practice_start', {play_mode:'SOLO',category:String(num)});
       if(num===4 && currentTier==='BEGINNER') currentTier='INTERMEDIATE';
       if(num===5) currentTier='ADVANCED';
 
@@ -1380,6 +1410,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
       examWrongAnswers = [];
       lastExamResult = null;
       examDeck = buildExamDeck();
+      trackUsage('exam_start');
 
       document.getElementById('tierNav').classList.add('hidden');
       document.getElementById('unlockGuideBar').classList.add('hidden');
@@ -1404,6 +1435,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
 
     function finishExam() {
       stopTimer();
+      trackUsage('exam_complete', {score:examCorrectCount/examTotalCount*100,passed:examCorrectCount/examTotalCount>=0.8});
       lastExamResult={correct:examCorrectCount,total:examTotalCount,wrong:examWrongAnswers.map(w=>({...w}))};
       if(examCorrectCount/examTotalCount>=0.8){
         userProgress.examPassed=true;userProgress.advancedUnlocked=true;saveState();
@@ -1517,6 +1549,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
     }
 
     function handleTimeout() {
+      trackQuestionResult('timeout');
       const completedAdvancedTrial = isAdvancedPractice();
       recordCompletedQuestion();
       const dict = I18N[currentLang];
@@ -1706,6 +1739,7 @@ What is the top note with ${tones[f[0]]} in the bass?`,
       const dict = I18N[currentLang];
       const card = document.getElementById('cardBox');
       const isCorrect = chosen.replace(/\s+/g, '').toLowerCase() === currentQuestion.ans.replace(/\s+/g, '').toLowerCase();
+      trackQuestionResult(isCorrect?'correct':'incorrect');
 
       if (isCorrect) {
         playCorrectSound();
